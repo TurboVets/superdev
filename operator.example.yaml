@@ -1,0 +1,67 @@
+# Copy to operator.yaml (gitignored) and fill in.
+#   cp operator.example.yaml ~/.cursor/skills/superdev/operator.yaml
+# install.sh does this for you if operator.yaml is missing.
+#
+# SuperDev will not guess your identity. Empty github.login ⇒ it will not
+# touch PRs or issues.
+
+operator:
+  # Display name used in chat ("ask <name>"). Not posted to GitHub.
+  name: ""
+  # Words that end a sticky SuperDev session (in addition to the defaults).
+  extra_exit_words: []
+
+github:
+  # Required. `gh api user --jq .login`
+  login: ""
+  # org/repo SuperDev defaults to when you paste a bare number.
+  default_repo: ""
+  # Issues only. SuperDev will not use Jira / Atlassian MCP unless you
+  # change this — and even then Path 1 still prefers GitHub.
+  ticket_source: github
+  # HARD: never write GitHub objects on PRs/issues not assigned to login.
+  never_touch_others_prs: true
+  # Never request reviewers / @mention unless the operator names them
+  # this turn.
+  never_tag_reviewers: true
+
+workspace:
+  # Absolute path to the repo you usually work in. Used by resource_status.
+  path: ""
+  # Optional: your team's multi-instance / worktree runbook.
+  worktree_docs: ""
+
+# Team skills SuperDev should load. Point these at YOUR repo's skills.
+# Leave a value empty to skip that gate and say so out loud.
+skills:
+  audit: "" # e.g. tv-fullstack — Path 5.5 L1
+  frontend: "" # e.g. tv-frontend
+  backend: "" # e.g. tv-backend
+  smoke: "" # e.g. tv-smoke-test
+  smoke_upload: "" # e.g. pr-asset-upload
+  ci_failure: "" # e.g. ci-failure-analysis
+  product_law: "" # path to a standing-product.md, optional
+  grill_scales: "" # path to a grill/scales file, optional
+  local_bots: true # run scripts/local-bot-review.sh when the target repo has auto-review workflows
+
+ponytail:
+  intensity: full # full | lite | ultra — never ultra on auth / money / migrations / copy
+  reuse_helper: "" # e.g. @org/shared/utils — rung 2 of the least-code ladder
+
+mcp:
+  # Required for Path 6 smoke / visual proof. Cursor → Settings → MCP →
+  # Browser Tab must read "Connected to Browser Tab".
+  cursor_browser: required
+  # Optional. Path 1 meeting transcripts. SuperDev skips if unset.
+  fathom: optional
+  # Optional. Read-only. SuperDev never posts to Slack.
+  slack: optional
+  # Optional. Monorepo graph / generators.
+  nx: optional
+  # Off by default. SuperDev tickets are GitHub issues.
+  atlassian: off
+  # Optional. Design-to-code only when the operator pastes a Figma URL.
+  figma: optional
+
+# Path 0 scripts write here. Do not commit. Do not copy someone else's state/.
+state_dir: state

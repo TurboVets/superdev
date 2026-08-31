@@ -1,0 +1,26 @@
+---
+description: >-
+  After one /superdev invoke, keep SuperDev active for the rest of that Agent
+  chat without re-tagging. Does not auto-start on fresh chats.
+alwaysApply: true
+---
+
+# SuperDev conversation stickiness
+
+If **this conversation** already contains any of:
+
+- `/superdev` (slash, @, or prose) or `/turbovets-superdev`
+- manually attached skill `superdev` / `turbovets-superdev`
+- an assistant line `SuperDev session: active`
+
+…then for **every subsequent turn** in this chat:
+
+1. Treat SuperDev as still attached — **do not wait for re-tagging**.
+2. Run Path 0 boot (`emit_context_pack.py --write`, `route_model.py`, and on T1+ `work_history` / `check_contradictions` / `resource_status`).
+3. Follow `~/.cursor/skills/superdev/BOOT.md`; Read path sections of `SKILL.md` only when `route_model` says `full_skill` / listed paths — do not re-Read if already in context.
+4. Near the top of the reply, keep the sticky signal: `SuperDev session: active` (with phase · paths · tier · **ponytail: full|lite|ultra**).
+5. **Ponytail is always on while SuperDev writes product code.** Climb `~/.cursor/skills/superdev/references/ponytail.md` and name the rung before any ApplyPatch/Write of runtime code. `/ponytail off` is illegal on Path 5. Default `full`. Never `ultra` on auth / money / migrations / copy.
+
+**Exit only** on explicit user words: `exit SuperDev` / `drop SuperDev` / `normal agent` / `without SuperDev`.
+
+Do **not** auto-start SuperDev on a fresh chat that never invoked it.
