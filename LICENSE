@@ -1,6 +1,10 @@
-Internal source, shared with invited operators.
+Copyright 2026 TurboVets
 
 You may clone, install, and adapt SuperDev for your own Cursor Agent use.
-Do not publish another operator's `state/` or `operator.yaml`.
-The review-bar / security-bar text is house engineering law — keep attribution
+
+Do not publish another operator's `state/` or `operator.yaml`. Those are personal.
+
+The review-bar and security-bar text is house engineering law — keep attribution
 if you excerpt it.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.

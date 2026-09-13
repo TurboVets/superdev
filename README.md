@@ -1,8 +1,10 @@
 # SuperDev
 
+**Site:** [turbovets.github.io/superdev](https://turbovets.github.io/superdev/)
+
 Cursor Agent skill that runs an **issue-to-ship lifecycle** with a local review
 ladder **before** any PR exists. Generalized flow. Per-operator identity lives
-in `operator.yaml` — not in the skill.
+in `operator.yaml` — not in the skill. The repo is public.
 
 This is the shareable extraction of the SuperDev operator used on TurboVets
 platform work. It does **not** include anyone's personal memory, mail, or
