@@ -24,7 +24,7 @@ Shareable extraction of the SuperDev operator used on TurboVets platform work. I
 | Quality | What it actually does |
 | ------- | --------------------- |
 | **Sticky session** | One `/superdev` binds the rest of the Agent chat until `exit SuperDev`. |
-| **Token-economy boot** | Path 0 emits a small context pack and a T0–T4 model. Auto-switch is on: SuperDev Task-spawns that slug when it differs from `--parent-model`. T0 and same-as-parent stay. The Cursor picker never moves. Say `auto-switch off` to keep the parent. Durable off: `routing.auto_switch`. |
+| **Token-economy boot** | Path 0 emits a small context pack and a T0–T4 model. Auto-switch Task-spawns the cheapest capable slug: Composer (simple Qs), Grok (build), GPT (audit), Claude Opus/Fable (review). Cheap-down even when the picker is Grok High Fast. Same-as-parent stays. The Cursor picker never moves — [Cursor Router](https://cursor.com/docs/cursor-router) (Auto) is the picker-side equivalent. Say `auto-switch off` to keep the parent. |
 | **GitHub link = finish it** | A pasted PR/issue/comment URL is a take-to-the-end order. SuperDev resolves the current stage and ships that object (unassigned issue = assign + ship). `hard_stop` is only teammate-owned. |
 | **This repo → main** | SuperDev skill changes land on `main` (`git push origin main`). No PR unless asked. |
 | **Never skip / never stop early** | Untestable AC blocks code. A 5.5 audit is not a status report — it continues through prove + PR. |
@@ -179,4 +179,4 @@ Exit: `exit SuperDev` / `drop SuperDev` / `normal agent` / `without SuperDev`.
 - Post to Slack
 - Start on a fresh chat that never invoked it
 - Import another operator's `state/`
-- Flip the Cursor model dropdown (auto-switch is a Task spawn)
+- Flip the Cursor model dropdown (auto-switch is a Task spawn; [Cursor Router](https://cursor.com/docs/cursor-router) / Auto is the picker-side equivalent)

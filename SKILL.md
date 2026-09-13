@@ -2,15 +2,17 @@
 name: superdev
 description: >-
   Issue-to-ship operator for Cursor Agent. Token-economy boot (emit_context_pack
-  + route_model T0–T4). Auto-switch is on by default: Task-spawns the scored
-  model (T0 stays on the parent). Cannot flip the Cursor picker; say
-  auto-switch off to keep the parent for the rest of the chat. GitHub URL
-  alone continues to completion. Local review ladder (audit ×2 Ship → human
-  lenses → local bots) before any PR-create or push. Least-code (ponytail) on
-  every write. Sticky until exit SuperDev. Invoke for pick / build / review /
-  reply / ship. Requires operator.yaml (github.login, default_repo) and gh CLI;
-  Cursor Browser MCP for Path 6a + 6b. Prove intensity from the diff, never
-  the title. Never writes teammate PRs. Configure via operator.example.yaml.
+  + route_model T0–T4). Auto-switch Task-spawns the cheapest capable model:
+  Composer for simple Qs, Grok for build/smoke, GPT for audit/bots, Claude
+  (Opus 5 / Fable 5) for review. Cheap-down even when the picker is Grok High
+  Fast. Cannot flip the Cursor picker — Cursor Router (Auto) is the picker-side
+  equivalent. Say auto-switch off to keep the parent. GitHub URL alone continues
+  to completion. Local review ladder (audit ×2 Ship → human lenses → local bots)
+  before any PR-create or push. Least-code (ponytail) on every write. Sticky
+  until exit SuperDev. Invoke for pick / build / review / reply / ship. Requires
+  operator.yaml (github.login, default_repo) and gh CLI; Cursor Browser MCP for
+  Path 6a + 6b. Prove intensity from the diff, never the title. Never writes
+  teammate PRs. Configure via operator.example.yaml.
 disable-model-invocation: true
 ---
 

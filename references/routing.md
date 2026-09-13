@@ -64,6 +64,15 @@ Mined, not assumed — and re-measured 2026-08-12 (deepen, never reset):
 
 `inherit` is auto-switch **off** only. Never stay on an expensive parent for a T0/T1 ask.
 
+**Cursor-native equivalent:** [Cursor Router](https://cursor.com/docs/cursor-router)
+(the system behind **Auto** on Teams/Enterprise). It classifies each request and
+picks a model (Cost / Balance / Intelligence). SuperDev does **not** call it:
+the Agent `Task` tool has no `auto-smart` slug, SuperDev cannot flip the picker,
+and house paths need a **named** model (audit = GPT, review = Claude). Set the
+picker to Auto if you want Cursor to cheap-down the parent chat; SuperDev still
+Task-spawns for Path 3 / 5.5 / 7. Third-party routers (Not Diamond, Martian,
+RouteLLM) stay out — extra hop, not Cursor-native.
+
 Weight → model, borrowed from `turbo-eyes`: run the high-stakes questions
 (regressions, security, migrations, CI) on the strongest tier and grep-shaped
 checks on the cheapest. If a check's findings consistently underperform, bump its
@@ -75,7 +84,8 @@ Default **on** (`operator.yaml` `routing.auto_switch: true`). SuperDev **cannot*
 flip the Cursor model dropdown — that is why the picker never moves. On means:
 when `apply: spawn`, the **first tool** is `Task model=<slug>`. SuperDev +
 auto-switch on **is** the user requesting that slug (do not pass `inherit`).
-Off / T0 / same-as-parent (`--parent-model`) are `apply: stay`. Still print T0–T4.
+Off / same-as-parent (`--parent-model`) are `apply: stay`. T0/T1 cheap-down to
+Composer even if the parent is Grok High Fast. Still print T0–T4.
 
 Precedence: chat words / `--auto-switch on|off` → `state/session.json` (24h TTL)
 → `operator.yaml` → on. First SuperDev turn of a chat passes `--fresh-chat` so a
