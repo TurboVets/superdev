@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from collections import defaultdict
@@ -366,34 +367,82 @@ def detect_switch_words(prompt: str) -> str | None:
     return None
 
 
-def apply_auto_switch(rec: dict, on: bool, source: str) -> dict:
+PARENT_ALIASES = {
+    "inherit": "inherit",
+    "parent": "inherit",
+    "cursor-grok-4.6-high-fast": "cursor-grok-4.6-high-fast",
+    "cursor-grok-4.6": "cursor-grok-4.6-high-fast",
+    "grok-4.6": "cursor-grok-4.6-high-fast",
+    "cursor-grok-4.5-high-fast": "cursor-grok-4.5-high-fast",
+    "cursor-grok-4.5": "cursor-grok-4.5-high-fast",
+    "grok-4.5": "cursor-grok-4.5-high-fast",
+    "composer-2.5-fast": "composer-2.5-fast",
+    "composer": "composer-2.5-fast",
+    "gpt-5.6-sol-medium": "gpt-5.6-sol-medium",
+    "gpt-5.6": "gpt-5.6-sol-medium",
+    "claude-opus-5-thinking-high": "claude-opus-5-thinking-high",
+    "claude-opus-5": "claude-opus-5-thinking-high",
+    "claude-4.6-opus-high-thinking": "claude-4.6-opus-high-thinking",
+    "claude-4.6-opus": "claude-4.6-opus-high-thinking",
+}
+
+
+def normalize_model_slug(raw: str | None) -> str | None:
+    if not raw:
+        return None
+    s = raw.strip()
+    if s in MODELS:
+        return s
+    key = re.sub(r"[\s_]+", "-", s.lower())
+    return PARENT_ALIASES.get(key)
+
+
+def apply_auto_switch(
+    rec: dict,
+    on: bool,
+    source: str,
+    parent: str | None = None,
+) -> dict:
     recommended = rec.get("recommended_model") or rec["model"]
     rec["recommended_model"] = recommended
     rec["auto_switch"] = "on" if on else "off"
     rec["auto_switch_source"] = source
+    rec["parent_model"] = parent
+    rec["picker"] = "unchanged"
+
+    def stay(reason: str, action: str, model: str = "inherit") -> dict:
+        rec["model"] = model
+        rec["model_meta"] = MODELS[model]
+        rec["apply"] = "stay"
+        rec["did"] = reason
+        rec["spawn_model"] = "inherit"
+        rec["model_action"] = action
+        return rec
+
     if not on:
-        rec["model"] = "inherit"
-        rec["model_meta"] = MODELS["inherit"]
-        rec["apply"] = "stay"
-        rec["spawn_model"] = "inherit"
-        rec["model_action"] = (
-            "auto-switch off — stay on the parent Cursor model. "
-            f"Recommended: {recommended} (T{rec['tier']}). "
-            "SuperDev cannot flip the picker."
+        return stay(
+            "off",
+            "auto-switch off — stay on parent. "
+            f"Recommended: {recommended} (T{rec['tier']}). Picker unchanged.",
         )
-        return rec
     if recommended == "inherit":
-        rec["apply"] = "stay"
-        rec["spawn_model"] = "inherit"
-        rec["model_action"] = "T0 — stay on parent; no Task spawn."
-        return rec
+        return stay("t0", "T0 — stay on parent; no Task spawn. Picker unchanged.")
+    if parent and parent == recommended:
+        return stay(
+            "same_parent",
+            f"already on {recommended} — no Task spawn. Picker unchanged.",
+            model=recommended,
+        )
     rec["model"] = recommended
     rec["model_meta"] = MODELS[recommended]
     rec["apply"] = "spawn"
+    rec["did"] = "spawn"
     rec["spawn_model"] = recommended
     rec["model_action"] = (
-        f"auto-switch on — do this turn's work via Task model={recommended}. "
-        "Parent chat stays on the picker model. SuperDev cannot flip the Cursor dropdown."
+        f"FIRST tool: Task model={recommended}. "
+        "SuperDev + auto-switch on is the user requesting that slug — "
+        "do not pass inherit. Do not do this turn's Path work on the parent. "
+        "Picker stays on the parent."
     )
     return rec
 
@@ -408,6 +457,17 @@ def _self_check() -> int:
     assert off["recommended_model"] == rec["model"], off
     t0 = apply_auto_switch(score("what is the status"), True, "default")
     assert t0["apply"] == "stay" and t0["spawn_model"] == "inherit", t0
+    assert t0["did"] == "t0", t0
+    same = apply_auto_switch(dict(rec), True, "default", parent=rec["model"])
+    assert same["apply"] == "stay" and same["did"] == "same_parent", same
+    t3 = apply_auto_switch(
+        score("run tv-fullstack audit", "5.5", "audit"),
+        True,
+        "default",
+        parent="cursor-grok-4.6-high-fast",
+    )
+    assert t3["apply"] == "spawn" and t3["spawn_model"] == "gpt-5.6-sol-medium", t3
+    assert normalize_model_slug("Cursor Grok 4.6") == "cursor-grok-4.6-high-fast"
     assert detect_switch_words("auto-switch off please") == "off"
     assert detect_switch_words("keep this model") == "off"
     assert detect_switch_words("/autoswitch on") == "on"
@@ -510,6 +570,11 @@ def main() -> int:
         help="First SuperDev turn of a chat — drop leftover session.json.",
     )
     ap.add_argument("--self-check", action="store_true")
+    ap.add_argument(
+        "--parent-model",
+        default=os.environ.get("SUPERDEV_PARENT_MODEL", ""),
+        help="This chat's picker slug. Same-as-parent → stay, not a fake spawn.",
+    )
     args = ap.parse_args()
 
     if args.self_check:
@@ -558,6 +623,7 @@ def main() -> int:
         score(args.prompt, args.path, args.goal, args.affect),
         on,
         source,
+        parent=normalize_model_slug(args.parent_model),
     )
     if args.json:
         json.dump(rec, sys.stdout, indent=2)
@@ -569,7 +635,8 @@ def main() -> int:
     print(f"paths_to_run: {', '.join(rec['paths_to_run']) or '(none)'}")
     print(f"tier: {rec['tier_name']} (T{rec['tier']})")
     print(f"auto_switch: {rec['auto_switch']} ({rec['auto_switch_source']})")
-    print(f"apply: {rec['apply']}  spawn={rec['spawn_model']}")
+    print(f"apply: {rec['apply']}  spawn={rec['spawn_model']}  did={rec['did']}")
+    print("picker: unchanged")
     print(
         f"model: {rec['model']}  [{rec['model_meta']['cost']}] — "
         f"{rec['model_meta']['label']} ({rec['model_why']})"

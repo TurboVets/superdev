@@ -70,6 +70,7 @@ mcp:
 state_dir: state
 
 # Model routing. SuperDev cannot flip the Cursor model dropdown — auto_switch
-# means Task-spawn on the routed slug. Chat words override for this session.
+# means Task-spawn when the routed slug differs from --parent-model.
+# Chat words override for this session.
 routing:
   auto_switch: true # false = always stay on the parent model (still prints T0–T4)

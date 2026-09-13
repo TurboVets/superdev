@@ -13,7 +13,8 @@ Related: `scripts/rate_skills.py` (promote/tighten/demote) + `references/skill-r
 
 ```bash
 # Decide (first SuperDev turn of a chat)
-python3 route_model.py --fresh-chat --prompt "..." --path 5.5 --goal ship_pr --pretty
+python3 route_model.py --fresh-chat --prompt "..." --path 5.5 --goal ship_pr --pretty \
+  --parent-model cursor-grok-4.6-high-fast
 # Session switch
 python3 route_model.py --auto-switch off
 python3 route_model.py --auto-switch status

@@ -12,9 +12,12 @@ its end. Unassigned is a ship lane. `hard_stop` is only teammate-owned.
 ```bash
 S=~/.cursor/skills/superdev
 python3 $S/scripts/emit_context_pack.py --write
-python3 $S/scripts/route_model.py --prompt "<ask>" --path "<stage>" --goal "<goals>" --pretty
+python3 $S/scripts/route_model.py --prompt "<ask>" --path "<stage>" --goal "<goals>" --pretty \
+  --parent-model "<this chat's slug>"
 # First SuperDev turn of this chat only: add --fresh-chat
 # Chat words `auto-switch off|on` write session.json and stick. Exit: --auto-switch clear.
+# apply: spawn ⇒ first tool is Task model=<slug>. apply: stay (t0/same_parent/off) ⇒ parent.
+# Banner must show apply + did. The Cursor picker never moves.
 python3 $S/scripts/work_history.py --active
 python3 $S/scripts/check_contradictions.py
 python3 $S/scripts/resource_status.py

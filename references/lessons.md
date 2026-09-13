@@ -6,6 +6,12 @@ the archaeology second, ≤6 lines. When a lesson hardens, promote it into
 
 Do not import another operator's personal ledger.
 
+### Auto-switch never flipped the picker and never spawned
+
+`auto-switch: on` was printed every turn while the parent kept doing the work.
+T2 on Grok is the same model — stay (`did=same_parent`). T1/T3/T4 must
+Task-spawn. Banner shows `apply` + `did`. `--parent-model` on every boot.
+
 ### This repo lands on main — no PR unless asked
 
 Skill changes: commit on `main` and `git push origin main`. A PR for a

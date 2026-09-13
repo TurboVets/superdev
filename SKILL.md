@@ -28,13 +28,15 @@ Empty `github.login` ⇒ SuperDev will not touch GitHub objects.
 
 **SuperDev decides** skill surface and model tier — not the user.
 Auto-switch is **on by default** (`operator.yaml` `routing.auto_switch`).
-It is a **Task spawn** on the routed slug. SuperDev cannot flip the Cursor
-model picker. Off = stay on the parent model; still print the recommendation.
+It is a **Task spawn** on the routed slug. SuperDev **cannot** flip the Cursor
+picker (the dropdown never moves). Off = stay on the parent; still print the
+recommendation. Banner must show `apply` + `did`, not only `auto-switch: on`.
 
 ```bash
 S=~/.cursor/skills/superdev
 python3 $S/scripts/emit_context_pack.py --write
-python3 $S/scripts/route_model.py --prompt "<ask>" --path "<stage>" --goal "<goals>" --pretty
+python3 $S/scripts/route_model.py --prompt "<ask>" --path "<stage>" --goal "<goals>" --pretty \
+  --parent-model "<this chat's slug>"
 # First SuperDev turn of this chat only: add --fresh-chat
 # T1+: work history + contradictions + resources (warn before ACT)
 python3 $S/scripts/work_history.py --active
@@ -49,9 +51,12 @@ Session switch (sticky until `exit SuperDev` or `--fresh-chat`):
 `auto-switch on` / `pick the model` / `/autoswitch on`
 or `route_model.py --auto-switch on|off`. Durable default: `routing.auto_switch`.
 
-`apply: spawn` ⇒ do this turn's work via `Task model=<slug>`. `apply: stay` ⇒ parent.
+`apply: spawn` ⇒ **first tool is** `Task model=<slug>`. SuperDev + auto-switch
+on **is** the user requesting that slug — do not pass `inherit`. Do not do this
+turn's Path work on the parent. `apply: stay` ⇒ parent (`did`: `t0` /
+`same_parent` / `off`). Same-as-parent is stay, not a fake spawn.
 Declare once: `phase` · `skill_surface` · `paths_to_run` · **auto-switch: on|off** ·
-`tier` · `model` · **ponytail: full|lite|ultra**.
+**apply: stay|spawn** · **did** · `tier` · `model` · **ponytail: full|lite|ultra**.
 
 Never route below T3 on: **3 grill · 5.5 audit · local bots · 7 review** (7 is T4).
 Detail: `references/routing.md`. `--record` is not optional.
@@ -239,8 +244,9 @@ Plus the quick line scan in `references/review-bar.md`.
 
 ## Answer style
 
-Lead with `SuperDev session: active`, then **auto-switch: on|off** · **phase** ·
-**skill_surface** · **paths_to_run** · **tier/model** · **ponytail**. On a write
+Lead with `SuperDev session: active`, then **auto-switch: on|off** ·
+**apply: stay|spawn** · **did** · **phase** · **skill_surface** ·
+**paths_to_run** · **tier/model** · **ponytail**. On a write
 turn, add **rung N**.
 PR in play ⇒ name L1/L2/L3 + `prove_intensity` + `review_depth` before GitHub writes. Path 7 drafts:
 no process theater — P0/P1 + `file:line` only.

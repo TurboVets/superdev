@@ -71,17 +71,20 @@ weight one tier and let the model follow.
 ## Auto-switch (session sticky)
 
 Default **on** (`operator.yaml` `routing.auto_switch: true`). SuperDev **cannot**
-flip the Cursor model dropdown. On means: when `apply: spawn`, do the work via
-`Task model=<slug>`. Off means: stay on the parent model; still print T0–T4.
+flip the Cursor model dropdown — that is why the picker never moves. On means:
+when `apply: spawn`, the **first tool** is `Task model=<slug>`. SuperDev +
+auto-switch on **is** the user requesting that slug (do not pass `inherit`).
+Off / T0 / same-as-parent (`--parent-model`) are `apply: stay`. Still print T0–T4.
 
 Precedence: chat words / `--auto-switch on|off` → `state/session.json` (24h TTL)
 → `operator.yaml` → on. First SuperDev turn of a chat passes `--fresh-chat` so a
 leftover file does not leak. `exit SuperDev` runs `--auto-switch clear`.
+Boot always passes `--parent-model` for this chat. Banner shows `apply` + `did`.
 
-| Words (sticky for this chat)                                                      | Effect                      |
-| --------------------------------------------------------------------------------- | --------------------------- |
-| `auto-switch off` / `keep this model` / `don't switch models` / `/autoswitch off` | `apply: stay`               |
-| `auto-switch on` / `pick the model` / `/autoswitch on`                            | spawn when slug ≠ `inherit` |
+| Words (sticky for this chat)                                                      | Effect                    |
+| --------------------------------------------------------------------------------- | ------------------------- |
+| `auto-switch off` / `keep this model` / `don't switch models` / `/autoswitch off` | `apply: stay` (`did=off`) |
+| `auto-switch on` / `pick the model` / `/autoswitch on`                            | spawn when slug ≠ parent  |
 
 ## Learning rule
 
