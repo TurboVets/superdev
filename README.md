@@ -1,21 +1,20 @@
+<div align="center">
+
 # SuperDev
 
 Issue to ship. Before the PR exists.
 
 **Live briefing:** [https://superdev-mocha.vercel.app](https://superdev-mocha.vercel.app)
 
-![SuperDev soldier shooting merged PRs](docs/soldier.gif)
+<img src="docs/soldier.gif" width="100%" alt="SuperDev soldier shooting merged PRs" />
 
-Open that first. A soldier runs the field and shoots completed PRs. Click a
-feature on the right and it opens — what you get when you attach one skill.
-Try intensity (lite / standard / full). Clone from the same page.
+</div>
 
-This repo is the Cursor Agent skill behind that briefing: an issue-to-ship
-lifecycle with a local review ladder **before** any PR exists. Per-operator
-identity lives in `operator.yaml`, not in the skill. The repo is public.
+Open that first. A soldier runs the field and shoots completed PRs. Click a feature on the right and it opens — what you get when you attach one skill. Try intensity (lite / standard / full). Clone from the same page.
 
-Shareable extraction of the SuperDev operator used on TurboVets platform work.
-It does **not** include anyone's personal memory, mail, or product-law files.
+This repo is the Cursor Agent skill behind that briefing: an issue-to-ship lifecycle with a local review ladder **before** any PR exists. Per-operator identity lives in `operator.yaml`, not in the skill. The repo is public.
+
+Shareable extraction of the SuperDev operator used on TurboVets platform work. It does **not** include anyone's personal memory, mail, or product-law files.
 
 ## What you get
 
