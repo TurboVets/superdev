@@ -528,7 +528,7 @@
           id: "boot",
           title: "Token-economy boot",
           tag: "auto-switch",
-          get: "Each turn starts with a small context pack and a model tier, T0 through T4. Auto-switch is on: hard work Task-spawns that model. Say auto-switch off to keep the one you opened the chat on.",
+          get: "Each turn starts with a small context pack and a T0–T4 model. Auto-switch is on: SuperDev Task-spawns that model. T0 stays on the parent. Say auto-switch off to keep the one you opened the chat on.",
           also: "The switch sticks for the rest of that Agent chat. SuperDev cannot flip the Cursor dropdown. Durable off is operator.yaml routing.auto_switch.",
         },
         {
@@ -549,7 +549,7 @@
           id: "ladder",
           title: "L1 to L3",
           tag: "before the PR",
-          get: "Before anyone else sees the branch: bundled fullstack audit, then lenses, then local bots. Lite may skip the bots.",
+          get: "Before anyone else sees the branch: L1 bundled fullstack audit, L2 lenses, L3 local bots. Lite skips L3. Intensity comes from the diff, never the title.",
           also: "Nothing pushes until that scaled ladder is green. You get the review work on your machine, not as a surprise in CI.",
         },
         {
@@ -592,18 +592,21 @@
       const ORDERS = {
         lite: [
           ["L1", "One pass. Docs may skip.", "go"],
+          ["L2", "D1. Changed surface.", "go"],
           ["L3", "Skip local bots.", "skip"],
           ["6a", "Click the one control.", "go"],
           ["6b", "Skip if aria or docs.", "skip"],
         ],
         standard: [
           ["L1", "Audit twice. Same SHA.", "go"],
+          ["L2", "D2. Claimed surfaces.", "go"],
           ["L3", "Local bots. Required.", "go"],
           ["6a", "Every claimed surface.", "go"],
           ["6b", "One clip. Hold it.", "go"],
         ],
         full: [
           ["L1", "Twice, then stability.", "go"],
+          ["L2", "D3. Both sides.", "go"],
           ["L3", "Local bots. Required.", "go"],
           ["6a", "Both parties.", "go"],
           ["6b", "Both sides. Hold both.", "go"],

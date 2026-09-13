@@ -21,7 +21,7 @@ Shareable extraction of the SuperDev operator used on TurboVets platform work. I
 | Quality | What it actually does |
 | ------- | --------------------- |
 | **Sticky session** | One `/superdev` binds the rest of the Agent chat until `exit SuperDev`. |
-| **Token-economy boot** | Path 0 emits a small context pack and a T0–T4 model. Auto-switch is on: hard work Task-spawns that slug. Say `auto-switch off` to keep the parent model for the rest of the chat. SuperDev cannot flip the Cursor picker. Durable off: `routing.auto_switch`. |
+| **Token-economy boot** | Path 0 emits a small context pack and a T0–T4 model. Auto-switch is on: SuperDev Task-spawns that slug. T0 stays on the parent. Say `auto-switch off` to keep the parent for the rest of the chat. SuperDev cannot flip the Cursor picker. Durable off: `routing.auto_switch`. |
 | **GitHub link = intention** | A pasted PR/issue/comment URL is enough. SuperDev resolves stage + completion means and continues. |
 | **Never skip / never stop early** | Untestable AC blocks code. A 5.5 audit is not a status report — it continues through prove + PR. |
 | **L1 → L2 → L3 ladder** | Bundled fullstack audit → lenses → local bots. Intensity **lite** skips L3. No push until the scaled ladder is green. |
@@ -73,6 +73,8 @@ skills:
   frontend: "tv-frontend"
   backend: "tv-backend"
   smoke: "tv-smoke-test"
+routing:
+  auto_switch: true               # false = stay on the parent model
 ```
 
 In a **new** Agent chat, attach the `superdev` skill or type `/superdev`.
@@ -146,7 +148,7 @@ These are the portable parts. Keep them. Plug team skills around them.
 4. **Bundled L1 + 6a** — `fullstack-audit.md` + `live-qa.md`
 5. **Ponytail** — write-time least-code + L2 delete-list
 6. **F1–F11 review bar** + **S-1…S-11 security bar**
-7. **`route_model.py`** — tier + `--record --loops` learning
+7. **`route_model.py`** — T0–T4 + session auto-switch + `--record --loops` learning
 8. **Intention + work-history** — personal `state/`, same scripts
 9. **GitHub write split** — own PR vs teammate vs merge-needs-ask
 
@@ -173,3 +175,4 @@ Exit: `exit SuperDev` / `drop SuperDev` / `normal agent` / `without SuperDev`.
 - Post to Slack
 - Start on a fresh chat that never invoked it
 - Import another operator's `state/`
+- Flip the Cursor model dropdown (auto-switch is a Task spawn)
