@@ -1,14 +1,19 @@
 # SuperDev
 
-**Website:** https://superdev-mocha.vercel.app
+Issue to ship. Before the PR exists.
 
-Cursor Agent skill that runs an **issue-to-ship lifecycle** with a local review
-ladder **before** any PR exists. Generalized flow. Per-operator identity lives
-in `operator.yaml` — not in the skill. The repo is public.
+**Live briefing:** [https://superdev-mocha.vercel.app](https://superdev-mocha.vercel.app)
 
-This is the shareable extraction of the SuperDev operator used on TurboVets
-platform work. It does **not** include anyone's personal memory, mail, or
-product-law files.
+Open that first. A soldier runs the field and shoots completed PRs. Click a
+feature on the right and it opens — what you get when you attach one skill.
+Try intensity (lite / standard / full). Clone from the same page.
+
+This repo is the Cursor Agent skill behind that briefing: an issue-to-ship
+lifecycle with a local review ladder **before** any PR exists. Per-operator
+identity lives in `operator.yaml`, not in the skill. The repo is public.
+
+Shareable extraction of the SuperDev operator used on TurboVets platform work.
+It does **not** include anyone's personal memory, mail, or product-law files.
 
 ## What you get
 
@@ -40,8 +45,10 @@ A GitHub URL jumps to the matching stage. Merge still needs an explicit ask.
 
 ## Install
 
+Site first if you have not seen it: https://superdev-mocha.vercel.app
+
 ```bash
-git clone <this-repo-url> ~/src/superdev
+git clone https://github.com/TurboVets/superdev.git ~/src/superdev
 cd ~/src/superdev
 ./install.sh
 ```
