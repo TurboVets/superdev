@@ -21,7 +21,7 @@ Shareable extraction of the SuperDev operator used on TurboVets platform work. I
 | Quality | What it actually does |
 | ------- | --------------------- |
 | **Sticky session** | One `/superdev` binds the rest of the Agent chat until `exit SuperDev`. |
-| **Token-economy boot** | Path 0 emits a small context pack and picks a model tier (T0–T4). Auto-switch (default on, session-sticky) Task-spawns that slug — it cannot flip the Cursor picker. `auto-switch off` keeps the parent model. |
+| **Token-economy boot** | Path 0 emits a small context pack and a T0–T4 model. Auto-switch is on: hard work Task-spawns that slug. Say `auto-switch off` to keep the parent model for the rest of the chat. SuperDev cannot flip the Cursor picker. Durable off: `routing.auto_switch`. |
 | **GitHub link = intention** | A pasted PR/issue/comment URL is enough. SuperDev resolves stage + completion means and continues. |
 | **Never skip / never stop early** | Untestable AC blocks code. A 5.5 audit is not a status report — it continues through prove + PR. |
 | **L1 → L2 → L3 ladder** | Bundled fullstack audit → lenses → local bots. Intensity **lite** skips L3. No push until the scaled ladder is green. |
