@@ -6,7 +6,7 @@
     <title>SuperDev — issue to ship, locally, before the PR exists</title>
     <meta
       name="description"
-      content="Cursor Agent skill. One attach. Local audit, live QA, smoke. Then you open the PR."
+      content="Cursor Agent skill. Sticky session, intensity-scaled audit, live QA, smoke, then the PR. Attach once."
     />
     <meta property="og:title" content="SuperDev" />
     <meta
@@ -33,6 +33,9 @@
       }
       * {
         box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
       }
       html,
       body {
@@ -67,6 +70,7 @@
         display: flex;
         justify-content: space-between;
         align-items: baseline;
+        gap: 1.5rem;
         padding: 1.4rem 0 1.1rem;
         border-bottom: 1px solid var(--line);
         font-family: "IBM Plex Mono", ui-monospace, monospace;
@@ -74,6 +78,11 @@
         letter-spacing: 0.14em;
         text-transform: uppercase;
         color: var(--mute);
+      }
+      header nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.1rem 1.4rem;
       }
       header a {
         text-decoration: none;
@@ -99,38 +108,34 @@
       h1 {
         font-family: "Instrument Serif", Newsreader, serif;
         font-weight: 400;
-        font-style: italic;
-        font-size: clamp(4.2rem, 14vw, 11rem);
-        line-height: 0.82;
+        font-size: clamp(4.2rem, 12vw, 8.4rem);
+        line-height: 0.86;
         letter-spacing: -0.04em;
-        margin: 0 0 2rem;
+        margin: 0 0 1.6rem;
       }
       .lede {
         max-width: 34rem;
-        font-size: clamp(1.25rem, 2.4vw, 1.65rem);
-        font-weight: 400;
-        line-height: 1.35;
-        margin: 0 0 2.4rem;
+        font-size: clamp(1.25rem, 2.2vw, 1.55rem);
+        color: var(--mute);
+        margin: 0 0 2.2rem;
       }
       .actions {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.8rem 1.4rem;
-        align-items: center;
+        gap: 0.8rem;
       }
       .btn {
         display: inline-flex;
         align-items: center;
-        gap: 0.55rem;
-        padding: 0.7rem 1.05rem;
-        border: 1px solid var(--copper);
-        color: var(--ink);
-        background: var(--copper);
-        text-decoration: none;
         font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 0.78rem;
-        letter-spacing: 0.08em;
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
+        text-decoration: none;
+        padding: 0.85rem 1.1rem;
+        border: 1px solid var(--copper);
+        background: var(--copper);
+        color: var(--ink);
       }
       .btn.ghost {
         background: transparent;
@@ -141,87 +146,122 @@
         filter: brightness(1.08);
       }
       .spine {
-        position: relative;
-        padding: 0 0 6rem;
-      }
-      .spine::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0.85rem;
-        height: 1px;
-        background: linear-gradient(90deg, var(--copper), var(--line) 70%);
+        padding: 0 0 6vh;
       }
       .steps {
         display: grid;
-        grid-template-columns: repeat(10, minmax(6.4rem, 1fr));
-        gap: 1rem;
-        overflow-x: auto;
-        padding: 0 0 0.4rem;
-        scrollbar-width: thin;
+        grid-template-columns: repeat(10, minmax(0, 1fr));
+        gap: 0.4rem;
       }
       .step {
-        position: relative;
-        padding-top: 1.8rem;
-        min-width: 6.4rem;
+        border-top: 1px solid var(--line);
+        padding: 0.7rem 0.15rem 0;
       }
       .step i {
-        position: absolute;
-        top: 0.45rem;
-        left: 0;
-        width: 9px;
-        height: 9px;
-        border-radius: 50%;
-        background: var(--ink);
-        border: 1px solid var(--copper);
+        display: block;
+        width: 100%;
+        height: 2px;
+        background: var(--copper-dim);
+        margin: 0 0 0.7rem;
       }
       .step strong {
         display: block;
         font-family: "IBM Plex Mono", ui-monospace, monospace;
         font-size: 0.68rem;
-        font-weight: 500;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.1em;
         color: var(--copper);
+        font-weight: 500;
       }
       .step span {
         display: block;
         margin-top: 0.25rem;
-        font-size: 0.95rem;
-        color: var(--paper);
+        font-size: 0.92rem;
+        color: var(--mute);
       }
       section {
-        padding: 4.5rem 0;
+        padding: 4.4rem 0;
         border-top: 1px solid var(--line);
       }
       h2 {
-        font-family: "Instrument Serif", serif;
+        font-family: "Instrument Serif", Newsreader, serif;
         font-weight: 400;
-        font-size: clamp(2rem, 5vw, 3.4rem);
-        font-style: italic;
+        font-size: clamp(2rem, 4.4vw, 3.1rem);
+        line-height: 1.05;
+        letter-spacing: -0.03em;
         margin: 0 0 1.6rem;
+        max-width: 22ch;
+      }
+      h2.wide {
+        max-width: 28ch;
+      }
+      section > p.intro {
+        max-width: 40rem;
+        color: var(--mute);
+        margin: -0.4rem 0 2rem;
+      }
+      .features {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1px;
+        background: var(--line);
+        border: 1px solid var(--line);
+      }
+      .feat {
+        background: var(--ink);
+        padding: 1.35rem 1.3rem 1.45rem;
+      }
+      .feat em {
+        display: block;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-style: normal;
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--copper);
+        margin: 0 0 0.55rem;
+      }
+      .feat p {
+        margin: 0;
+        color: var(--mute);
+        font-size: 1.05rem;
       }
       .split {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 3rem;
+        gap: 3rem 4rem;
+        align-items: start;
+      }
+      .split h2 {
+        margin-bottom: 1rem;
+      }
+      .split > div > p {
+        color: var(--mute);
+        margin: 0;
       }
       .rung {
-        padding: 1.3rem 0;
+        display: grid;
+        grid-template-columns: 4.2rem 1fr;
+        gap: 1rem;
+        padding: 0.95rem 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .rung:first-child {
         border-top: 1px solid var(--line);
       }
       .rung b {
         font-family: "IBM Plex Mono", ui-monospace, monospace;
         font-size: 0.72rem;
-        letter-spacing: 0.14em;
+        letter-spacing: 0.1em;
         color: var(--copper);
+        font-weight: 500;
       }
       .rung p {
-        margin: 0.35rem 0 0;
+        margin: 0;
+        color: var(--mute);
       }
       .cards {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 1px;
         background: var(--line);
         border: 1px solid var(--line);
@@ -231,11 +271,14 @@
         padding: 1.4rem 1.3rem 1.6rem;
       }
       .card em {
-        font-family: "Instrument Serif", serif;
-        font-style: italic;
-        font-size: 1.8rem;
         display: block;
-        margin-bottom: 0.55rem;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-style: normal;
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--good);
+        margin: 0 0 0.7rem;
       }
       .card.full {
         background: #16130e;
@@ -247,6 +290,49 @@
         margin: 0;
         color: var(--mute);
         font-size: 1.02rem;
+      }
+      .bars {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2.6rem;
+      }
+      .bars h3 {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--copper);
+        font-weight: 500;
+        margin: 0 0 0.8rem;
+      }
+      .bars ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .bars li {
+        color: var(--mute);
+        padding: 0.45rem 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .wont {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.2rem 2.4rem;
+      }
+      .wont p {
+        margin: 0;
+        color: var(--mute);
+      }
+      .wont strong {
+        display: block;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--paper);
+        font-weight: 500;
+        margin: 0 0 0.35rem;
       }
       pre {
         margin: 0;
@@ -282,14 +368,22 @@
       }
       @media (max-width: 820px) {
         .split,
-        .cards {
+        .cards,
+        .features,
+        .bars,
+        .wont {
           grid-template-columns: 1fr;
+        }
+        .steps {
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+          row-gap: 1.1rem;
         }
         .hero {
           padding: 8vh 0 5vh;
         }
         header {
-          gap: 1rem;
+          flex-direction: column;
+          align-items: flex-start;
         }
       }
       @media (prefers-reduced-motion: reduce) {
@@ -303,7 +397,13 @@
     <div class="wrap">
       <header>
         <a class="brand" href="./">SuperDev</a>
-        <a href="https://github.com/TurboVets/superdev">GitHub</a>
+        <nav>
+          <a href="#features">Features</a>
+          <a href="#flow">Flow</a>
+          <a href="#intensity">Intensity</a>
+          <a href="#install">Install</a>
+          <a href="https://github.com/TurboVets/superdev">GitHub</a>
+        </nav>
       </header>
 
       <div class="hero">
@@ -317,11 +417,7 @@
           <a class="btn" href="https://github.com/TurboVets/superdev"
             >Clone the skill</a
           >
-          <a
-            class="btn ghost"
-            href="https://github.com/TurboVets/superdev#install"
-            >Install notes</a
-          >
+          <a class="btn ghost" href="#install">Install</a>
         </div>
       </div>
 
@@ -340,7 +436,116 @@
         </div>
       </div>
 
-      <section>
+      <section id="features">
+        <h2 class="wide">What attaching SuperDev actually does.</h2>
+        <p class="intro">
+          One skill. The audit, the clicks, and the film are already inside it.
+          Team leaves stay optional.
+        </p>
+        <div class="features">
+          <div class="feat">
+            <em>Sticky session</em>
+            <p>
+              One <code>/superdev</code> binds the rest of the Agent chat until
+              you say exit SuperDev. No re-tag each turn.
+            </p>
+          </div>
+          <div class="feat">
+            <em>Token-economy boot</em>
+            <p>
+              Path 0 writes a small context pack and picks a model tier (T0–T4).
+              It does not re-read the whole skill every turn.
+            </p>
+          </div>
+          <div class="feat">
+            <em>GitHub link = intention</em>
+            <p>
+              A pasted PR, issue, or comment URL is enough. SuperDev resolves
+              the stage and the completion list, then continues.
+            </p>
+          </div>
+          <div class="feat">
+            <em>Never skip / never stop</em>
+            <p>
+              Untestable acceptance criteria block code. A 5.5 audit is not a
+              status report — it continues through prove and the PR.
+            </p>
+          </div>
+          <div class="feat">
+            <em>L1 → L2 → L3</em>
+            <p>
+              Bundled fullstack audit, then lenses, then local bots. Lite skips
+              L3 on purpose. No push until the scaled ladder is green.
+            </p>
+          </div>
+          <div class="feat">
+            <em>Prove intensity</em>
+            <p>
+              <code>prove_intensity.py</code> reads the diff, not the title.
+              Lite / standard / full. An aria-label is not a two-party
+              disconnect.
+            </p>
+          </div>
+          <div class="feat">
+            <em>6a live QA</em>
+            <p>
+              SuperDev clicks every planned case. Never posts Not covered.
+              Attaching SuperDev is enough — the QA leaf is optional.
+            </p>
+          </div>
+          <div class="feat">
+            <em>6b smoke</em>
+            <p>
+              Films the result and holds it. One player. Login stays off camera.
+              Intensity decides both-sides vs one clip.
+            </p>
+          </div>
+          <div class="feat">
+            <em>Ponytail</em>
+            <p>
+              Name the ladder rung before the first product-code write.
+              <code>/ponytail off</code> is illegal on Path 5.
+            </p>
+          </div>
+          <div class="feat">
+            <em>Owned vs teammate</em>
+            <p>
+              Own ship lane: commit, push, open the PR. Teammate PRs: chat-draft
+              P0/P1 only. Never write someone else’s GitHub.
+            </p>
+          </div>
+          <div class="feat">
+            <em>Intention + reconcile</em>
+            <p>
+              Tags every prompt. After a push, commits and the PR body beat chat
+              tags. A miss is recorded, not shrugged.
+            </p>
+          </div>
+          <div class="feat">
+            <em>Work-history</em>
+            <p>
+              Tracks issue, PR, and worktree units. Warns before acting against
+              stale focus.
+            </p>
+          </div>
+          <div class="feat">
+            <em>Review bar F1–F11</em>
+            <p>
+              Sibling sweep, vacuous-test probe, transaction shape, copy truth
+              and density, over-engineering. House law, not vibes.
+            </p>
+          </div>
+          <div class="feat">
+            <em>Security bar S-1–S11</em>
+            <p>
+              Auth, URL, upload, HTML, and PII diffs. Full intensity cannot be
+              lowballed on a one-file guard.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="flow">
         <div class="split">
           <div>
             <h2>A pasted GitHub link is enough.</h2>
@@ -367,14 +572,14 @@
               <b>6a / 6b</b>
               <p>
                 Click every planned case. Never post Not covered. Then film the
-                result — hold it. Login stays off camera.
+                result — hold it.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <section>
+      <section id="intensity">
         <h2>Thorough when it must be. Lite when it is an aria-label.</h2>
         <div class="cards">
           <div class="card">
@@ -402,6 +607,56 @@
       </section>
 
       <section>
+        <h2>The bars that fire before a PR exists.</h2>
+        <div class="bars">
+          <div>
+            <h3>Review · F1–F11</h3>
+            <ul>
+              <li>Sibling sweep — one guard, every caller</li>
+              <li>Vacuous-test probe — the test can still fail</li>
+              <li>Transaction shape — atomic or not at all</li>
+              <li>Copy truth and density — no filler</li>
+              <li>Over-engineering — the unused abstraction dies</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Security · S-1–S11</h3>
+            <ul>
+              <li>AuthZ and ownership on every write</li>
+              <li>URL, upload, and HTML stay untrusted</li>
+              <li>PII redacted on the way out</li>
+              <li>Secrets never land in the public skill</li>
+              <li>Full intensity on a one-file guard</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>What SuperDev will not do.</h2>
+        <div class="wont">
+          <p>
+            <strong>Merge without an ask</strong>
+            A green ladder is not permission to merge. You say the word.
+          </p>
+          <p>
+            <strong>Write a teammate’s GitHub</strong>
+            Findings stay in chat as P0/P1. Their PR is theirs.
+          </p>
+          <p>
+            <strong>Skip Path 6</strong>
+            An older Ship, a bot APPROVE, or Docker-down does not skip live QA
+            or smoke.
+          </p>
+          <p>
+            <strong>Ship someone else’s memory</strong>
+            <code>state/</code> and <code>operator.yaml</code> stay on your
+            machine. Empty state is correct on first run.
+          </p>
+        </div>
+      </section>
+
+      <section id="install">
         <h2>Install</h2>
         <pre>
 git clone https://github.com/TurboVets/superdev.git ~/src/superdev
