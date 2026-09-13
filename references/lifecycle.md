@@ -19,7 +19,8 @@ subtitle rules, and the Path 7 review draft format. Load the path you are in.
 
 | Link resolves to (examples)                | Stage            | Completion means (summary)                                                                                                           |
 | ------------------------------------------ | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Issue, no AC / unclear                     | Path 3 → 4       | Grill Ready + unknowns cleared, then build                                                                                           |
+| Unassigned issue (nobody assigned)         | Ship lane        | Assign to `$github.login`, then the issue row below. SuperDev+link authorizes this. Not a `hard_stop`.                               |
+| Issue, no AC / unclear                     | Path 3 → 4       | Grill Ready + unknowns cleared, then build through Path 6                                                                            |
 | Issue, AC ready, no PR                     | Path 5 → 5.5 → 6 | Implement → intensity-scaled audit → **open PR** → 6a QA → 6b smoke → review → merge-when-asked                                      |
 | Issue with open own PR                     | Follow the PR    | Re-resolve on that PR URL; no duplicate PR                                                                                           |
 | Own draft PR                               | Path 5 / 5.5     | Finish AC → audit → ready for review → Path 6                                                                                        |
@@ -44,6 +45,9 @@ Use when the operator asks what to work on or the ask has no concrete ticket.
    and not started."
 3. Lead with **2 concrete GitHub issue URLs**, priority, and why.
 4. Do not self-assign while higher-priority owned work is open.
+   **Exception:** SuperDev + a link to an unassigned issue is a ship order —
+   assign to `$github.login` and take it to Path 6. `hard_stop` is only
+   teammate-owned (someone else is assigned).
 5. Update `state/focus.md` only when the active lane actually changes.
 
 ### Path 2 — Issue craft

@@ -85,15 +85,19 @@ If this SKILL is already attached, **do not Read it again**.
 
 ## Stage detection
 
-Pick the earliest unfinished path. GitHub link = enough intention:
+Pick the earliest unfinished path. SuperDev + a GitHub link is a **finish this
+object** order — from its current stage to its end. Do not ask "what should I
+do?" Do not stop at a status essay or "explain fit."
 
 ```bash
 python3 ~/.cursor/skills/superdev/scripts/resolve_gh_intention.py --pretty "<url-or-number>"
 ```
 
 Adopt returned `stage`, `goal`, `completion_means`. Continue until that list is
-done or `hard_stop` (teammate-owned ⇒ chat draft only). Never skip ahead
-(untestable AC blocks code). Never stop at a status essay.
+done. `hard_stop` is **only** teammate-owned (someone else assigned ⇒ chat
+draft). Unassigned ≠ teammate-owned: SuperDev+link authorizes assign-to-self
+and the ship lane (Path 5 → 5.5 → open PR → Path 6). Never skip ahead
+(untestable AC blocks code).
 
 When a diff exists, classify prove intensity **before** L1 / QA / smoke:
 

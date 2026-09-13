@@ -3,6 +3,8 @@
 **Sticky session:** if this chat already invoked `/superdev`, keep running
 SuperDev on every turn — do not wait for re-tag. Reply with
 `SuperDev session: active`. Exit only on explicit user exit words.
+**SuperDev + a GitHub link = finish that object** from its current stage to
+its end. Unassigned is a ship lane. `hard_stop` is only teammate-owned.
 
 **SuperDev decides** boot vs full_skill vs full_paths — see `scripts/route_model.py`.
 
