@@ -14,6 +14,9 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23050403'/%3E%3Cpath d='M8 20c0-6 3-10 8-10s8 4 8 10v2H8z' fill='none' stroke='%23e3a85a'/%3E%3Crect x='11' y='16' width='10' height='2' fill='%23ffd089'/%3E%3C/svg%3E"
     />
+    <link rel="preload" as="image" href="soldier-run.png" />
+    <link rel="preload" as="image" href="soldier-run-b.png" />
+    <link rel="preload" as="image" href="soldier-shoot.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -72,6 +75,7 @@
       .field {
         position: sticky;
         top: 0;
+        height: 100vh;
         height: 100svh;
         background:
           radial-gradient(
@@ -332,7 +336,24 @@
         }
         .field {
           position: relative;
-          height: 52svh;
+          height: auto;
+          display: flex;
+          flex-direction: column;
+        }
+        .field canvas {
+          position: relative;
+          inset: auto;
+          width: 100%;
+          height: 62vh;
+          height: 62svh;
+          max-height: 28rem;
+          min-height: 16rem;
+        }
+        .caption {
+          position: relative;
+          left: auto;
+          right: auto;
+          bottom: auto;
         }
         .console {
           padding: 1rem 1.15rem 1.8rem;
@@ -810,21 +831,40 @@
       let shipped = 0;
 
       function resize() {
-        const r = canvas.parentElement.getBoundingClientRect();
+        const r = canvas.getBoundingClientRect();
+        if (r.width < 2 || r.height < 2) return false;
         const dpr = Math.min(devicePixelRatio || 1, 2);
+        const nextW = Math.round(r.width * dpr);
+        const nextH = Math.round(r.height * dpr);
         w = r.width;
         h = r.height;
-        canvas.width = w * dpr;
-        canvas.height = h * dpr;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        if (canvas.width !== nextW || canvas.height !== nextH) {
+          canvas.width = nextW;
+          canvas.height = nextH;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        return true;
       }
-      resize();
+      function bootSize() {
+        if (!resize()) requestAnimationFrame(bootSize);
+      }
+      bootSize();
       addEventListener("resize", resize);
+      addEventListener("orientationchange", () => setTimeout(resize, 250));
+      visualViewport?.addEventListener("resize", resize);
 
       function loadImg(src) {
         const img = new Image();
+        img.decoding = "async";
         img.src = src;
         return img;
+      }
+      function whenReady(img) {
+        if (img.complete && img.naturalWidth) return Promise.resolve(img);
+        return new Promise((resolve) => {
+          img.onload = () => resolve(img);
+          img.onerror = () => resolve(img);
+        });
       }
       const sprites = {
         runA: loadImg("soldier-run.png"),
@@ -869,12 +909,14 @@
         ctx.strokeStyle = "#e3a85a";
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.roundRect(-52, -18, 104, 36, 6);
+        if (ctx.roundRect) ctx.roundRect(-52, -18, 104, 36, 6);
+        else ctx.rect(-52, -18, 104, 36);
         ctx.fill();
         ctx.stroke();
         ctx.fillStyle = "#1a7f4a";
         ctx.beginPath();
-        ctx.roundRect(-48, -14, 28, 28, 4);
+        if (ctx.roundRect) ctx.roundRect(-48, -14, 28, 28, 4);
+        else ctx.rect(-48, -14, 28, 28);
         ctx.fill();
         ctx.strokeStyle = "#f4ead4";
         ctx.lineWidth = 2.4;
@@ -901,12 +943,23 @@
 
       function drawSoldier() {
         const img = sprite();
-        if (!img.complete || !img.naturalWidth) return;
+        if (!img.complete || !img.naturalWidth) {
+          ctx.fillStyle = "rgba(227,168,90,0.22)";
+          ctx.beginPath();
+          ctx.ellipse(w * man.x, h * 0.88, 34, 9, 0, 0, Math.PI * 2);
+          ctx.fill();
+          return;
+        }
         const shoot = man.act === "shoot";
         const s = Math.sin(man.phase);
-        const ground = h * 0.78;
-        const ih = Math.min(h * 0.78, w * 0.95);
-        const iw = ih * (img.naturalWidth / img.naturalHeight);
+        const narrow = w < 720;
+        const aspect = img.naturalWidth / img.naturalHeight;
+        const ih = Math.min(
+          h * (narrow ? 0.66 : 0.78),
+          (w * (narrow ? 0.48 : 0.55)) / aspect,
+        );
+        const iw = ih * aspect;
+        const ground = h * (narrow ? 0.9 : 0.78);
         const bob = shoot
           ? 6 + man.recoil * 10
           : Math.abs(s) * (level === "full" ? 16 : 11);
@@ -1021,9 +1074,10 @@
         ctx.fillStyle = "rgba(227,168,90,0.85)";
         ctx.font = "500 12px 'IBM Plex Mono', monospace";
         ctx.textAlign = "left";
-        ctx.fillText(shipped + " shipped", 22, 64);
+        const hudY = w < 720 ? 28 : 64;
+        ctx.fillText(shipped + " shipped", 22, hudY);
         ctx.fillStyle = "rgba(227,168,90,0.4)";
-        ctx.fillText(MOVE[level], 22, 82);
+        ctx.fillText(MOVE[level], 22, hudY + 18);
       }
 
       function frame() {
@@ -1045,6 +1099,10 @@
         }
       }
       frame();
+      Promise.all(Object.values(sprites).map(whenReady)).then(() => {
+        resize();
+        if (reduced) frame();
+      });
       const qs = new URLSearchParams(location.search);
       if (qs.has("reel") || qs.has("readme")) {
         document.body.classList.add("reel");
