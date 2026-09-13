@@ -4,6 +4,8 @@ Issue to ship. Before the PR exists.
 
 **Live briefing:** [https://superdev-mocha.vercel.app](https://superdev-mocha.vercel.app)
 
+![SuperDev soldier shooting merged PRs](docs/soldier.gif)
+
 Open that first. A soldier runs the field and shoots completed PRs. Click a
 feature on the right and it opens — what you get when you attach one skill.
 Try intensity (lite / standard / full). Clone from the same page.

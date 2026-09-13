@@ -356,6 +356,18 @@
           animation: none;
         }
       }
+      body.reel header,
+      body.reel .console,
+      body.reel .caption {
+        display: none;
+      }
+      body.reel .stage {
+        grid-template-columns: 1fr;
+      }
+      body.reel .field {
+        position: relative;
+        height: 100svh;
+      }
     </style>
   </head>
   <body data-level="standard">
@@ -1028,6 +1040,11 @@
         }
       }
       frame();
+      if (new URLSearchParams(location.search).has("reel")) {
+        document.body.classList.add("reel");
+        resize();
+        setLevel("full", FILES.guard.why);
+      }
     </script>
   </body>
 </html>
