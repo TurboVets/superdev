@@ -9,8 +9,9 @@ Do not import another operator's personal ledger.
 ### Auto-switch never flipped the picker and never spawned
 
 `auto-switch: on` was printed every turn while the parent kept doing the work.
-T2 on Grok is the same model — stay (`did=same_parent`). T1/T3/T4 must
-Task-spawn. Banner shows `apply` + `did`. `--parent-model` on every boot.
+T0 was `inherit`, so simple Qs stayed on Grok High Fast. T0/T1 now spawn
+Composer unless the parent is already Composer. T2 Grok / T3 GPT / T4 Claude
+(Fable + Opus). Banner shows `apply` + `did`. `--parent-model` on every boot.
 
 ### This repo lands on main — no PR unless asked
 

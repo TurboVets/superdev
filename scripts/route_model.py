@@ -46,17 +46,20 @@ OUTCOMES = INTENT / "model-outcomes.jsonl"
 LEADERBOARD = INTENT / "model-performance.md"
 
 MODELS = {
-    "inherit": {"tier": 0, "cost": "parent", "label": "Parent model — no Task spawn"},
-    "composer-2.5-fast": {"tier": 1, "cost": "low", "label": "Fast mechanical"},
+    "inherit": {"tier": 0, "cost": "parent", "label": "Parent model — auto-switch off only"},
+    "composer-2.5-fast": {"tier": 1, "cost": "low", "label": "Fast mechanical — simple Qs / status"},
     "cursor-grok-4.5-high-fast": {"tier": 2, "cost": "mid-low", "label": "Grok 4.5 standard"},
-    "cursor-grok-4.6-high-fast": {"tier": 2, "cost": "mid-low", "label": "Grok 4.6 standard"},
-    "gpt-5.6-sol-medium": {"tier": 3, "cost": "mid", "label": "GPT mid — audit/bots"},
+    "cursor-grok-4.6-high-fast": {"tier": 2, "cost": "mid-low", "label": "Grok 4.6 — build / smoke"},
+    "gpt-5.6-sol-medium": {"tier": 3, "cost": "mid", "label": "GPT mid — audit / bots"},
     "claude-4.6-opus-high-thinking": {"tier": 4, "cost": "high", "label": "Claude 4.6 thinking"},
+    "claude-fable-5-thinking-high": {"tier": 4, "cost": "highest", "label": "Claude Fable 5 thinking"},
     "claude-opus-5-thinking-high": {"tier": 4, "cost": "highest", "label": "Claude Opus 5 thinking"},
 }
 
+# T0 used to be inherit (= stay on the expensive picker). Simple Qs then
+# burned Grok High Fast. T0/T1 both spawn Composer unless parent is already it.
 TIER_DEFAULT_MODEL = {
-    0: "inherit",
+    0: "composer-2.5-fast",
     1: "composer-2.5-fast",
     2: "cursor-grok-4.6-high-fast",
     3: "gpt-5.6-sol-medium",
@@ -92,9 +95,29 @@ MED_KEYWORDS = [
     r"\b(refactor|graphql|resolver|entity)\b",
 ]
 EASY_KEYWORDS = [
-    r"\b(typo|rename|lint|format|status|remind|what is|where is)\b",
-    r"\b(check again|re-?check|summarize|list|mcp|browser)\b",
+    r"\b(typo|rename|lint|format|status|remind|what is|where is|who is)\b",
+    r"\b(why is|why are|how come|what does|what do)\b",
+    r"\b(check again|re-?check|summarize|list)\b",
 ]
+WRITE_HINTS = [
+    r"\b(implement|build|fix|ship|audit|migrate|refactor|commit|push)\b",
+    r"\b(you should (make|change|update|add|fix))\b",
+    r"\b(change|update|add|edit|rewrite)\b.+\b(skill|router|routing)\b",
+]
+
+
+def _is_simple_question(prompt: str, text: str) -> bool:
+    """Cheap Q&A — not a write, not a high-func path."""
+    if any(re.search(k, text, re.I) for k in HARD_KEYWORDS):
+        return False
+    if any(re.search(k, text, re.I) for k in WRITE_HINTS):
+        return False
+    p = (prompt or "").strip()
+    if not p or len(p) > 900:
+        return False
+    if "?" in p:
+        return True
+    return bool(re.match(r"(why|what|how|who|when|where|is|are|do|does|can|should)\b", p, re.I))
 
 SWITCH_OFF = (
     r"\bauto-?switch\s+off\b",
@@ -174,7 +197,7 @@ def _pick_model_for_tier(tier: int, phase: str) -> tuple[str, str]:
     same_tier = [
         (m, avg)
         for m, avg in avgs.items()
-        if MODELS[m]["tier"] == tier
+        if MODELS[m]["tier"] == tier and m != "inherit"
     ]
     if not same_tier:
         return default, "tier_default"
@@ -286,9 +309,20 @@ def score(
         reasons.append("goal=review_pr")
     if "ship_pr" in g or "implement" in g or "fix_bug" in g:
         tier = max(tier, 2)
+    easy = (
+        phase not in HIGH_FUNCTIONING_PHASES
+        and (
+            any(re.search(k, text, re.I) for k in EASY_KEYWORDS)
+            or _is_simple_question(prompt, text)
+        )
+    )
     if "meta_skill" in g and phase not in HIGH_FUNCTIONING_PHASES:
-        tier = min(max(tier, 2), 2)
-        reasons.append("meta_skill → T2 cap unless high-func phase")
+        if easy:
+            tier = min(tier, 1)
+            reasons.append("meta_skill question → T1")
+        else:
+            tier = min(max(tier, 2), 2)
+            reasons.append("meta_skill → T2 cap unless high-func phase")
     if "status" in g or "general" == g:
         if not any(re.search(k, text) for k in HARD_KEYWORDS):
             tier = min(tier, 1)
@@ -297,14 +331,14 @@ def score(
     if any(re.search(k, text, re.I) for k in HARD_KEYWORDS):
         tier = max(tier, 4 if re.search(r"authz|race|concurrency|security", text) else 3)
         reasons.append("hard keywords")
-    elif any(re.search(k, text, re.I) for k in EASY_KEYWORDS) and phase not in HIGH_FUNCTIONING_PHASES:
+    elif easy:
         tier = min(tier, 1)
-        reasons.append("easy keywords")
+        reasons.append("easy / simple question → Composer")
     elif any(re.search(k, text, re.I) for k in MED_KEYWORDS):
         tier = max(tier, 2)
         reasons.append("medium keywords")
 
-    if affect in {"mad", "frustrated", "corrective"}:
+    if affect in {"mad", "frustrated", "corrective"} and not easy:
         tier = max(tier, 2)
         reasons.append(f"affect={affect}")
 
@@ -334,7 +368,9 @@ def score(
         "model_meta": MODELS[model],
         "model_why": model_why,
         "alternates": [
-            m for m, meta in MODELS.items() if meta["tier"] == tier and m != model
+            m
+            for m, meta in MODELS.items()
+            if meta["tier"] == tier and m != model and m != "inherit"
         ],
         **surface,
         "learned_best_for_phase": [
@@ -382,6 +418,9 @@ PARENT_ALIASES = {
     "gpt-5.6": "gpt-5.6-sol-medium",
     "claude-opus-5-thinking-high": "claude-opus-5-thinking-high",
     "claude-opus-5": "claude-opus-5-thinking-high",
+    "claude-fable-5-thinking-high": "claude-fable-5-thinking-high",
+    "claude-fable-5": "claude-fable-5-thinking-high",
+    "fable": "claude-fable-5-thinking-high",
     "claude-4.6-opus-high-thinking": "claude-4.6-opus-high-thinking",
     "claude-4.6-opus": "claude-4.6-opus-high-thinking",
 }
@@ -456,8 +495,20 @@ def _self_check() -> int:
     assert off["apply"] == "stay" and off["model"] == "inherit", off
     assert off["recommended_model"] == rec["model"], off
     t0 = apply_auto_switch(score("what is the status"), True, "default")
-    assert t0["apply"] == "stay" and t0["spawn_model"] == "inherit", t0
-    assert t0["did"] == "t0", t0
+    assert t0["apply"] == "spawn" and t0["spawn_model"] == "composer-2.5-fast", t0
+    cheap = apply_auto_switch(
+        score("what is the status"),
+        True,
+        "default",
+        parent="cursor-grok-4.6-high-fast",
+    )
+    assert cheap["apply"] == "spawn" and cheap["spawn_model"] == "composer-2.5-fast", cheap
+    t0_same = apply_auto_switch(
+        score("what is the status"), True, "default", parent="composer-2.5-fast"
+    )
+    assert t0_same["apply"] == "stay" and t0_same["did"] == "same_parent", t0_same
+    why = score("why are we using grok for simple questions?")
+    assert why["tier"] <= 1 and why["model"] == "composer-2.5-fast", why
     same = apply_auto_switch(dict(rec), True, "default", parent=rec["model"])
     assert same["apply"] == "stay" and same["did"] == "same_parent", same
     t3 = apply_auto_switch(

@@ -55,13 +55,14 @@ Mined, not assumed — and re-measured 2026-08-12 (deepen, never reset):
 
 ## Model tiers
 
-| Tier | Model (Task `model` slug)                                            |
-| ---- | -------------------------------------------------------------------- |
-| T0   | `inherit` (no spawn)                                                 |
-| T1   | `composer-2.5-fast`                                                  |
-| T2   | `cursor-grok-4.6-high-fast` (alt: `cursor-grok-4.5-high-fast`)       |
-| T3   | `gpt-5.6-sol-medium`                                                 |
-| T4   | `claude-opus-5-thinking-high` (alt: `claude-4.6-opus-high-thinking`) |
+| Tier  | Model (Task `model` slug)                                                                                     |
+| ----- | ------------------------------------------------------------------------------------------------------------- |
+| T0–T1 | `composer-2.5-fast` — simple Qs, status, pick. Spawn even if the picker is Grok High Fast                     |
+| T2    | `cursor-grok-4.6-high-fast` (alt: `cursor-grok-4.5-high-fast`) — build / smoke                                |
+| T3    | `gpt-5.6-sol-medium` — audit / local bots                                                                     |
+| T4    | `claude-opus-5-thinking-high` (alt: `claude-fable-5-thinking-high`, `claude-4.6-opus-high-thinking`) — review |
+
+`inherit` is auto-switch **off** only. Never stay on an expensive parent for a T0/T1 ask.
 
 Weight → model, borrowed from `turbo-eyes`: run the high-stakes questions
 (regressions, security, migrations, CI) on the strongest tier and grep-shaped
