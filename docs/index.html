@@ -58,9 +58,8 @@
         z-index: 40;
         display: flex;
         justify-content: space-between;
-        align-items: center;
         padding: 0.95rem 1.3rem;
-        background: linear-gradient(180deg, rgba(5, 4, 3, 0.8), transparent);
+        background: linear-gradient(180deg, rgba(5, 4, 3, 0.85), transparent);
       }
       header a:hover {
         color: var(--copper);
@@ -68,16 +67,17 @@
       .stage {
         min-height: 100svh;
         display: grid;
-        grid-template-columns: 1.05fr 0.95fr;
+        grid-template-columns: 1fr 1fr;
       }
       .field {
-        position: relative;
-        min-height: 100svh;
+        position: sticky;
+        top: 0;
+        height: 100svh;
         background:
           radial-gradient(
-            ellipse at 50% 72%,
-            rgba(227, 168, 90, 0.08),
-            transparent 52%
+            ellipse at 42% 78%,
+            rgba(227, 168, 90, 0.14),
+            transparent 48%
           ),
           var(--ink);
       }
@@ -87,143 +87,59 @@
         width: 100%;
         height: 100%;
       }
-      .status {
+      .caption {
         position: absolute;
-        left: 1.3rem;
-        bottom: 1.3rem;
+        left: 1.2rem;
+        right: 1.2rem;
+        bottom: 1.2rem;
         z-index: 2;
-        margin: 0;
+        min-height: 5.2rem;
+        padding: 0.85rem 1rem;
+        border: 1px solid var(--line);
+        background: rgba(5, 4, 3, 0.78);
+      }
+      .caption b {
+        display: block;
         color: var(--copper);
+        font-size: 0.68rem;
         letter-spacing: 0.14em;
         text-transform: uppercase;
-        font-size: 0.68rem;
+        margin-bottom: 0.35rem;
+      }
+      .caption p {
+        margin: 0;
+        font-family: "Instrument Serif", Georgia, serif;
+        font-style: italic;
+        font-size: 1.28rem;
+        line-height: 1.28;
       }
       .console {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        padding: 5.5rem 1.4rem 2.2rem;
-        gap: 1.3rem;
+        padding: 5.2rem 1.4rem 2.2rem;
+        display: grid;
+        gap: 0.85rem;
       }
       h1 {
         margin: 0;
         font-family: "Instrument Serif", Georgia, serif;
         font-weight: 400;
         font-style: italic;
-        font-size: clamp(3.6rem, 8vw, 6.4rem);
-        line-height: 0.82;
-        letter-spacing: -0.04em;
+        font-size: clamp(3.4rem, 7vw, 5.8rem);
+        line-height: 0.84;
       }
       .lede {
-        margin: 0.35rem 0 0;
+        margin: 0.45rem 0 0;
         color: var(--mute);
-        font-size: 0.8rem;
+        max-width: 36rem;
       }
-      .panel {
-        border: 1px solid var(--line);
-        background: rgba(8, 6, 4, 0.72);
-        padding: 0.9rem 1rem 1rem;
-      }
-      .panel h2 {
-        margin: 0 0 0.7rem;
-        font-size: 0.68rem;
-        font-weight: 500;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: var(--copper);
-      }
-      .picks,
-      .levels {
-        display: grid;
-        gap: 0.4rem;
-      }
-      .pick,
-      .level {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 0.7rem 0.85rem;
-        align-items: baseline;
-        width: 100%;
-        text-align: left;
-        padding: 0.7rem 0.75rem;
-        border: 1px solid transparent;
-        background: #0d0b08;
-        cursor: pointer;
-      }
-      .pick b,
-      .level b {
-        color: var(--copper);
-        font-weight: 500;
-      }
-      .pick span,
-      .level span {
-        color: var(--mute);
-      }
-      .pick[aria-pressed="true"],
-      .level[aria-pressed="true"] {
-        border-color: var(--copper);
-        background: rgba(227, 168, 90, 0.08);
-      }
-      .pick:hover,
-      .level:hover {
-        border-color: rgba(227, 168, 90, 0.45);
-      }
-      .pick:focus-visible,
-      .level:focus-visible,
-      .btn:focus-visible,
-      header a:focus-visible {
-        outline: 2px solid var(--copper);
-        outline-offset: 2px;
-      }
-      .levels {
-        grid-template-columns: 1fr 1fr 1fr;
-      }
-      .level {
-        grid-template-columns: 1fr;
-      }
-      .level b {
-        font-family: "Instrument Serif", Georgia, serif;
-        font-style: italic;
-        font-size: 1.35rem;
-      }
-      .orders {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-      }
-      .orders li {
-        display: grid;
-        grid-template-columns: 3.2rem 1fr auto;
-        gap: 0.7rem;
-        padding: 0.55rem 0;
-        border-top: 1px solid var(--line);
-      }
-      .orders li:first-child {
-        border-top: 0;
-      }
-      .orders em {
-        font-style: normal;
-        color: var(--copper);
-      }
-      .orders .go {
-        color: var(--hot);
-      }
-      .orders .skip {
-        color: #5c564a;
-      }
-      .why {
-        margin: 0.7rem 0 0;
-        color: var(--mute);
-        min-height: 2.6em;
-      }
-      .actions {
+      .tour {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.5rem;
+        gap: 0.45rem;
+        align-items: center;
       }
       .btn {
-        min-height: 2.5rem;
-        padding: 0 1rem;
+        min-height: 2.4rem;
+        padding: 0 0.95rem;
         border: 0;
         background: var(--copper);
         color: #1a1208;
@@ -234,19 +150,161 @@
         color: var(--paper);
         border: 1px solid var(--line);
       }
+      .btn[aria-pressed="true"] {
+        border-color: var(--copper);
+        color: var(--copper);
+      }
+      .btn.live {
+        animation: pulse 1.7s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(227, 168, 90, 0.5);
+        }
+        50% {
+          box-shadow: 0 0 0 12px rgba(227, 168, 90, 0);
+        }
+      }
+      .prog {
+        color: var(--mute);
+        font-size: 0.75rem;
+      }
+      .feat {
+        border: 1px solid var(--line);
+        background: #0b0907;
+      }
+      .feat > button {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 2.2rem 1fr auto;
+        gap: 0.7rem;
+        align-items: baseline;
+        text-align: left;
+        padding: 0.85rem 0.95rem;
+        border: 0;
+        background: none;
+        cursor: pointer;
+      }
+      .feat > button em {
+        font-style: normal;
+        color: var(--copper);
+      }
+      .feat > button strong {
+        font-family: "Instrument Serif", Georgia, serif;
+        font-weight: 400;
+        font-size: 1.35rem;
+      }
+      .feat > button span {
+        color: var(--mute);
+      }
+      .feat[data-open="true"] {
+        border-color: var(--copper);
+      }
+      .body {
+        display: none;
+        padding: 0 0.95rem 1.05rem 3.85rem;
+        color: var(--paper);
+        line-height: 1.55;
+      }
+      .feat[data-open="true"] .body {
+        display: block;
+        animation: rise 0.28s ease;
+      }
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .body p {
+        margin: 0 0 0.55rem;
+      }
+      .body p:last-child {
+        margin-bottom: 0;
+        color: var(--mute);
+      }
+      .panel {
+        border: 1px solid var(--line);
+        padding: 0.85rem 0.95rem;
+      }
+      .panel h2 {
+        margin: 0 0 0.65rem;
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--copper);
+        font-weight: 500;
+      }
+      .picks,
+      .levels {
+        display: grid;
+        gap: 0.35rem;
+      }
+      .levels {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      .pick,
+      .level {
+        width: 100%;
+        text-align: left;
+        padding: 0.65rem 0.7rem;
+        border: 1px solid transparent;
+        background: #0d0b08;
+        cursor: pointer;
+      }
+      .pick[aria-pressed="true"],
+      .level[aria-pressed="true"] {
+        border-color: var(--copper);
+      }
+      .pick b,
+      .level b {
+        color: var(--copper);
+      }
+      .pick span,
+      .level span {
+        color: var(--mute);
+        display: block;
+      }
+      .level b {
+        font-family: "Instrument Serif", Georgia, serif;
+        font-style: italic;
+        font-size: 1.2rem;
+      }
+      .orders {
+        list-style: none;
+        margin: 0.4rem 0 0;
+        padding: 0;
+      }
+      .orders li {
+        display: grid;
+        grid-template-columns: 3rem 1fr auto;
+        gap: 0.55rem;
+        padding: 0.4rem 0;
+        border-top: 1px solid var(--line);
+      }
+      .why {
+        margin: 0.55rem 0 0;
+        color: var(--mute);
+      }
+      .go {
+        color: var(--hot);
+      }
+      .skip {
+        color: #5c564a;
+      }
       .cmd {
         display: flex;
         justify-content: space-between;
         gap: 1rem;
-        align-items: center;
         color: #e6d3a8;
         overflow-x: auto;
       }
-      .cmd code {
-        white-space: nowrap;
-      }
       .cmd button {
-        flex: none;
         border: 0;
         background: none;
         color: var(--copper);
@@ -257,23 +315,38 @@
         justify-content: space-between;
         color: var(--mute);
       }
-      @media (max-width: 860px) {
+      :focus-visible {
+        outline: 2px solid var(--copper);
+        outline-offset: 2px;
+      }
+      @media (max-width: 900px) {
         .stage {
           grid-template-columns: 1fr;
         }
         .field {
-          min-height: 56svh;
+          position: relative;
+          height: 52svh;
         }
         .console {
-          padding: 1rem 1.2rem 1.6rem;
+          padding: 1rem 1.15rem 1.8rem;
         }
         .levels {
           grid-template-columns: 1fr;
         }
+        .feat > button {
+          grid-template-columns: 2rem 1fr;
+        }
+        .feat > button span {
+          display: none;
+        }
+        .body {
+          padding-left: 0.95rem;
+        }
       }
       @media (prefers-reduced-motion: reduce) {
-        .status {
-          letter-spacing: 0.08em;
+        .btn.live,
+        .feat[data-open="true"] .body {
+          animation: none;
         }
       }
     </style>
@@ -289,19 +362,32 @@
         <canvas
           id="field"
           role="img"
-          aria-label="SuperDev soldier. Animation matches the selected intensity."
+          aria-label="SuperDev soldier running and shipping pull requests."
         ></canvas>
-        <p class="status" id="status" aria-live="polite">Advance</p>
+        <div class="caption">
+          <b id="speaker">SuperDev</b>
+          <p id="line">He runs. He shoots completed PRs. Click a feature.</p>
+        </div>
       </div>
 
       <div class="console">
         <div>
           <h1>SuperDev</h1>
-          <p class="lede">Reads the diff. Issues orders. Then moves.</p>
+          <p class="lede">
+            One skill. He stays on the chat, reads the diff, and tells you what
+            you are about to get. Click a feature. He opens it and ships a PR.
+          </p>
         </div>
 
+        <div class="tour">
+          <button type="button" class="btn live" id="brief">Brief me</button>
+          <span class="prog" id="prog">0 / 8</span>
+        </div>
+
+        <div id="features"></div>
+
         <section class="panel">
-          <h2>The change</h2>
+          <h2>Try intensity</h2>
           <div class="picks" role="group" aria-label="Sample change">
             <button
               type="button"
@@ -309,8 +395,7 @@
               data-file="aria"
               aria-pressed="false"
             >
-              <b>docs / aria</b>
-              <span>button.component.html · aria-label</span>
+              <b>docs / aria</b><span>button.component.html</span>
             </button>
             <button
               type="button"
@@ -318,8 +403,7 @@
               data-file="logic"
               aria-pressed="true"
             >
-              <b>logic</b>
-              <span>claim-form.ts · default path</span>
+              <b>logic</b><span>claim-form.ts</span>
             </button>
             <button
               type="button"
@@ -327,23 +411,22 @@
               data-file="guard"
               aria-pressed="false"
             >
-              <b>authz</b>
-              <span>session.guard.ts · CanActivate</span>
+              <b>authz</b><span>session.guard.ts</span>
             </button>
           </div>
-        </section>
-
-        <section class="panel">
-          <h2>Intensity</h2>
-          <div class="levels" role="group" aria-label="Intensity">
+          <div
+            class="levels"
+            role="group"
+            aria-label="Intensity"
+            style="margin-top: 0.45rem"
+          >
             <button
               type="button"
               class="level"
               data-level="lite"
               aria-pressed="false"
             >
-              <b>lite</b>
-              <span>patrol</span>
+              <b>lite</b><span>patrol</span>
             </button>
             <button
               type="button"
@@ -351,8 +434,7 @@
               data-level="standard"
               aria-pressed="true"
             >
-              <b>standard</b>
-              <span>advance</span>
+              <b>standard</b><span>advance</span>
             </button>
             <button
               type="button"
@@ -360,19 +442,14 @@
               data-level="full"
               aria-pressed="false"
             >
-              <b>full</b>
-              <span>engage</span>
+              <b>full</b><span>engage</span>
             </button>
           </div>
-          <p class="why" id="why" aria-live="polite"></p>
+          <p class="why" id="why"></p>
+          <ol class="orders" id="orders"></ol>
         </section>
 
-        <section class="panel">
-          <h2>Orders</h2>
-          <ol class="orders" id="orders" aria-live="polite"></ol>
-        </section>
-
-        <div class="actions">
+        <div class="tour">
           <a class="btn" href="https://github.com/TurboVets/superdev">Clone</a>
           <button type="button" class="btn ghost" id="copy-hero">
             Copy install
@@ -394,18 +471,77 @@
         "git clone https://github.com/TurboVets/superdev.git && ./install.sh";
       document.getElementById("install").textContent = INSTALL;
 
+      const FEATURES = [
+        {
+          id: "sticky",
+          title: "Sticky session",
+          tag: "attach once",
+          get: "You attach SuperDev once. The rest of that Agent chat stays SuperDev. You do not re-tag the skill every turn.",
+          also: "Say exit SuperDev when you want a normal agent again. Until then, he keeps the pack, the intensity, and the unfinished list.",
+        },
+        {
+          id: "boot",
+          title: "Token-economy boot",
+          tag: "small pack",
+          get: "Each turn starts with a small context pack and a model tier, T0 through T4. He does not reread the whole skill.",
+          also: "You get faster turns and a smaller bill. The full law is still there. He opens the pages he needs, not the whole binder.",
+        },
+        {
+          id: "link",
+          title: "GitHub link is intention",
+          tag: "paste and go",
+          get: "Paste a PR, issue, or comment URL. That is the job. SuperDev reads the stage and the remaining completion list, then continues.",
+          also: "Merge still needs an explicit ask. A link is enough to start. It is not enough to ship to main.",
+        },
+        {
+          id: "never",
+          title: "Never skip",
+          tag: "no early stop",
+          get: "If the acceptance criteria cannot be tested, he does not write the code. A 5.5 audit is work, not a status line.",
+          also: "You get a soldier who keeps going through prove and the pull request. Pretty output is not a stop condition.",
+        },
+        {
+          id: "ladder",
+          title: "L1 to L3",
+          tag: "before the PR",
+          get: "Before anyone else sees the branch: bundled fullstack audit, then lenses, then local bots. Lite may skip the bots.",
+          also: "Nothing pushes until that scaled ladder is green. You get the review work on your machine, not as a surprise in CI.",
+        },
+        {
+          id: "prove",
+          title: "Live QA and smoke",
+          tag: "integral",
+          get: "6a clicks every planned case. He never posts Not covered. 6b films the result and keeps one player.",
+          also: "Attaching SuperDev is enough. The team QA leaf is optional. Login stays off camera. A re-record replaces the old clip.",
+        },
+        {
+          id: "craft",
+          title: "Ponytail and own lane",
+          tag: "least code",
+          get: "Before the first product-code write, he names the ladder rung. Least code that works. Your ship lane is commit, push, open the PR.",
+          also: "Teammate PRs stay in chat as P0 and P1. SuperDev never writes on someone else's GitHub.",
+        },
+        {
+          id: "bars",
+          title: "Review, security, reconcile",
+          tag: "house law",
+          get: "Review bar F1 through F11: sibling sweep, vacuous tests, transaction shape, copy density. Security bar S-1 through S-11 on auth, URLs, uploads, HTML, and PII.",
+          also: "After a push, the commits beat the chat tags. If something you asked for did not land, that miss is recorded.",
+        },
+      ];
+
       const FILES = {
         aria: {
           level: "lite",
-          why: "docs/CSS/aria only. Title “quick fix” is ignored. This is lite.",
+          why: "docs/CSS/aria only. The title is ignored.",
         },
         logic: {
           level: "standard",
-          why: "Default logic change. Not a guard. Not an aria-label.",
+          why: "Default logic change.",
         },
         guard: {
           level: "full",
-          why: "session.guard.ts + CanActivate. One file can still be full.",
+          why: "session.guard.ts. One file can still be full.",
         },
       };
       const ORDERS = {
@@ -418,36 +554,90 @@
         standard: [
           ["L1", "Audit twice. Same SHA.", "go"],
           ["L3", "Local bots. Required.", "go"],
-          ["6a", "Click every claimed surface.", "go"],
+          ["6a", "Every claimed surface.", "go"],
           ["6b", "One clip. Hold it.", "go"],
         ],
         full: [
           ["L1", "Twice, then stability.", "go"],
           ["L3", "Local bots. Required.", "go"],
-          ["6a", "Both parties. No leftovers.", "go"],
+          ["6a", "Both parties.", "go"],
           ["6b", "Both sides. Hold both.", "go"],
         ],
       };
       const MOVE = { lite: "Patrol", standard: "Advance", full: "Engage" };
 
+      const box = document.getElementById("features");
+      const lineEl = document.getElementById("line");
+      const speakerEl = document.getElementById("speaker");
+      const progEl = document.getElementById("prog");
+      const briefBtn = document.getElementById("brief");
       const whyEl = document.getElementById("why");
       const ordersEl = document.getElementById("orders");
-      const statusEl = document.getElementById("status");
+
+      FEATURES.forEach((f, i) => {
+        const wrap = document.createElement("article");
+        wrap.className = "feat";
+        wrap.id = "feat-" + f.id;
+        wrap.innerHTML =
+          "<button type='button' aria-expanded='false' data-id='" +
+          f.id +
+          "'>" +
+          "<em>0" +
+          (i + 1) +
+          "</em><strong>" +
+          f.title +
+          "</strong><span>" +
+          f.tag +
+          "</span></button>" +
+          "<div class='body'><p>" +
+          f.get +
+          "</p><p>" +
+          f.also +
+          "</p></div>";
+        box.appendChild(wrap);
+      });
+
       let level = "standard";
       let file = "logic";
+      let openId = "";
+      let briefing = false;
+      let briefAt = 0;
+      let briefTimer = 0;
+      let prn = 1800;
+
+      function openFeature(id) {
+        openId = id;
+        briefBtn.classList.remove("live");
+        const feat = FEATURES.find((f) => f.id === id);
+        const idx = FEATURES.findIndex((f) => f.id === id);
+        document.querySelectorAll(".feat").forEach((el) => {
+          const on = el.id === "feat-" + id;
+          el.dataset.open = String(on);
+          el.querySelector("button").setAttribute("aria-expanded", String(on));
+        });
+        progEl.textContent = idx + 1 + " / " + FEATURES.length;
+        speakerEl.textContent = feat.title;
+        lineEl.textContent = feat.get;
+        firePr(feat.title);
+        document
+          .getElementById("feat-" + id)
+          .scrollIntoView({ block: "nearest" });
+      }
 
       function renderOrders(next) {
         ordersEl.replaceChildren(
           ...ORDERS[next].map(([code, text, kind]) => {
             const li = document.createElement("li");
-            const em = document.createElement("em");
-            em.textContent = code;
-            const span = document.createElement("span");
-            span.textContent = text;
-            const mark = document.createElement("b");
-            mark.className = kind;
-            mark.textContent = kind === "skip" ? "skip" : "run";
-            li.append(em, span, mark);
+            li.innerHTML =
+              "<em>" +
+              code +
+              "</em><span>" +
+              text +
+              "</span><b class='" +
+              kind +
+              "'>" +
+              (kind === "skip" ? "skip" : "run") +
+              "</b>";
             return li;
           }),
         );
@@ -456,12 +646,19 @@
       function setLevel(next, reason) {
         level = next;
         document.body.dataset.level = next;
-        statusEl.textContent = MOVE[next];
         document.querySelectorAll(".level").forEach((el) => {
           el.setAttribute("aria-pressed", String(el.dataset.level === next));
         });
-        whyEl.textContent = reason || FILES[file].why;
+        whyEl.textContent = reason;
         renderOrders(next);
+        speakerEl.textContent = MOVE[next];
+        lineEl.textContent =
+          next === "full"
+            ? "Engage. Rapid fire. Every shot is a merged PR."
+            : next === "lite"
+              ? "Patrol. Slow walk. He still ships."
+              : "Advance. He runs, plants, and ships.";
+        if (next === "full") forceShoot("PR #" + (prn += 1));
       }
 
       function setFile(next) {
@@ -469,22 +666,78 @@
         document.querySelectorAll(".pick").forEach((el) => {
           el.setAttribute("aria-pressed", String(el.dataset.file === next));
         });
-        setLevel(FILES[next].level, FILES[next].why);
+        const row = FILES[next];
+        setLevel(row.level, row.why);
       }
 
+      box.addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-id]");
+        if (!btn) return;
+        briefing = false;
+        clearTimeout(briefTimer);
+        const id = btn.dataset.id;
+        if (openId === id) {
+          document.getElementById("feat-" + id).dataset.open = "false";
+          btn.setAttribute("aria-expanded", "false");
+          openId = "";
+          speakerEl.textContent = "SuperDev";
+          lineEl.textContent = "Another feature. He will open it and ship.";
+          return;
+        }
+        openFeature(id);
+      });
+
+      document.getElementById("brief").addEventListener("click", () => {
+        briefing = true;
+        briefAt = 0;
+        briefBtn.classList.remove("live");
+        clearTimeout(briefTimer);
+        const play = () => {
+          if (!briefing || briefAt >= FEATURES.length) {
+            briefing = false;
+            speakerEl.textContent = "SuperDev";
+            lineEl.textContent =
+              "That is the kit. Clone it. Fill operator.yaml. Attach SuperDev.";
+            forceShoot("SHIPPED");
+            return;
+          }
+          openFeature(FEATURES[briefAt].id);
+          briefAt += 1;
+          briefTimer = setTimeout(play, 2200);
+        };
+        play();
+      });
+
       document.querySelectorAll(".pick").forEach((el) => {
-        el.addEventListener("click", () => setFile(el.dataset.file));
+        el.addEventListener("click", () => {
+          briefing = false;
+          clearTimeout(briefTimer);
+          setFile(el.dataset.file);
+        });
       });
       document.querySelectorAll(".level").forEach((el) => {
         el.addEventListener("click", () => {
+          briefing = false;
+          clearTimeout(briefTimer);
           const next = el.dataset.level;
+          const forced = FILES[file].level !== next;
           setLevel(
             next,
-            FILES[file].level !== next
+            forced
               ? "Override. The diff wanted " + FILES[file].level + "."
               : FILES[file].why,
           );
         });
+      });
+
+      addEventListener("keydown", (e) => {
+        if (e.target.closest("input, textarea")) return;
+        const n = Number(e.key);
+        if (n >= 1 && n <= FEATURES.length) {
+          briefing = false;
+          clearTimeout(briefTimer);
+          openFeature(FEATURES[n - 1].id);
+        }
       });
 
       async function copyInstall(btn) {
@@ -508,19 +761,29 @@
       document
         .getElementById("copy-hero")
         .addEventListener("click", (e) => copyInstall(e.currentTarget));
-      setFile("logic");
+      renderOrders("standard");
+      whyEl.textContent = FILES.logic.why;
 
       const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
       const canvas = document.getElementById("field");
       const ctx = canvas.getContext("2d");
-      const NODES = ["0", "1", "2", "3", "4", "5", "5.5", "6a", "6b", "7"];
-      const dust = Array.from({ length: 18 }, (_, i) => ({
-        a: i * 0.7,
-        r: 0.2 + (i % 5) * 0.12,
-      }));
       let w = 0,
         h = 0,
         t = 0;
+
+      const man = {
+        x: 0.28,
+        facing: 1,
+        phase: 0,
+        act: "run",
+        actT: 0,
+        recoil: 0,
+        flash: 0,
+        muzzle: { x: 0, y: 0 },
+      };
+      const prs = [];
+      const dust = [];
+      let shipped = 0;
 
       function resize() {
         const r = canvas.parentElement.getBoundingClientRect();
@@ -534,199 +797,227 @@
       resize();
       addEventListener("resize", resize);
 
-      function bone(ax, ay, bx, by, thick) {
-        ctx.beginPath();
-        ctx.moveTo(ax, ay);
-        ctx.lineTo(bx, by);
-        ctx.lineWidth = thick;
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
-        ctx.stroke();
+      function loadImg(src) {
+        const img = new Image();
+        img.src = src;
+        return img;
+      }
+      const sprites = {
+        runA: loadImg("soldier-run.png"),
+        runB: loadImg("soldier-run-b.png"),
+        shoot: loadImg("soldier-shoot.png"),
+      };
+
+      function firePr(label) {
+        forceShoot(label);
       }
 
-      function down(from, angle, len) {
-        return {
-          x: from.x + Math.sin(angle) * len,
-          y: from.y - Math.cos(angle) * len,
-        };
+      function forceShoot(label) {
+        man.act = "shoot";
+        man.actT = 0;
+        man.recoil = 1;
+        man.flash = 1;
+        const n = label || "PR #" + (prn += 1);
+        prs.push({
+          x: man.muzzle.x || w * (man.x + 0.18 * man.facing),
+          y: man.muzzle.y || h * 0.46,
+          vx: (420 + Math.random() * 90) * man.facing,
+          vy: -70 - Math.random() * 80,
+          rot: -0.18,
+          spin: 0.8 + Math.random() * 0.6,
+          label: n,
+          age: 0,
+          land: false,
+        });
+        shipped += 1;
       }
 
-      function drawSoldier(mode, time) {
-        const speed = mode === "full" ? 9 : mode === "standard" ? 5.2 : 2.1;
-        const swing = mode === "full" ? 0.7 : mode === "standard" ? 0.42 : 0.18;
-        const lean = mode === "full" ? 0.16 : mode === "standard" ? 0.07 : 0.02;
-        const phase = reduced ? 0.35 : time * speed;
-        const fire = !reduced && mode === "full" && Math.sin(time * 14) > 0.5;
-        const bob = reduced ? 0 : Math.abs(Math.sin(phase)) * (mode === "lite" ? 4 : 9);
-        const unit = Math.min(w, h) * 0.00155;
-        const ground = h * 0.8;
-        const cx = w * 0.52;
+      canvas.addEventListener("click", () => {
+        forceShoot("PR #" + (prn += 1));
+      });
 
+      function drawPr(p) {
         ctx.save();
-        ctx.translate(cx, ground - bob);
-        ctx.scale(unit, -unit);
-
-        ctx.fillStyle = "rgba(227,168,90,0.1)";
-        ctx.beginPath();
-        ctx.ellipse(0, 4, 90, 12, 0, 0, Math.PI * 2);
-        ctx.fill();
-
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.globalAlpha = p.land ? 0.92 : 1;
+        ctx.fillStyle = "#f4ead4";
         ctx.strokeStyle = "#e3a85a";
-        ctx.fillStyle = "#100c08";
-        ctx.shadowColor = "#e3a85a";
-        ctx.shadowBlur = mode === "full" ? 16 : 7;
-
-        const hip = { x: lean * 30, y: 108 };
-        const neck = { x: hip.x + lean * 40, y: 188 };
-        const shL = { x: neck.x - 28, y: 176 };
-        const shR = { x: neck.x + 26, y: 174 };
-        const lThigh = Math.sin(phase) * swing;
-        const rThigh = Math.sin(phase + Math.PI) * swing;
-        const lKneeA = 0.35 + Math.max(0, -Math.cos(phase)) * 0.55;
-        const rKneeA = 0.35 + Math.max(0, -Math.cos(phase + Math.PI)) * 0.55;
-        const lHip = { x: hip.x - 12, y: hip.y };
-        const rHip = { x: hip.x + 12, y: hip.y };
-        const lKnee = down(lHip, lThigh, 52);
-        const rKnee = down(rHip, rThigh, 52);
-        const lFoot = down(lKnee, lThigh + lKneeA, 50);
-        const rFoot = down(rKnee, rThigh + rKneeA, 50);
-        const lArm = Math.sin(phase + Math.PI) * swing * 0.65;
-        const lElb = down(shL, 0.85 + lArm, 40);
-        const lHand = down(lElb, 1.15 + lArm * 0.4, 36);
-        const aim = mode === "full" ? 1.45 : mode === "standard" ? 1.2 : 0.85;
-        const rElb = down(shR, aim, 38);
-        const rHand = down(rElb, aim + 0.15, 34);
-
-        bone(lHip.x, lHip.y, lKnee.x, lKnee.y, 14);
-        bone(lKnee.x, lKnee.y, lFoot.x, lFoot.y, 12);
-        bone(shL.x, shL.y, lElb.x, lElb.y, 11);
-        bone(lElb.x, lElb.y, lHand.x, lHand.y, 9);
-
+        ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(hip.x - 22, hip.y);
-        ctx.lineTo(neck.x - 24, neck.y - 8);
-        ctx.lineTo(neck.x + 24, neck.y - 8);
-        ctx.lineTo(hip.x + 22, hip.y);
-        ctx.closePath();
+        ctx.roundRect(-52, -18, 104, 36, 6);
         ctx.fill();
         ctx.stroke();
+        ctx.fillStyle = "#1a7f4a";
+        ctx.beginPath();
+        ctx.roundRect(-48, -14, 28, 28, 4);
+        ctx.fill();
+        ctx.strokeStyle = "#f4ead4";
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.moveTo(-40, 0);
+        ctx.lineTo(-36, 6);
+        ctx.lineTo(-26, -6);
+        ctx.stroke();
+        ctx.fillStyle = "#1a1208";
+        ctx.font = "700 11px 'IBM Plex Mono', monospace";
+        ctx.textAlign = "left";
+        ctx.fillText("MERGED", -14, -2);
+        ctx.font = "500 10px 'IBM Plex Mono', monospace";
+        ctx.fillStyle = "#6a5a40";
+        const tag = p.label.length > 14 ? p.label.slice(0, 13) + "…" : p.label;
+        ctx.fillText(tag, -14, 12);
+        ctx.restore();
+      }
 
-        ctx.beginPath();
-        ctx.arc(shL.x, shL.y, 13, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(shR.x, shR.y, 13, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.ellipse(neck.x + 4, 214, 22, 24, lean, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = mode === "full" ? "#ffd089" : "#e3a85a";
-        ctx.globalAlpha = 0.7 + Math.sin(time * 5) * 0.2;
-        ctx.fillRect(neck.x - 10, 208, 24, 6);
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = "#100c08";
+      function sprite() {
+        if (man.act === "shoot") return sprites.shoot;
+        return Math.sin(man.phase) > 0 ? sprites.runA : sprites.runB;
+      }
 
-        bone(rHip.x, rHip.y, rKnee.x, rKnee.y, 14);
-        bone(rKnee.x, rKnee.y, rFoot.x, rFoot.y, 12);
-        bone(shR.x, shR.y, rElb.x, rElb.y, 11);
-        bone(rElb.x, rElb.y, rHand.x, rHand.y, 9);
+      function drawSoldier() {
+        const img = sprite();
+        if (!img.complete || !img.naturalWidth) return;
+        const shoot = man.act === "shoot";
+        const s = Math.sin(man.phase);
+        const ground = h * 0.78;
+        const ih = Math.min(h * 0.78, w * 0.95);
+        const iw = ih * (img.naturalWidth / img.naturalHeight);
+        const bob = shoot
+          ? 6 + man.recoil * 10
+          : Math.abs(s) * (level === "full" ? 16 : 11);
+        const lean = shoot ? -0.03 * man.facing : s * 0.035;
+
+        ctx.fillStyle = "rgba(227,168,90,0.14)";
+        ctx.beginPath();
+        ctx.ellipse(w * man.x, ground + 8, iw * 0.28, 12, 0, 0, Math.PI * 2);
+        ctx.fill();
 
         ctx.save();
-        ctx.translate(rHand.x - (fire ? 8 : 0), rHand.y);
-        ctx.rotate(mode === "full" ? 0.05 : -0.15);
-        ctx.beginPath();
-        ctx.rect(-6, -7, 108, 12);
-        ctx.fill();
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.rect(22, 5, 12, 16);
-        ctx.fill();
-        ctx.stroke();
-        if (fire) {
-          ctx.shadowBlur = 28;
-          ctx.fillStyle = "#ffd089";
+        ctx.translate(w * man.x, ground - bob);
+        ctx.scale(man.facing, 1);
+        ctx.rotate(lean);
+        ctx.drawImage(img, -iw * 0.48, -ih, iw, ih);
+        if (man.flash > 0.12) {
+          ctx.globalAlpha = man.flash;
+          ctx.fillStyle = "#fff3c0";
           ctx.beginPath();
-          ctx.moveTo(108, 0);
-          ctx.lineTo(148, -14);
-          ctx.lineTo(132, 0);
-          ctx.lineTo(148, 14);
+          ctx.moveTo(iw * 0.36, -ih * 0.58);
+          ctx.lineTo(iw * 0.58, -ih * 0.7);
+          ctx.lineTo(iw * 0.42, -ih * 0.56);
+          ctx.lineTo(iw * 0.58, -ih * 0.42);
           ctx.closePath();
           ctx.fill();
+          ctx.globalAlpha = 1;
         }
         ctx.restore();
 
-        ctx.beginPath();
-        ctx.ellipse(lFoot.x + 10, lFoot.y - 2, 18, 6, 0.15, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.ellipse(rFoot.x + 10, rFoot.y - 2, 18, 6, 0.15, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.restore();
+        man.muzzle = {
+          x: w * man.x + man.facing * iw * 0.34,
+          y: ground - bob - ih * 0.56,
+        };
 
-        if (mode === "full" && !reduced) {
-          dust.forEach((d) => {
-            const x = cx - 30 - ((time * 90 + d.a * 50) % 180);
-            ctx.fillStyle = "rgba(227,168,90,0.25)";
-            ctx.fillRect(x, ground + Math.sin(time * 9 + d.a) * 3, 3, 1.4);
+        if (!shoot && !reduced && Math.abs(s) > 0.82) {
+          dust.push({
+            x: w * man.x - man.facing * 18,
+            y: ground + 4,
+            vx: -man.facing * 50,
+            vy: -24,
+            a: 1,
           });
         }
       }
 
-      function drawHud(mode, time) {
-        const cx = w * 0.5;
-        const cy = h * 0.38;
-        const rx = Math.min(w, h) * 0.38;
-        const ry = rx * 0.36;
-        const hot = mode === "full" ? 1 : mode === "standard" ? 0.55 : 0.28;
-        const shown =
-          mode === "lite" ? NODES.filter((_, i) => i % 3 === 0) : NODES;
-        ctx.strokeStyle = "rgba(227,168,90," + (0.16 + hot * 0.18) + ")";
-        ctx.lineWidth = 1;
-        ctx.setLineDash(mode === "lite" ? [2, 16] : [16, 12]);
-        ctx.beginPath();
-        ctx.ellipse(cx, cy, rx, ry, time * 0.05, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.strokeStyle = "rgba(255,208,137," + (0.35 + hot * 0.45) + ")";
-        ctx.beginPath();
-        ctx.ellipse(cx, cy, rx, ry, time * 0.05, time, time + 0.7);
-        ctx.stroke();
-        shown.forEach((label, i) => {
-          const a = (i / shown.length) * Math.PI * 2 + time * 0.05;
-          ctx.fillStyle = "#e3a85a";
-          ctx.beginPath();
-          ctx.arc(
-            cx + Math.cos(a) * rx,
-            cy + Math.sin(a) * ry,
-            2,
-            0,
-            Math.PI * 2,
-          );
-          ctx.fill();
-          ctx.font = "500 10px 'IBM Plex Mono', monospace";
-          ctx.fillStyle = "rgba(244,234,212,0.45)";
-          ctx.fillText(
-            label,
-            cx + Math.cos(a) * rx + 6,
-            cy + Math.sin(a) * ry - 6,
-          );
+      function step(dt) {
+        const pace = level === "full" ? 2.15 : level === "lite" ? 0.7 : 1.25;
+        const runGap = level === "full" ? 0.55 : level === "lite" ? 1.8 : 1.05;
+        const shootFor = 0.28;
+        man.actT += dt;
+        man.recoil = Math.max(0, man.recoil - dt * 4.2);
+        man.flash = Math.max(0, man.flash - dt * 5.5);
+
+        if (man.act === "run") {
+          man.phase += dt * (level === "full" ? 14 : level === "lite" ? 6 : 10);
+          man.x += man.facing * 0.09 * pace * dt;
+          if (man.x > 0.58) man.facing = -1;
+          if (man.x < 0.22) man.facing = 1;
+          if (man.actT > runGap) {
+            man.act = "shoot";
+            man.actT = 0;
+            man.recoil = 1;
+            man.flash = 1;
+            prs.push({
+              x: man.muzzle.x,
+              y: man.muzzle.y,
+              vx: (level === "full" ? 520 : 400) * (man.facing || 1),
+              vy: -80 - Math.random() * 70,
+              rot: -0.2,
+              spin: 1,
+              label: "PR #" + (prn += 1),
+              age: 0,
+              land: false,
+            });
+            shipped += 1;
+          }
+        } else if (man.actT > shootFor) {
+          man.act = "run";
+          man.actT = 0;
+        }
+
+        prs.forEach((p) => {
+          if (p.land) return;
+          p.age += dt;
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
+          p.vy += 520 * dt;
+          p.rot += p.spin * dt;
+          const pileX = w * 0.78;
+          const pileY = h * 0.7 - Math.min(shipped, 8) * 8;
+          if (p.y > pileY && p.x > w * 0.55) {
+            p.land = true;
+            p.x = pileX + (Math.random() - 0.5) * 36;
+            p.y = pileY;
+            p.rot = (Math.random() - 0.5) * 0.35;
+          }
+          if (p.x > w + 80 || p.y > h + 40) p.land = true;
         });
+        if (prs.length > 18) prs.splice(0, prs.length - 18);
+
+        dust.forEach((d) => {
+          d.x += d.vx * dt;
+          d.y += d.vy * dt;
+          d.a -= dt * 2.4;
+        });
+        for (let i = dust.length - 1; i >= 0; i -= 1) {
+          if (dust[i].a <= 0) dust.splice(i, 1);
+        }
+      }
+
+      function drawHud() {
+        ctx.fillStyle = "rgba(227,168,90,0.85)";
+        ctx.font = "500 12px 'IBM Plex Mono', monospace";
+        ctx.textAlign = "left";
+        ctx.fillText(shipped + " shipped", 22, 64);
+        ctx.fillStyle = "rgba(227,168,90,0.4)";
+        ctx.fillText(MOVE[level], 22, 82);
       }
 
       function frame() {
+        const dt = reduced ? 0 : 0.016;
         ctx.clearRect(0, 0, w, h);
-        drawHud(level, t);
-        drawSoldier(level, t);
+        if (!reduced) step(dt);
+        dust.forEach((d) => {
+          ctx.fillStyle = "rgba(227,168,90," + d.a * 0.25 + ")";
+          ctx.beginPath();
+          ctx.arc(d.x, d.y, 7, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        drawSoldier();
+        prs.forEach(drawPr);
+        drawHud();
         if (!reduced) {
-          t += 0.016;
+          t += dt;
           requestAnimationFrame(frame);
-        } else {
-          drawSoldier(level, 0.4);
         }
       }
       frame();
