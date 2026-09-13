@@ -1,6 +1,6 @@
 # SuperDev
 
-**Site:** [superdev-mocha.vercel.app](https://superdev-mocha.vercel.app) (`docs/` on Vercel)
+**Website:** https://superdev-mocha.vercel.app
 
 Cursor Agent skill that runs an **issue-to-ship lifecycle** with a local review
 ladder **before** any PR exists. Generalized flow. Per-operator identity lives
