@@ -15,16 +15,16 @@ when a step needs its exact shape, or when editing the loop.
 
 ### Store
 
-| File                                                | Cap / role                                     |
-| --------------------------------------------------- | ---------------------------------------------- |
+| File                                         | Cap / role                                     |
+| -------------------------------------------- | ---------------------------------------------- |
 | `state/user-intentions/prompt-history.jsonl` | Last **200** tagged prompts                    |
 | `state/user-intentions/intention-model.md`   | Distilled standing themes + delivery defaults  |
-| `scripts/record_intention.py`          | Tag / bootstrap / distill / replay             |
+| `scripts/record_intention.py`                | Tag / bootstrap / distill / replay             |
 | `state/work-history/units.jsonl`             | Last **200** work units (issue/PR/resources)   |
 | `state/work-history/active.md`               | Derived open units (do not hand-edit)          |
-| `scripts/work_history.py`              | open / update / close / stamp / list           |
-| `scripts/check_contradictions.py`      | focus ↔ history ↔ live instance/worktree warn  |
-| `scripts/resource_status.py`           | locks / sprawl → teardown-worktree / coder-box |
+| `scripts/work_history.py`                    | open / update / close / stamp / list           |
+| `scripts/check_contradictions.py`            | focus ↔ history ↔ live instance/worktree warn  |
+| `scripts/resource_status.py`                 | locks / sprawl → teardown-worktree / coder-box |
 
 Minimum useful replay window: **last 50**. Cap: **200**. Prefer finishing an
 ask that already appears in the last 5–20 prompts over rediscovering it.
@@ -108,6 +108,13 @@ frustrated / meta) is retired. New contract:
             `--update`/`--close` work-history when the unit’s stage/status
             changed; re-run `check_contradictions.py` if focus or resources
             moved.
+6b. RECONCILE after every push / `gh pr create` / Path 6 claim:
+            python3 ~/.cursor/skills/superdev/scripts/reconcile_push_intention.py \
+              --base origin/main [--pr N] --write-learn --pretty
+            Chat tags lose to commit + files + PR body. Exit 1 gaps ⇒
+            learn-kind `miss`; Path 6 is not done. Do not wait for the
+            operator to notice. Also tag the artifact:
+            record_intention.py --source push --prompt "<commits+files+body>"
 ```
 
 ### What “learning about the user” means
@@ -127,4 +134,3 @@ frustrated / meta) is retired. New contract:
 
 Narrow skip: pure one-shot factual lookup with no preference signal — still
 TAG + append, but skip skill edits.
-

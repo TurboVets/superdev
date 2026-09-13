@@ -103,6 +103,7 @@ AFFECT_RULES: list[tuple[str, list[str]]] = [
 GOAL_RULES: list[tuple[str, list[str]]] = [
     ("meta_skill", [r"\bskill\b", r"\bsuperdev\b", r"\blocal-memory\b", r"\bintention\b", r"\blearn(ing)?\b.*\b(user|prompt)"]),
     ("ship_pr", [r"\bpush\b", r"\bopen (the )?pr\b", r"\bmerge\b", r"\bsmoke\b", r"\bre-?request\b"]),
+    ("prove_qa", [r"tv-qa", r"live qa", r"not covered", r"leftover"]),
     ("review_pr", [r"\breview\b", r"\bapprove\b", r"\bchanges.?requested\b", r"/pr\b", r"pull/\d+"]),
     ("fix_bug", [r"\bfix\b", r"\bbug\b", r"\bflake\b", r"\bbreaking\b", r"\bred\b"]),
     ("implement", [r"\bimplement\b", r"\bbuild\b", r"\bcode\b", r"\bwork on\b", r"\badd\b"]),
@@ -122,6 +123,8 @@ STANDING_THEME_RULES: list[tuple[str, list[str]]] = [
     ("gh_link_continue", [r"github\.com/.+/(pull|issues)/\d+", r"#issuecomment-", r"#pullrequestreview-", r"github link", r"attached (github|pr|issue|comment)", r"/turbovets-superdev.*https?://github"]),
     ("intention_memory", [r"intention", r"prompt history", r"learn.*(user|me)", r"previous \d+ prompts"]),
     ("skill_self_improve", [r"modify.*(skill|superdev)", r"update.*(skill|behavior)", r"self.?learn"]),
+    ("leftover_qa", [r"not covered", r"leftover"]),
+    ("push_reconcile", [r"what is pushed", r"from the push", r"reconcile", r"extract intention"]),
 ]
 
 
@@ -304,6 +307,8 @@ def distill(rows: list[dict], lookback: int = 200) -> str:
             "5. Ship-lane asks with a PR/branch ⇒ Path 5.5 audit-first before smoke/push/reply.",
             "6. Owned issue ship lane ⇒ open the PR after Path 5.5 Ship without a second ask "
             "(#9036 miss). Merge still needs an explicit ask; pause words override.",
+            "7. After every push/PR-create, `reconcile_push_intention.py`. Gaps ⇒ learn-kind "
+            "`miss` and Path 6 is not done. Chat tags lose to the commit + files + PR body.",
             "",
             "## Affect histogram (window)",
             "",
@@ -508,6 +513,7 @@ def learn_replay(limit: int) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prompt", help="User prompt text to tag and append")
+    parser.add_argument("--source", default="live", help="live | push — push = classify the shipped artifact")
     parser.add_argument("--affect", help="Override affect tag")
     parser.add_argument("--goal", action="append", dest="goals", help="Override/add goal tag (repeatable)")
     parser.add_argument("--bootstrap", action="store_true", help="Seed history from agent transcripts")
@@ -525,7 +531,7 @@ def main() -> int:
     parser.add_argument(
         "--learn-kind",
         default="skill_update",
-        choices=["skill_update", "preference", "memory", "model_entry", "script", "none"],
+        choices=["skill_update", "preference", "memory", "model_entry", "script", "miss", "none"],
         help="Kind of learning delta (use 'none' with the reason in --learn)",
     )
     parser.add_argument("--learn-replay", action="store_true", help="Print recent learn-ledger rows")
@@ -565,6 +571,7 @@ def main() -> int:
         args.prompt,
         affect=args.affect,
         goals=args.goals,
+        source=args.source,
         cap=args.cap,
     )
     write_model(load_history())

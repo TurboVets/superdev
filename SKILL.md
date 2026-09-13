@@ -132,8 +132,10 @@ GitHub bots **confirm** after local audit is green; they are not the discovery l
 
 Always: `emit_context_pack.py --write` + `route_model.py`. T1+: work history,
 contradictions, resources — **warn** on HIGH/MEDIUM before acting. Intention
-loop: TAG → REPLAY → MATCH → ADAPT → DELIVER → STAMP (`record_intention.py`).
-ADAPT is unconditional.
+loop: TAG → REPLAY → MATCH → ADAPT → DELIVER → STAMP → **RECONCILE**
+(`record_intention.py` + `reconcile_push_intention.py`). ADAPT is
+unconditional. After a push, chat tags lose to the commit + files + PR body;
+gaps are a `miss` and Path 6 is not done.
 
 ## Lifecycle paths
 
@@ -199,7 +201,8 @@ Plus the quick line scan in `references/review-bar.md`.
 7. PR mergeable (`MERGEABLE`).
 8. User-visible ⇒ 6a live QA then intensity-scaled 6b smoke + Visual table.
 9. House PR mechanics; bots triaged after local audit.
-10. STAMP: `record_intention.py` + work-history `--update`/`--close`.
+10. STAMP + RECONCILE: `record_intention.py` then `reconcile_push_intention.py`
+    (`--write-learn`). Exit 1 ⇒ not done.
 
 ## Hard rules (absolute)
 
