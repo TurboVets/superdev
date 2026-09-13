@@ -3,33 +3,28 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SuperDev — issue to ship, locally, before the PR exists</title>
-    <meta
-      name="description"
-      content="Cursor Agent skill. Sticky session, intensity-scaled audit, live QA, smoke, then the PR. Attach once."
-    />
+    <title>SuperDev</title>
+    <meta name="description" content="Issue to ship. Before the PR exists." />
     <meta property="og:title" content="SuperDev" />
     <meta
       property="og:description"
-      content="Issue to ship. Locally. Before the PR exists."
+      content="Issue to ship. Before the PR exists."
     />
     <meta property="og:type" content="website" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
-        --ink: #0c0b09;
-        --paper: #efe8d8;
-        --mute: #8d8676;
-        --line: rgba(239, 232, 216, 0.12);
-        --copper: #d9a066;
-        --copper-dim: #8a6230;
-        --good: #c8e09a;
+        --ink: #050403;
+        --paper: #f4ead4;
+        --mute: #8a8170;
+        --copper: #e3a85a;
+        --hot: #ffd089;
       }
       * {
         box-sizing: border-box;
@@ -44,636 +39,511 @@
         color: var(--paper);
       }
       body {
-        font-family: Newsreader, "Times New Roman", serif;
-        font-size: 1.125rem;
-        line-height: 1.5;
-        font-optical-sizing: auto;
-        min-height: 100vh;
+        font-family: "Instrument Serif", Georgia, serif;
+        overflow-x: hidden;
       }
       body::before {
         content: "";
         position: fixed;
         inset: 0;
+        z-index: 40;
         pointer-events: none;
-        z-index: 8;
-        opacity: 0.18;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+        opacity: 0.12;
+        mix-blend-mode: overlay;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+      .spot {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background: radial-gradient(
+          700px 700px at var(--mx, 60%) var(--my, 30%),
+          rgba(227, 168, 90, 0.12),
+          transparent 55%
+        );
       }
       a {
         color: inherit;
-      }
-      .wrap {
-        width: min(1120px, calc(100% - 2.5rem));
-        margin: 0 auto;
-      }
-      header {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: 1.5rem;
-        padding: 1.4rem 0 1.1rem;
-        border-bottom: 1px solid var(--line);
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 0.72rem;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--mute);
-      }
-      header nav {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1.1rem 1.4rem;
-      }
-      header a {
         text-decoration: none;
       }
-      header a:hover {
-        color: var(--copper);
-      }
-      .brand {
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 20;
+        display: flex;
+        justify-content: space-between;
+        padding: 1.15rem 1.4rem;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 0.74rem;
         color: var(--paper);
-        letter-spacing: 0.22em;
+        text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
       }
       .hero {
-        padding: 12vh 0 8vh;
+        min-height: 100svh;
+        display: grid;
+        align-content: end;
+        padding: 0 1.4rem 4.5rem;
+        position: relative;
+        z-index: 2;
       }
-      .kicker {
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 0.72rem;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: var(--copper);
-        margin: 0 0 1.4rem;
+      .machine {
+        position: absolute;
+        inset: 0 0 18%;
+        pointer-events: none;
+      }
+      .machine canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
       }
       h1 {
-        font-family: "Instrument Serif", Newsreader, serif;
+        margin: 0 0 0.4rem;
         font-weight: 400;
-        font-size: clamp(4.2rem, 12vw, 8.4rem);
-        line-height: 0.86;
-        letter-spacing: -0.04em;
-        margin: 0 0 1.6rem;
+        font-style: italic;
+        font-size: clamp(5.2rem, 16vw, 12rem);
+        line-height: 0.74;
+        letter-spacing: -0.055em;
       }
       .lede {
-        max-width: 34rem;
-        font-size: clamp(1.25rem, 2.2vw, 1.55rem);
+        margin: 0 0 1.5rem;
         color: var(--mute);
-        margin: 0 0 2.2rem;
-      }
-      .actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.8rem;
+        font-size: 1.35rem;
       }
       .btn {
         display: inline-flex;
         align-items: center;
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 0.72rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        text-decoration: none;
-        padding: 0.85rem 1.1rem;
-        border: 1px solid var(--copper);
+        gap: 0.6rem;
+        padding: 0.82rem 1.15rem;
         background: var(--copper);
-        color: var(--ink);
-      }
-      .btn.ghost {
-        background: transparent;
-        color: var(--paper);
-        border-color: var(--line);
-      }
-      .btn:hover {
-        filter: brightness(1.08);
-      }
-      .spine {
-        padding: 0 0 6vh;
-      }
-      .steps {
-        display: grid;
-        grid-template-columns: repeat(10, minmax(0, 1fr));
-        gap: 0.4rem;
-      }
-      .step {
-        border-top: 1px solid var(--line);
-        padding: 0.7rem 0.15rem 0;
-      }
-      .step i {
-        display: block;
-        width: 100%;
-        height: 2px;
-        background: var(--copper-dim);
-        margin: 0 0 0.7rem;
-      }
-      .step strong {
-        display: block;
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 0.68rem;
-        letter-spacing: 0.1em;
-        color: var(--copper);
-        font-weight: 500;
-      }
-      .step span {
-        display: block;
-        margin-top: 0.25rem;
-        font-size: 0.92rem;
-        color: var(--mute);
-      }
-      section {
-        padding: 4.4rem 0;
-        border-top: 1px solid var(--line);
-      }
-      h2 {
-        font-family: "Instrument Serif", Newsreader, serif;
-        font-weight: 400;
-        font-size: clamp(2rem, 4.4vw, 3.1rem);
-        line-height: 1.05;
-        letter-spacing: -0.03em;
-        margin: 0 0 1.6rem;
-        max-width: 22ch;
-      }
-      h2.wide {
-        max-width: 28ch;
-      }
-      section > p.intro {
-        max-width: 40rem;
-        color: var(--mute);
-        margin: -0.4rem 0 2rem;
-      }
-      .features {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 1px;
-        background: var(--line);
-        border: 1px solid var(--line);
-      }
-      .feat {
-        background: var(--ink);
-        padding: 1.35rem 1.3rem 1.45rem;
-      }
-      .feat em {
-        display: block;
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-style: normal;
-        font-size: 0.68rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: var(--copper);
-        margin: 0 0 0.55rem;
-      }
-      .feat p {
-        margin: 0;
-        color: var(--mute);
-        font-size: 1.05rem;
-      }
-      .split {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 3rem 4rem;
-        align-items: start;
-      }
-      .split h2 {
-        margin-bottom: 1rem;
-      }
-      .split > div > p {
-        color: var(--mute);
-        margin: 0;
-      }
-      .rung {
-        display: grid;
-        grid-template-columns: 4.2rem 1fr;
-        gap: 1rem;
-        padding: 0.95rem 0;
-        border-bottom: 1px solid var(--line);
-      }
-      .rung:first-child {
-        border-top: 1px solid var(--line);
-      }
-      .rung b {
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 0.72rem;
-        letter-spacing: 0.1em;
-        color: var(--copper);
-        font-weight: 500;
-      }
-      .rung p {
-        margin: 0;
-        color: var(--mute);
-      }
-      .cards {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 1px;
-        background: var(--line);
-        border: 1px solid var(--line);
-      }
-      .card {
-        background: var(--ink);
-        padding: 1.4rem 1.3rem 1.6rem;
-      }
-      .card em {
-        display: block;
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-style: normal;
-        font-size: 0.68rem;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--good);
-        margin: 0 0 0.7rem;
-      }
-      .card.full {
-        background: #16130e;
-      }
-      .card.full em {
-        color: var(--copper);
-      }
-      .card p {
-        margin: 0;
-        color: var(--mute);
-        font-size: 1.02rem;
-      }
-      .bars {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2.6rem;
-      }
-      .bars h3 {
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 0.72rem;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--copper);
-        font-weight: 500;
-        margin: 0 0 0.8rem;
-      }
-      .bars ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
-      .bars li {
-        color: var(--mute);
-        padding: 0.45rem 0;
-        border-bottom: 1px solid var(--line);
-      }
-      .wont {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 1.2rem 2.4rem;
-      }
-      .wont p {
-        margin: 0;
-        color: var(--mute);
-      }
-      .wont strong {
-        display: block;
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 0.68rem;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--paper);
-        font-weight: 500;
-        margin: 0 0 0.35rem;
-      }
-      pre {
-        margin: 0;
-        padding: 1.2rem 1.3rem;
-        background: #16130e;
-        border: 1px solid var(--line);
-        overflow-x: auto;
+        color: #1a1208;
         font-family: "IBM Plex Mono", ui-monospace, monospace;
         font-size: 0.82rem;
-        line-height: 1.7;
-        color: var(--good);
       }
-      .fine {
-        margin: 1rem 0 0;
+      .btn svg {
+        width: 18px;
+        height: 10px;
+        transition: transform 0.35s ease;
+      }
+      .btn:hover svg {
+        transform: translateX(5px);
+      }
+      .act {
+        position: relative;
+        min-height: 92svh;
+        display: grid;
+        align-content: end;
+        padding: 2rem 1.4rem 3.2rem;
+        overflow: hidden;
+      }
+      .act .bg {
+        position: absolute;
+        inset: -4%;
+        background-size: cover;
+        background-position: center;
+        animation: ken 36s ease-in-out infinite alternate;
+        filter: saturate(1.04) contrast(1.06);
+      }
+      .act::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          transparent 35%,
+          rgba(5, 4, 3, 0.82) 88%
+        );
+        pointer-events: none;
+      }
+      .act h2 {
+        position: relative;
+        z-index: 2;
+        margin: 0;
+        font-weight: 400;
+        font-style: italic;
+        font-size: clamp(3.4rem, 10vw, 7.5rem);
+        line-height: 0.86;
+        letter-spacing: -0.04em;
+        text-shadow: 0 2px 28px rgba(0, 0, 0, 0.72);
+      }
+      .act p {
+        position: relative;
+        z-index: 2;
+        margin: 0.55rem 0 0;
+        max-width: 16ch;
+        font-size: 1.25rem;
+        color: #cfc3a8;
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.7);
+      }
+      .orbit {
+        background-image: url("plates/plate-orbit.png");
+      }
+      .ladder {
+        background-image: url("plates/plate-ladder.png");
+        animation-duration: 32s;
+      }
+      .film {
+        background-image: url("plates/plate-film.png");
+        animation-duration: 24s;
+      }
+      .hair {
+        background-image: url("plates/plate-filament.png");
+      }
+      .seal {
+        background-image: url("plates/plate-seal.png");
+        animation-duration: 30s;
+      }
+      .dial {
+        position: relative;
+        z-index: 2;
+        min-height: 92svh;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+        gap: 2rem;
+        align-items: center;
+        width: min(1100px, calc(100% - 2.8rem));
+        margin: 0 auto;
+        padding: 4rem 0;
+      }
+      .gauge {
+        width: min(100%, 560px);
+        justify-self: center;
+      }
+      .level {
+        display: grid;
+        grid-template-columns: 2rem 1fr;
+        gap: 1rem;
+        align-items: baseline;
+        padding: 1.1rem 0;
+        border-top: 1px solid rgba(244, 234, 212, 0.12);
+        cursor: pointer;
+      }
+      .level:last-child {
+        border-bottom: 1px solid rgba(244, 234, 212, 0.12);
+      }
+      .level i {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 0.68rem;
+        font-style: normal;
         color: var(--mute);
-        font-size: 1rem;
       }
-      footer {
-        padding: 2.4rem 0 3.2rem;
-        border-top: 1px solid var(--line);
+      .level strong {
+        font-size: clamp(2.2rem, 5vw, 3.6rem);
+        font-weight: 400;
+        font-style: italic;
+        color: #3c3830;
+        transition: color 0.4s ease;
+      }
+      .level.is-on i {
+        color: var(--copper);
+      }
+      .level.is-on strong {
+        color: var(--paper);
+      }
+      .cmd {
+        width: min(1100px, calc(100% - 2.8rem));
+        margin: 0 auto 3rem;
         display: flex;
         justify-content: space-between;
         gap: 1rem;
+        align-items: center;
+        padding: 1.15rem 1.2rem;
+        border: 1px solid rgba(227, 168, 90, 0.3);
+        background: linear-gradient(
+          90deg,
+          rgba(227, 168, 90, 0.1),
+          transparent 55%
+        );
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: clamp(0.74rem, 1.4vw, 0.88rem);
+        color: #e6d3a8;
+        overflow-x: auto;
+      }
+      .cmd button {
+        border: 0;
+        background: none;
+        color: var(--copper);
+        font: inherit;
+        font-size: 0.72rem;
+        cursor: pointer;
+      }
+      footer {
+        width: min(1100px, calc(100% - 2.8rem));
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 0 2.4rem;
         font-family: "IBM Plex Mono", ui-monospace, monospace;
         font-size: 0.72rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
         color: var(--mute);
       }
-      footer a {
-        color: var(--paper);
-        text-decoration: none;
+      #gauge-needle,
+      #gauge-arc {
+        transition:
+          transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+          stroke-dasharray 0.7s cubic-bezier(0.22, 1, 0.36, 1);
       }
-      @media (max-width: 820px) {
-        .split,
-        .cards,
-        .features,
-        .bars,
-        .wont {
+      @keyframes ken {
+        to {
+          transform: scale(1.045) translate(-1.2%, -0.8%);
+        }
+      }
+      @media (max-width: 800px) {
+        .dial {
           grid-template-columns: 1fr;
+          min-height: auto;
         }
-        .steps {
-          grid-template-columns: repeat(5, minmax(0, 1fr));
-          row-gap: 1.1rem;
-        }
-        .hero {
-          padding: 8vh 0 5vh;
-        }
-        header {
-          flex-direction: column;
-          align-items: flex-start;
+        .machine {
+          inset: 8% 0 36%;
         }
       }
       @media (prefers-reduced-motion: reduce) {
+        .act .bg,
         * {
-          scroll-behavior: auto !important;
+          animation: none !important;
         }
       }
     </style>
   </head>
   <body>
-    <div class="wrap">
-      <header>
-        <a class="brand" href="./">SuperDev</a>
-        <nav>
-          <a href="#features">Features</a>
-          <a href="#flow">Flow</a>
-          <a href="#intensity">Intensity</a>
-          <a href="#install">Install</a>
-          <a href="https://github.com/TurboVets/superdev">GitHub</a>
-        </nav>
-      </header>
+    <div class="spot" aria-hidden="true"></div>
+    <header>
+      <a href="./">SuperDev</a>
+      <a href="https://github.com/TurboVets/superdev">GitHub</a>
+    </header>
 
-      <div class="hero">
-        <p class="kicker">Cursor Agent skill · TurboVets</p>
+    <section class="hero">
+      <div class="machine" aria-hidden="true">
+        <canvas id="orrery"></canvas>
+      </div>
+      <div>
         <h1>SuperDev</h1>
-        <p class="lede">
-          Issue to ship. Locally. Before the PR exists. Attach once — SuperDev
-          keeps the rest of the chat.
-        </p>
-        <div class="actions">
-          <a class="btn" href="https://github.com/TurboVets/superdev"
-            >Clone the skill</a
-          >
-          <a class="btn ghost" href="#install">Install</a>
+        <p class="lede">Before the PR exists.</p>
+        <a class="btn" href="https://github.com/TurboVets/superdev">
+          Clone
+          <svg viewBox="0 0 18 10" fill="none" aria-hidden="true">
+            <path
+              d="M0 5h16M12 1l5 4-5 4"
+              stroke="currentColor"
+              stroke-width="1.4"
+            />
+          </svg>
+        </a>
+      </div>
+    </section>
+
+    <section class="act">
+      <div class="bg orbit"></div>
+      <h2>Sticky</h2>
+      <p>One attach. The rest of the chat holds.</p>
+    </section>
+    <section class="act">
+      <div class="bg ladder"></div>
+      <h2>Ladder</h2>
+      <p>L1. L2. L3. Then you push.</p>
+    </section>
+    <section class="act">
+      <div class="bg film"></div>
+      <h2>Prove</h2>
+      <p>Click every case. Film the result.</p>
+    </section>
+    <section class="act">
+      <div class="bg hair"></div>
+      <h2>Ponytail</h2>
+      <p>The least code that works.</p>
+    </section>
+    <section class="act">
+      <div class="bg seal"></div>
+      <h2>Own it</h2>
+      <p>Your PR. Theirs stays theirs.</p>
+    </section>
+
+    <section class="dial" aria-label="Intensity">
+      <svg class="gauge" viewBox="0 0 320 320" aria-hidden="true">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#8a6230" />
+            <stop offset="1" stop-color="#ffd089" />
+          </linearGradient>
+        </defs>
+        <circle
+          cx="160"
+          cy="160"
+          r="122"
+          stroke="#241c14"
+          fill="none"
+          stroke-width="22"
+        />
+        <circle
+          id="gauge-arc"
+          cx="160"
+          cy="160"
+          r="122"
+          stroke="url(#g)"
+          fill="none"
+          stroke-width="22"
+          stroke-linecap="round"
+          stroke-dasharray="222 767"
+          transform="rotate(-210 160 160)"
+        />
+        <line
+          id="gauge-needle"
+          x1="160"
+          y1="160"
+          x2="160"
+          y2="54"
+          stroke="#ffd089"
+          stroke-width="2.2"
+          transform-origin="160 160"
+        />
+        <circle cx="160" cy="160" r="5" fill="#e3a85a" />
+      </svg>
+      <div>
+        <div class="level is-on" data-deg="-68" data-arc="150">
+          <i>01</i><strong>lite</strong>
+        </div>
+        <div class="level" data-deg="4" data-arc="236">
+          <i>02</i><strong>standard</strong>
+        </div>
+        <div class="level" data-deg="82" data-arc="330">
+          <i>03</i><strong>full</strong>
         </div>
       </div>
+    </section>
 
-      <div class="spine" aria-label="Lifecycle">
-        <div class="steps">
-          <div class="step"><i></i><strong>0</strong><span>Boot</span></div>
-          <div class="step"><i></i><strong>1</strong><span>Pick</span></div>
-          <div class="step"><i></i><strong>2</strong><span>Issue</span></div>
-          <div class="step"><i></i><strong>3</strong><span>Grill</span></div>
-          <div class="step"><i></i><strong>4</strong><span>Unknowns</span></div>
-          <div class="step"><i></i><strong>5</strong><span>Build</span></div>
-          <div class="step"><i></i><strong>5.5</strong><span>Audit</span></div>
-          <div class="step"><i></i><strong>6a</strong><span>Live QA</span></div>
-          <div class="step"><i></i><strong>6b</strong><span>Smoke</span></div>
-          <div class="step"><i></i><strong>7</strong><span>Review</span></div>
-        </div>
-      </div>
-
-      <section id="features">
-        <h2 class="wide">What attaching SuperDev actually does.</h2>
-        <p class="intro">
-          One skill. The audit, the clicks, and the film are already inside it.
-          Team leaves stay optional.
-        </p>
-        <div class="features">
-          <div class="feat">
-            <em>Sticky session</em>
-            <p>
-              One <code>/superdev</code> binds the rest of the Agent chat until
-              you say exit SuperDev. No re-tag each turn.
-            </p>
-          </div>
-          <div class="feat">
-            <em>Token-economy boot</em>
-            <p>
-              Path 0 writes a small context pack and picks a model tier (T0–T4).
-              It does not re-read the whole skill every turn.
-            </p>
-          </div>
-          <div class="feat">
-            <em>GitHub link = intention</em>
-            <p>
-              A pasted PR, issue, or comment URL is enough. SuperDev resolves
-              the stage and the completion list, then continues.
-            </p>
-          </div>
-          <div class="feat">
-            <em>Never skip / never stop</em>
-            <p>
-              Untestable acceptance criteria block code. A 5.5 audit is not a
-              status report — it continues through prove and the PR.
-            </p>
-          </div>
-          <div class="feat">
-            <em>L1 → L2 → L3</em>
-            <p>
-              Bundled fullstack audit, then lenses, then local bots. Lite skips
-              L3 on purpose. No push until the scaled ladder is green.
-            </p>
-          </div>
-          <div class="feat">
-            <em>Prove intensity</em>
-            <p>
-              <code>prove_intensity.py</code> reads the diff, not the title.
-              Lite / standard / full. An aria-label is not a two-party
-              disconnect.
-            </p>
-          </div>
-          <div class="feat">
-            <em>6a live QA</em>
-            <p>
-              SuperDev clicks every planned case. Never posts Not covered.
-              Attaching SuperDev is enough — the QA leaf is optional.
-            </p>
-          </div>
-          <div class="feat">
-            <em>6b smoke</em>
-            <p>
-              Films the result and holds it. One player. Login stays off camera.
-              Intensity decides both-sides vs one clip.
-            </p>
-          </div>
-          <div class="feat">
-            <em>Ponytail</em>
-            <p>
-              Name the ladder rung before the first product-code write.
-              <code>/ponytail off</code> is illegal on Path 5.
-            </p>
-          </div>
-          <div class="feat">
-            <em>Owned vs teammate</em>
-            <p>
-              Own ship lane: commit, push, open the PR. Teammate PRs: chat-draft
-              P0/P1 only. Never write someone else’s GitHub.
-            </p>
-          </div>
-          <div class="feat">
-            <em>Intention + reconcile</em>
-            <p>
-              Tags every prompt. After a push, commits and the PR body beat chat
-              tags. A miss is recorded, not shrugged.
-            </p>
-          </div>
-          <div class="feat">
-            <em>Work-history</em>
-            <p>
-              Tracks issue, PR, and worktree units. Warns before acting against
-              stale focus.
-            </p>
-          </div>
-          <div class="feat">
-            <em>Review bar F1–F11</em>
-            <p>
-              Sibling sweep, vacuous-test probe, transaction shape, copy truth
-              and density, over-engineering. House law, not vibes.
-            </p>
-          </div>
-          <div class="feat">
-            <em>Security bar S-1–S11</em>
-            <p>
-              Auth, URL, upload, HTML, and PII diffs. Full intensity cannot be
-              lowballed on a one-file guard.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section id="flow">
-        <div class="split">
-          <div>
-            <h2>A pasted GitHub link is enough.</h2>
-            <p>
-              SuperDev resolves the stage and the completion list, then
-              continues. It does not ask what you meant. Merge still needs an
-              explicit ask.
-            </p>
-          </div>
-          <div>
-            <div class="rung">
-              <b>L1</b>
-              <p>Fullstack audit on this SHA. Twice. Same head.</p>
-            </div>
-            <div class="rung">
-              <b>L2</b>
-              <p>Human-lane review for every surface the diff touches.</p>
-            </div>
-            <div class="rung">
-              <b>L3</b>
-              <p>Local bot replicas. Lite intensity skips this on purpose.</p>
-            </div>
-            <div class="rung">
-              <b>6a / 6b</b>
-              <p>
-                Click every planned case. Never post Not covered. Then film the
-                result — hold it.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="intensity">
-        <h2>Thorough when it must be. Lite when it is an aria-label.</h2>
-        <div class="cards">
-          <div class="card">
-            <em>lite</em>
-            <p>Docs, CSS, one control. No local bots. No both-sides QA.</p>
-          </div>
-          <div class="card">
-            <em>standard</em>
-            <p>
-              Default logic change. Audit twice. Click the claimed surfaces. One
-              clip.
-            </p>
-          </div>
-          <div class="card full">
-            <em>full</em>
-            <p>
-              Auth, money, share, disconnect, migrations. Both parties. Cannot
-              lowball a one-file guard.
-            </p>
-          </div>
-        </div>
-        <p class="fine">
-          Read from the diff. The title “quick fix” is ignored.
-        </p>
-      </section>
-
-      <section>
-        <h2>The bars that fire before a PR exists.</h2>
-        <div class="bars">
-          <div>
-            <h3>Review · F1–F11</h3>
-            <ul>
-              <li>Sibling sweep — one guard, every caller</li>
-              <li>Vacuous-test probe — the test can still fail</li>
-              <li>Transaction shape — atomic or not at all</li>
-              <li>Copy truth and density — no filler</li>
-              <li>Over-engineering — the unused abstraction dies</li>
-            </ul>
-          </div>
-          <div>
-            <h3>Security · S-1–S11</h3>
-            <ul>
-              <li>AuthZ and ownership on every write</li>
-              <li>URL, upload, and HTML stay untrusted</li>
-              <li>PII redacted on the way out</li>
-              <li>Secrets never land in the public skill</li>
-              <li>Full intensity on a one-file guard</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <h2>What SuperDev will not do.</h2>
-        <div class="wont">
-          <p>
-            <strong>Merge without an ask</strong>
-            A green ladder is not permission to merge. You say the word.
-          </p>
-          <p>
-            <strong>Write a teammate’s GitHub</strong>
-            Findings stay in chat as P0/P1. Their PR is theirs.
-          </p>
-          <p>
-            <strong>Skip Path 6</strong>
-            An older Ship, a bot APPROVE, or Docker-down does not skip live QA
-            or smoke.
-          </p>
-          <p>
-            <strong>Ship someone else’s memory</strong>
-            <code>state/</code> and <code>operator.yaml</code> stay on your
-            machine. Empty state is correct on first run.
-          </p>
-        </div>
-      </section>
-
-      <section id="install">
-        <h2>Install</h2>
-        <pre>
-git clone https://github.com/TurboVets/superdev.git ~/src/superdev
-cd ~/src/superdev && ./install.sh
-# fill operator.yaml — github.login + default_repo
-# new Agent chat: attach superdev, or type /superdev</pre
-        >
-        <p class="fine">
-          Personal <code>state/</code> stays on your machine. Do not copy
-          someone else’s. Cursor Browser MCP is required for Path 6.
-        </p>
-      </section>
-
-      <footer>
-        <span>TurboVets · public skill</span>
-        <a href="https://github.com/TurboVets/superdev">Source</a>
-      </footer>
+    <div class="cmd">
+      <code
+        >git clone https://github.com/TurboVets/superdev.git &&
+        ./install.sh</code
+      >
+      <button type="button" id="copy">Copy</button>
     </div>
+    <footer>
+      <span>TurboVets</span>
+      <a href="https://github.com/TurboVets/superdev">Source</a>
+    </footer>
+
+    <script>
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      addEventListener("pointermove", (e) => {
+        document.documentElement.style.setProperty("--mx", e.clientX + "px");
+        document.documentElement.style.setProperty("--my", e.clientY + "px");
+      });
+
+      const nodes = ["0", "1", "2", "3", "4", "5", "5.5", "6a", "6b", "7"];
+      const canvas = document.getElementById("orrery");
+      const ctx = canvas.getContext("2d");
+      let w = 0,
+        h = 0,
+        t = 0;
+      function resize() {
+        const r = canvas.parentElement.getBoundingClientRect();
+        const dpr = Math.min(devicePixelRatio || 1, 2);
+        w = r.width;
+        h = r.height;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+      addEventListener("resize", resize);
+
+      function ring(cx, cy, rx, ry, rot, dash, a) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(rot);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(227,168,90,${a})`;
+        ctx.lineWidth = 1.1;
+        ctx.setLineDash(dash);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function frame() {
+        ctx.clearRect(0, 0, w, h);
+        const cx = w * 0.58,
+          cy = h * 0.46;
+        const rx = Math.min(w, h) * 0.4,
+          ry = rx * 0.4;
+        const g = ctx.createRadialGradient(cx, cy, 8, cx, cy, rx * 1.7);
+        g.addColorStop(0, "rgba(227,168,90,0.14)");
+        g.addColorStop(1, "rgba(227,168,90,0)");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+        ring(cx, cy, rx * 1.22, ry * 1.4, t * 0.07, [1, 12], 0.2);
+        ring(cx, cy, rx, ry, t * 0.11, [22, 16], 0.5);
+        ring(cx, cy, rx * 0.58, ry * 0.68, -t * 0.19, [1, 7], 0.28);
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(t * 0.11);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, rx, ry, 0, t, t + 1.15);
+        ctx.strokeStyle = "#ffd089";
+        ctx.lineWidth = 2.2;
+        ctx.shadowColor = "#e3a85a";
+        ctx.shadowBlur = 22;
+        ctx.stroke();
+        ctx.restore();
+        const hot = Math.floor((t * 1.5) % nodes.length);
+        nodes.forEach((label, i) => {
+          const a = (i / nodes.length) * Math.PI * 2 + t * 0.11;
+          const x = cx + Math.cos(a) * rx;
+          const y = cy + Math.sin(a) * ry;
+          ctx.beginPath();
+          ctx.arc(x, y, i === hot ? 4.6 : 2.3, 0, Math.PI * 2);
+          ctx.fillStyle = i === hot ? "#ffd089" : "#e3a85a";
+          ctx.shadowColor = "#e3a85a";
+          ctx.shadowBlur = i === hot ? 16 : 0;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+          ctx.font = "500 12px 'IBM Plex Mono', monospace";
+          ctx.fillStyle = "rgba(244,234,212,0.7)";
+          ctx.fillText(label, x + 9, y - 8);
+        });
+        for (let i = 0; i < 56; i++) {
+          const a = i * 0.62 + t * 0.35;
+          ctx.fillStyle = "rgba(227,168,90,0.32)";
+          ctx.fillRect(
+            cx + Math.cos(a) * rx * 1.45 * ((i % 8) / 8),
+            cy + Math.sin(a * 1.25) * ry * 2.2 * ((i % 6) / 6),
+            1.3,
+            1.3,
+          );
+        }
+        if (!reduced) {
+          t += 0.0075;
+          requestAnimationFrame(frame);
+        }
+      }
+      frame();
+
+      const needle = document.getElementById("gauge-needle");
+      const arc = document.getElementById("gauge-arc");
+      document.querySelectorAll(".level").forEach((el) => {
+        const on = () => {
+          document
+            .querySelectorAll(".level")
+            .forEach((n) => n.classList.remove("is-on"));
+          el.classList.add("is-on");
+          needle.style.transform = `rotate(${el.dataset.deg}deg)`;
+          arc.setAttribute("stroke-dasharray", `${el.dataset.arc} 767`);
+        };
+        el.addEventListener("pointerenter", on);
+        el.tabIndex = 0;
+      });
+
+      const copy = document.getElementById("copy");
+      copy.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(
+          "git clone https://github.com/TurboVets/superdev.git && ./install.sh",
+        );
+        copy.textContent = "Copied";
+        setTimeout(() => (copy.textContent = "Copy"), 1400);
+      });
+    </script>
   </body>
 </html>
