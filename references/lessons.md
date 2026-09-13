@@ -24,6 +24,13 @@ Tagging SuperDev with an issue/PR URL means take it from its current stage
 to Path 6. `hard_stop` is only teammate-owned (someone else assigned).
 Unassigned is a ship lane — assign + complete. Never "explain fit."
 
+### Never stop mid-lane — four artifacts or it is not finished
+
+Owned ship end is **all four green**: L1 `/tv-fullstack` ×2, L3 local
+Codex **and** Claude APPROVE, 6a in-browser QA, **green** 6b smoke +
+player. Stopping after Path 5 ("ladder owed — say the word") is a miss.
+Resume the earliest unfinished artifact. Merge still needs an ask.
+
 ### Do not wire a 1Password MCP until the token is already in Cursor
 
 BugTrace was evaluated, wired as optional Path 5 K2, then ripped out — vault

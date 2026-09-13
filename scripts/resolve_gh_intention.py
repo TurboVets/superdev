@@ -29,6 +29,14 @@ from lib_paths import default_repo, github_login, operator_name
 DEFAULT_REPO = default_repo()
 OWNER_LOGIN = github_login()
 
+# Owned ship end — never stop mid-lane. Merge still needs an ask.
+SHIP_END = [
+    "L1 /tv-fullstack ×2 Ship on this HEAD (green)",
+    "L3 local Codex AND Claude APPROVE (lite: skip, say it)",
+    "6a /tv-qa-pr-in-browser — every planned case clicked, never Not covered",
+    "6b subtitled smoke GREEN + inline player (or documented N/A — no UI)",
+]
+
 # URL shapes we accept
 PR_RE = re.compile(
     r"https?://github\.com/(?P<repo>[^/]+/[^/]+)/pull/(?P<num>\d+)"
@@ -525,12 +533,13 @@ def classify_issue(
         goal = "ship_pr"
         completion = [
             f"Continue via open PR #{target.get('number')} to ship completion",
-            "Path 5.5 → Path 6 → human review → merge-when-asked",
-            "Close this issue when the shipping PR merges",
+            *SHIP_END,
+            "MERGEABLE PR; merge-when-asked; close this issue when the shipping PR merges",
         ]
         next_actions = [
             f"Re-resolve intention on {target.get('url')}",
             "Do not start a duplicate PR",
+            "Do not stop mid-lane for a status essay",
         ]
     elif not has_ac:
         stage = "Path 3 Grill"
@@ -539,7 +548,8 @@ def classify_issue(
             "Grill report Ready with testable AC",
             "Unknowns cleared (Path 4)",
             "Then Path 5 build on a branch",
-            "Ship through Path 5.5 → commit+push+open PR (no second ask) → Path 6 proof",
+            *SHIP_END,
+            "commit+push+open PR (no second ask); merge-when-asked",
         ]
         next_actions = ["Run SuperDev grill on the issue body", "Fill missing AC before code"]
     else:
@@ -548,13 +558,14 @@ def classify_issue(
         completion = [
             "Implement AC on a branch",
             "Acceptance/BDD in same PR",
-            "Path 5.5 Ship → commit+push+open PR (no second ask) → Path 6 prove/smoke → human review → merge-when-asked",
+            *SHIP_END,
+            "commit+push+open PR after L1–L3 (no second ask); merge-when-asked",
             "Close issue when shipping PR merges",
         ]
         next_actions = [
             "Confirm no open PR already covers this",
             "Path 5 build → immediately enter Path 5.5 when diff exists",
-            "After Path 5.5 Ship: open the PR before status-only wrap-up",
+            "Never stop after Path 5 — continue L1 → L3 → 6a → green 6b",
         ]
 
     if focus_comment and not focus_comment.get("missing") and (mine or not teammate_owned(assignees)):
@@ -677,12 +688,13 @@ def resolve(raw: str) -> dict[str, Any]:
             result["goal"] = "ship_pr"
             result["completion_means"] = [
                 f"Continue via open PR #{target.get('number')} to ship completion",
-                "Path 5.5 → Path 6 → human review → merge-when-asked",
-                "Close this issue when the shipping PR merges",
+                *SHIP_END,
+                "MERGEABLE PR; merge-when-asked; close this issue when the shipping PR merges",
             ]
             result["next_actions"] = [
                 f"Re-resolve intention on {target.get('url')}",
                 "Do not start a duplicate PR",
+                "Do not stop mid-lane for a status essay",
             ]
             result["intention_summary"] = (
                 f"Issue #{number} has open PR #{target.get('number')}: continue that PR to completion"
@@ -715,7 +727,12 @@ def _self_check() -> int:
     )
     assert unassigned["hard_stop"] is None
     assert unassigned["goal"] != "status"
-    assert "Explain fit" not in " ".join(unassigned["completion_means"])
+    blob = " ".join(unassigned["completion_means"]).lower()
+    assert "explain fit" not in blob
+    assert "tv-fullstack" in blob
+    assert "codex" in blob and "claude" in blob
+    assert "qa" in blob or "browser" in blob
+    assert "smoke" in blob
     theirs = classify_issue(
         {
             "number": 1,

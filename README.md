@@ -27,7 +27,7 @@ Shareable extraction of the SuperDev operator used on TurboVets platform work. I
 | **Token-economy boot** | Path 0 emits a small context pack and a T0–T4 model. Auto-switch Task-spawns the cheapest capable slug: Composer (simple Qs), Grok (build), GPT (audit), Claude Opus/Fable (review). Cheap-down even when the picker is Grok High Fast. Same-as-parent stays. The Cursor picker never moves — [Cursor Router](https://cursor.com/docs/cursor-router) (Auto) is the picker-side equivalent. Say `auto-switch off` to keep the parent. |
 | **GitHub link = finish it** | A pasted PR/issue/comment URL is a take-to-the-end order. SuperDev resolves the current stage and ships that object (unassigned issue = assign + ship). `hard_stop` is only teammate-owned. |
 | **This repo → main** | SuperDev skill changes land on `main` (`git push origin main`). No PR unless asked. |
-| **Never skip / never stop early** | Untestable AC blocks code. A 5.5 audit is not a status report — it continues through prove + PR. |
+| **Never skip / never stop mid-lane** | Untestable AC blocks code. Path 5 code or a 5.5 report is not the end — continue L1 fullstack ×2, L3 Codex **and** Claude, 6a in-browser QA, **green** 6b smoke. Never "say the word." |
 | **L1 → L2 → L3 ladder** | Bundled fullstack audit → lenses → local bots. Intensity **lite** skips L3. No push until the scaled ladder is green. |
 | **Prove intensity** | `prove_intensity.py` reads the diff (not the title): lite / standard / full. Aria-label ≠ two-party disconnect. |
 | **6a live QA + 6b smoke** | Integral. SuperDev clicks every planned case (never **Not covered**), then films. Attaching SuperDev is enough. |
@@ -37,7 +37,7 @@ Shareable extraction of the SuperDev operator used on TurboVets platform work. I
 | **Work-history + contradictions** | Tracks issue/PR/worktree units; warns before acting against stale focus. |
 | **House review bar** | Sibling sweep, vacuous-test probe, tx shape, copy truth+density, over-engineering (F1–F11). |
 | **Security bar** | S-1…S-11 on auth / URL / upload / HTML / PII diffs. |
-| **Path 6 completeness** | Mergeable PR, leftover-free live QA, intensity-scaled smoke + player. |
+| **Path 6 completeness** | Mergeable PR, leftover-free live QA, **green** intensity-scaled smoke + player. All four artifacts or it is not finished. |
 
 ### The flow (same for every operator)
 

@@ -21,7 +21,7 @@ subtitle rules, and the Path 7 review draft format. Load the path you are in.
 | ------------------------------------------ | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | Unassigned issue (nobody assigned)         | Ship lane        | Assign to `$github.login`, then the issue row below. SuperDev+link authorizes this. Not a `hard_stop`.                               |
 | Issue, no AC / unclear                     | Path 3 → 4       | Grill Ready + unknowns cleared, then build through Path 6                                                                            |
-| Issue, AC ready, no PR                     | Path 5 → 5.5 → 6 | Implement → intensity-scaled audit → **open PR** → 6a QA → 6b smoke → review → merge-when-asked                                      |
+| Issue, AC ready, no PR                     | Path 5 → 5.5 → 6 | Implement → L1 fullstack ×2 → L3 Codex+Claude → **open PR** → 6a browser QA → **green** 6b smoke → merge-when-asked                  |
 | Issue with open own PR                     | Follow the PR    | Re-resolve on that PR URL; no duplicate PR                                                                                           |
 | Own draft PR                               | Path 5 / 5.5     | Finish AC → audit → ready for review → Path 6                                                                                        |
 | Own PR, CHANGES_REQUESTED / review comment | Path 5.5 → 6     | Fix P0/P1 → audit Ship → 6a leftover cases → 6b if needed → APPROVED                                                                 |
@@ -251,10 +251,11 @@ Classify intensity first (`prove_intensity.py --pretty`). Then **6a live QA**
 (`references/live-qa.md`) then **6b smoke**. Attaching SuperDev runs both —
 do not wait for a QA or fullstack skill tag.
 
-> **Completeness bar.** Path 6 is **not done** when the PR is dirty, 6a still
-> has unclicked planned cases, or (when smoke is required for this intensity)
-> there is no inline player / titles. SuperDev records 6b; a leftover **Not
-> covered** list is a miss.
+> **Completeness bar.** Path 6 is **not done** when the PR is dirty, L1/L3
+> unfinished, 6a still has unclicked planned cases, smoke is **red**, or
+> (when smoke is required) there is no inline player / titles. SuperDev
+> records 6b; a leftover **Not covered** list or "say the word" stop is a
+> miss. The four artifacts (L1, L3 Codex+Claude, 6a, green 6b) are one unit.
 
 1. Confirm Path 5.5 artifact for **this SHA**, scaled by intensity (lite: one
    pass or skip docs; standard/full: ×2 Ship; full: + stability). Stale after

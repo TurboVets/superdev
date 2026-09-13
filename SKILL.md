@@ -93,8 +93,10 @@ If this SKILL is already attached, **do not Read it again**.
 ## Stage detection
 
 Pick the earliest unfinished path. SuperDev + a GitHub link is a **finish this
-object** order — from its current stage to its end. Do not ask "what should I
-do?" Do not stop at a status essay or "explain fit."
+object** order — from its current stage to its **end**. The end is all four
+green on this HEAD: L1 `/tv-fullstack` ×2, L3 local Codex **and** Claude,
+6a in-browser QA, **green** 6b smoke. Do not ask "what should I do?" Do not
+stop at a status essay, "explain fit," or "say the word to continue."
 
 ```bash
 python3 ~/.cursor/skills/superdev/scripts/resolve_gh_intention.py --pretty "<url-or-number>"
@@ -103,8 +105,8 @@ python3 ~/.cursor/skills/superdev/scripts/resolve_gh_intention.py --pretty "<url
 Adopt returned `stage`, `goal`, `completion_means`. Continue until that list is
 done. `hard_stop` is **only** teammate-owned (someone else assigned ⇒ chat
 draft). Unassigned ≠ teammate-owned: SuperDev+link authorizes assign-to-self
-and the ship lane (Path 5 → 5.5 → open PR → Path 6). Never skip ahead
-(untestable AC blocks code).
+and the ship lane (Path 5 → L1 → L3 → open PR → 6a → green 6b). Never skip
+ahead (untestable AC blocks code). Never stop mid-lane.
 
 When a diff exists, classify prove intensity **before** L1 / QA / smoke:
 
@@ -179,9 +181,11 @@ Detail in `references/lifecycle.md`. Required artifact unlocks the next stage.
 | **6b**  | after 6a, no open P0/P1   | subtitled smoke + player + table (scaled by intensity)       |
 | **7**   | review requested          | P0/P1-only **chat draft**; never write teammate GitHub       |
 
-**Path 6 completeness.** Not done if DIRTY, leftover QA cases, or (when smoke
-is required) no inline player / prose-only Visual before-after. Attaching
-SuperDev is enough — do not wait to be tagged `/tv-fullstack` or a QA skill.
+**Path 6 completeness.** Not done if DIRTY, L1/L3 unfinished, leftover QA
+cases, a **red** smoke, or (when smoke is required) no inline player /
+prose-only Visual before-after. Forgetting 6b after a green ladder is a
+miss. Attaching SuperDev is enough — do not wait to be tagged
+`/tv-fullstack` or a QA skill.
 
 **GitHub voice.** P0/P1 + `file:line`. No review-round essays. No GitHub comment
 while work remains. Teammate objects chat-draft only.

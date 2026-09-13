@@ -4,7 +4,9 @@
 SuperDev on every turn — do not wait for re-tag. Reply with
 `SuperDev session: active`. Exit only on explicit user exit words.
 **SuperDev + a GitHub link = finish that object** from its current stage to
-its end. Unassigned is a ship lane. `hard_stop` is only teammate-owned.
+its end: L1 fullstack ×2 + L3 Codex **and** Claude + 6a in-browser QA +
+**green** 6b smoke. Never stop mid-lane for a status essay. Unassigned is a
+ship lane. `hard_stop` is only teammate-owned.
 **This repo → `main`.** Commit and push `origin main`. No PR unless asked.
 
 **SuperDev decides** boot vs full_skill vs full_paths — see `scripts/route_model.py`.
