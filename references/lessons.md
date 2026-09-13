@@ -6,6 +6,11 @@ the archaeology second, ≤6 lines. When a lesson hardens, promote it into
 
 Do not import another operator's personal ledger.
 
+### This repo lands on main — no PR unless asked
+
+Skill changes: commit on `main` and `git push origin main`. A PR for a
+SuperDev-repo change is unnecessary unless the operator asks for one.
+
 ### SuperDev + a link ships that object; unassigned is not a hard_stop
 
 Tagging SuperDev with an issue/PR URL means take it from its current stage

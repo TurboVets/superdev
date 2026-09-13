@@ -23,6 +23,7 @@ Shareable extraction of the SuperDev operator used on TurboVets platform work. I
 | **Sticky session** | One `/superdev` binds the rest of the Agent chat until `exit SuperDev`. |
 | **Token-economy boot** | Path 0 emits a small context pack and a T0–T4 model. Auto-switch is on: SuperDev Task-spawns that slug. T0 stays on the parent. Say `auto-switch off` to keep the parent for the rest of the chat. SuperDev cannot flip the Cursor picker. Durable off: `routing.auto_switch`. |
 | **GitHub link = finish it** | A pasted PR/issue/comment URL is a take-to-the-end order. SuperDev resolves the current stage and ships that object (unassigned issue = assign + ship). `hard_stop` is only teammate-owned. |
+| **This repo → main** | SuperDev skill changes land on `main` (`git push origin main`). No PR unless asked. |
 | **Never skip / never stop early** | Untestable AC blocks code. A 5.5 audit is not a status report — it continues through prove + PR. |
 | **L1 → L2 → L3 ladder** | Bundled fullstack audit → lenses → local bots. Intensity **lite** skips L3. No push until the scaled ladder is green. |
 | **Prove intensity** | `prove_intensity.py` reads the diff (not the title): lite / standard / full. Aria-label ≠ two-party disconnect. |

@@ -108,9 +108,12 @@ python3 ~/.cursor/skills/superdev/scripts/prove_intensity.py --base origin/main 
 Declare `prove_intensity` + `review_depth` + reasons. Title words ("quick
 fix") are ignored. When torn the script returns **full**. Cuts: `references/prove-intensity.md`.
 
-**Open the PR — do not ask twice** on an owned ship lane after the ladder is
-green. Merge / close / force-push / teammate writes still need an explicit ask.
-Pause words (`hold`, `don't push`) override.
+**Open the PR — do not ask twice** on an owned **product** ship lane after the
+ladder is green. Merge / close / force-push / teammate writes still need an
+explicit ask. Pause words (`hold`, `don't push`) override.
+
+**This repo lands on `main`.** SuperDev skill changes: commit on `main` and
+`git push origin main`. Do not open a PR unless asked.
 
 ## Path 5.5 — local audit gate (most PRs)
 
