@@ -91,6 +91,12 @@
         width: 100%;
         height: 100%;
       }
+      .field .reel {
+        display: none;
+        width: 100%;
+        height: auto;
+        background: #0d1117;
+      }
       .caption {
         position: absolute;
         left: 1.2rem;
@@ -341,13 +347,15 @@
           flex-direction: column;
         }
         .field canvas {
-          position: relative;
-          inset: auto;
-          width: 100%;
-          height: 62vh;
-          height: 62svh;
-          max-height: 28rem;
-          min-height: 16rem;
+          display: none;
+        }
+        .field .reel {
+          display: block;
+          height: 48vh;
+          height: 48svh;
+          max-height: 24rem;
+          object-fit: cover;
+          object-position: 32% 50%;
         }
         .caption {
           position: relative;
@@ -404,6 +412,15 @@
 
     <main class="stage">
       <div class="field">
+        <img
+          class="reel"
+          src="soldier.gif"
+          alt="SuperDev soldier running and shipping pull requests."
+          width="1012"
+          height="506"
+          decoding="async"
+          fetchpriority="high"
+        />
         <canvas
           id="field"
           role="img"
@@ -812,306 +829,313 @@
       renderOrders("standard");
       whyEl.textContent = FILES.logic.why;
 
+      const phone = matchMedia("(max-width: 900px)").matches;
       const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
       const canvas = document.getElementById("field");
-      const ctx = canvas.getContext("2d");
-      let w = 0,
-        h = 0,
-        t = 0;
+      let firePr = function (_label) {};
+      if (!phone) {
+        const ctx = canvas.getContext("2d");
+        let w = 0,
+          h = 0,
+          t = 0;
 
-      const man = {
-        x: 0.28,
-        facing: 1,
-        phase: 0,
-        act: "run",
-        actT: 0,
-        recoil: 0,
-        flash: 0,
-        muzzle: { x: 0, y: 0 },
-      };
-      const prs = [];
-      const dust = [];
-      let shipped = 0;
-
-      function resize() {
-        const r = canvas.getBoundingClientRect();
-        if (r.width < 2 || r.height < 2) return false;
-        const dpr = Math.min(devicePixelRatio || 1, 2);
-        const nextW = Math.round(r.width * dpr);
-        const nextH = Math.round(r.height * dpr);
-        w = r.width;
-        h = r.height;
-        if (canvas.width !== nextW || canvas.height !== nextH) {
-          canvas.width = nextW;
-          canvas.height = nextH;
-          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        }
-        return true;
-      }
-      function bootSize() {
-        if (!resize()) requestAnimationFrame(bootSize);
-      }
-      bootSize();
-      addEventListener("resize", resize);
-      addEventListener("orientationchange", () => setTimeout(resize, 250));
-      visualViewport?.addEventListener("resize", resize);
-
-      function loadImg(src) {
-        const img = new Image();
-        img.decoding = "async";
-        img.src = src;
-        return img;
-      }
-      function whenReady(img) {
-        if (img.complete && img.naturalWidth) return Promise.resolve(img);
-        return new Promise((resolve) => {
-          img.onload = () => resolve(img);
-          img.onerror = () => resolve(img);
-        });
-      }
-      const sprites = {
-        runA: loadImg("soldier-run.png"),
-        runB: loadImg("soldier-run-b.png"),
-        shoot: loadImg("soldier-shoot.png"),
-      };
-
-      function firePr(label) {
-        forceShoot(label);
-      }
-
-      function forceShoot(label) {
-        man.act = "shoot";
-        man.actT = 0;
-        man.recoil = 1;
-        man.flash = 1;
-        const n = label || "PR #" + (prn += 1);
-        prs.push({
-          x: man.muzzle.x || w * (man.x + 0.18 * man.facing),
-          y: man.muzzle.y || h * 0.46,
-          vx: (420 + Math.random() * 90) * man.facing,
-          vy: -70 - Math.random() * 80,
-          rot: -0.18,
-          spin: 0.8 + Math.random() * 0.6,
-          label: n,
-          age: 0,
-          land: false,
-        });
-        shipped += 1;
-      }
-
-      canvas.addEventListener("click", () => {
-        forceShoot("PR #" + (prn += 1));
-      });
-
-      function drawPr(p) {
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rot);
-        ctx.globalAlpha = p.land ? 0.92 : 1;
-        ctx.fillStyle = "#f4ead4";
-        ctx.strokeStyle = "#e3a85a";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        if (ctx.roundRect) ctx.roundRect(-52, -18, 104, 36, 6);
-        else ctx.rect(-52, -18, 104, 36);
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = "#1a7f4a";
-        ctx.beginPath();
-        if (ctx.roundRect) ctx.roundRect(-48, -14, 28, 28, 4);
-        else ctx.rect(-48, -14, 28, 28);
-        ctx.fill();
-        ctx.strokeStyle = "#f4ead4";
-        ctx.lineWidth = 2.4;
-        ctx.beginPath();
-        ctx.moveTo(-40, 0);
-        ctx.lineTo(-36, 6);
-        ctx.lineTo(-26, -6);
-        ctx.stroke();
-        ctx.fillStyle = "#1a1208";
-        ctx.font = "700 11px 'IBM Plex Mono', monospace";
-        ctx.textAlign = "left";
-        ctx.fillText("MERGED", -14, -2);
-        ctx.font = "500 10px 'IBM Plex Mono', monospace";
-        ctx.fillStyle = "#6a5a40";
-        const tag = p.label.length > 14 ? p.label.slice(0, 13) + "…" : p.label;
-        ctx.fillText(tag, -14, 12);
-        ctx.restore();
-      }
-
-      function sprite() {
-        if (man.act === "shoot") return sprites.shoot;
-        return Math.sin(man.phase) > 0 ? sprites.runA : sprites.runB;
-      }
-
-      function drawSoldier() {
-        const img = sprite();
-        if (!img.complete || !img.naturalWidth) {
-          ctx.fillStyle = "rgba(227,168,90,0.22)";
-          ctx.beginPath();
-          ctx.ellipse(w * man.x, h * 0.88, 34, 9, 0, 0, Math.PI * 2);
-          ctx.fill();
-          return;
-        }
-        const shoot = man.act === "shoot";
-        const s = Math.sin(man.phase);
-        const narrow = w < 720;
-        const aspect = img.naturalWidth / img.naturalHeight;
-        const ih = Math.min(
-          h * (narrow ? 0.66 : 0.78),
-          (w * (narrow ? 0.48 : 0.55)) / aspect,
-        );
-        const iw = ih * aspect;
-        const ground = h * (narrow ? 0.9 : 0.78);
-        const bob = shoot
-          ? 6 + man.recoil * 10
-          : Math.abs(s) * (level === "full" ? 16 : 11);
-        const lean = shoot ? -0.03 * man.facing : s * 0.035;
-
-        ctx.fillStyle = "rgba(227,168,90,0.14)";
-        ctx.beginPath();
-        ctx.ellipse(w * man.x, ground + 8, iw * 0.28, 12, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.save();
-        ctx.translate(w * man.x, ground - bob);
-        ctx.scale(man.facing, 1);
-        ctx.rotate(lean);
-        ctx.drawImage(img, -iw * 0.48, -ih, iw, ih);
-        if (man.flash > 0.12) {
-          ctx.globalAlpha = man.flash;
-          ctx.fillStyle = "#fff3c0";
-          ctx.beginPath();
-          ctx.moveTo(iw * 0.36, -ih * 0.58);
-          ctx.lineTo(iw * 0.58, -ih * 0.7);
-          ctx.lineTo(iw * 0.42, -ih * 0.56);
-          ctx.lineTo(iw * 0.58, -ih * 0.42);
-          ctx.closePath();
-          ctx.fill();
-          ctx.globalAlpha = 1;
-        }
-        ctx.restore();
-
-        man.muzzle = {
-          x: w * man.x + man.facing * iw * 0.34,
-          y: ground - bob - ih * 0.56,
+        const man = {
+          x: 0.28,
+          facing: 1,
+          phase: 0,
+          act: "run",
+          actT: 0,
+          recoil: 0,
+          flash: 0,
+          muzzle: { x: 0, y: 0 },
         };
+        const prs = [];
+        const dust = [];
+        let shipped = 0;
 
-        if (!shoot && !reduced && Math.abs(s) > 0.82) {
-          dust.push({
-            x: w * man.x - man.facing * 18,
-            y: ground + 4,
-            vx: -man.facing * 50,
-            vy: -24,
-            a: 1,
+        function resize() {
+          const r = canvas.getBoundingClientRect();
+          if (r.width < 2 || r.height < 2) return false;
+          const dpr = Math.min(devicePixelRatio || 1, 2);
+          const nextW = Math.round(r.width * dpr);
+          const nextH = Math.round(r.height * dpr);
+          w = r.width;
+          h = r.height;
+          if (canvas.width !== nextW || canvas.height !== nextH) {
+            canvas.width = nextW;
+            canvas.height = nextH;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          }
+          return true;
+        }
+        function bootSize() {
+          if (!resize()) requestAnimationFrame(bootSize);
+        }
+        bootSize();
+        addEventListener("resize", resize);
+        addEventListener("orientationchange", () => setTimeout(resize, 250));
+        visualViewport?.addEventListener("resize", resize);
+
+        function loadImg(src) {
+          const img = new Image();
+          img.decoding = "async";
+          img.src = src;
+          return img;
+        }
+        function whenReady(img) {
+          if (img.complete && img.naturalWidth) return Promise.resolve(img);
+          return new Promise((resolve) => {
+            img.onload = () => resolve(img);
+            img.onerror = () => resolve(img);
           });
         }
-      }
+        const sprites = {
+          runA: loadImg("soldier-run.png"),
+          runB: loadImg("soldier-run-b.png"),
+          shoot: loadImg("soldier-shoot.png"),
+        };
 
-      function step(dt) {
-        const pace = level === "full" ? 2.15 : level === "lite" ? 0.7 : 1.25;
-        const runGap = level === "full" ? 0.55 : level === "lite" ? 1.8 : 1.05;
-        const shootFor = 0.28;
-        man.actT += dt;
-        man.recoil = Math.max(0, man.recoil - dt * 4.2);
-        man.flash = Math.max(0, man.flash - dt * 5.5);
+        firePr = function (label) {
+          forceShoot(label);
+        };
 
-        if (man.act === "run") {
-          man.phase += dt * (level === "full" ? 14 : level === "lite" ? 6 : 10);
-          man.x += man.facing * 0.09 * pace * dt;
-          if (man.x > 0.58) man.facing = -1;
-          if (man.x < 0.22) man.facing = 1;
-          if (man.actT > runGap) {
-            man.act = "shoot";
-            man.actT = 0;
-            man.recoil = 1;
-            man.flash = 1;
-            prs.push({
-              x: man.muzzle.x,
-              y: man.muzzle.y,
-              vx: (level === "full" ? 520 : 400) * (man.facing || 1),
-              vy: -80 - Math.random() * 70,
-              rot: -0.2,
-              spin: 1,
-              label: "PR #" + (prn += 1),
-              age: 0,
-              land: false,
-            });
-            shipped += 1;
-          }
-        } else if (man.actT > shootFor) {
-          man.act = "run";
+        function forceShoot(label) {
+          man.act = "shoot";
           man.actT = 0;
+          man.recoil = 1;
+          man.flash = 1;
+          const n = label || "PR #" + (prn += 1);
+          prs.push({
+            x: man.muzzle.x || w * (man.x + 0.18 * man.facing),
+            y: man.muzzle.y || h * 0.46,
+            vx: (420 + Math.random() * 90) * man.facing,
+            vy: -70 - Math.random() * 80,
+            rot: -0.18,
+            spin: 0.8 + Math.random() * 0.6,
+            label: n,
+            age: 0,
+            land: false,
+          });
+          shipped += 1;
         }
 
-        prs.forEach((p) => {
-          if (p.land) return;
-          p.age += dt;
-          p.x += p.vx * dt;
-          p.y += p.vy * dt;
-          p.vy += 520 * dt;
-          p.rot += p.spin * dt;
-          const pileX = w * 0.78;
-          const pileY = h * 0.7 - Math.min(shipped, 8) * 8;
-          if (p.y > pileY && p.x > w * 0.55) {
-            p.land = true;
-            p.x = pileX + (Math.random() - 0.5) * 36;
-            p.y = pileY;
-            p.rot = (Math.random() - 0.5) * 0.35;
-          }
-          if (p.x > w + 80 || p.y > h + 40) p.land = true;
+        canvas.addEventListener("click", () => {
+          forceShoot("PR #" + (prn += 1));
         });
-        if (prs.length > 18) prs.splice(0, prs.length - 18);
 
-        dust.forEach((d) => {
-          d.x += d.vx * dt;
-          d.y += d.vy * dt;
-          d.a -= dt * 2.4;
-        });
-        for (let i = dust.length - 1; i >= 0; i -= 1) {
-          if (dust[i].a <= 0) dust.splice(i, 1);
-        }
-      }
-
-      function drawHud() {
-        ctx.fillStyle = "rgba(227,168,90,0.85)";
-        ctx.font = "500 12px 'IBM Plex Mono', monospace";
-        ctx.textAlign = "left";
-        const hudY = w < 720 ? 28 : 64;
-        ctx.fillText(shipped + " shipped", 22, hudY);
-        ctx.fillStyle = "rgba(227,168,90,0.4)";
-        ctx.fillText(MOVE[level], 22, hudY + 18);
-      }
-
-      function frame() {
-        const dt = reduced ? 0 : 0.016;
-        ctx.clearRect(0, 0, w, h);
-        if (!reduced) step(dt);
-        dust.forEach((d) => {
-          ctx.fillStyle = "rgba(227,168,90," + d.a * 0.25 + ")";
+        function drawPr(p) {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.globalAlpha = p.land ? 0.92 : 1;
+          ctx.fillStyle = "#f4ead4";
+          ctx.strokeStyle = "#e3a85a";
+          ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.arc(d.x, d.y, 7, 0, Math.PI * 2);
+          if (ctx.roundRect) ctx.roundRect(-52, -18, 104, 36, 6);
+          else ctx.rect(-52, -18, 104, 36);
           ctx.fill();
-        });
-        drawSoldier();
-        prs.forEach(drawPr);
-        drawHud();
-        if (!reduced) {
-          t += dt;
-          requestAnimationFrame(frame);
+          ctx.stroke();
+          ctx.fillStyle = "#1a7f4a";
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(-48, -14, 28, 28, 4);
+          else ctx.rect(-48, -14, 28, 28);
+          ctx.fill();
+          ctx.strokeStyle = "#f4ead4";
+          ctx.lineWidth = 2.4;
+          ctx.beginPath();
+          ctx.moveTo(-40, 0);
+          ctx.lineTo(-36, 6);
+          ctx.lineTo(-26, -6);
+          ctx.stroke();
+          ctx.fillStyle = "#1a1208";
+          ctx.font = "700 11px 'IBM Plex Mono', monospace";
+          ctx.textAlign = "left";
+          ctx.fillText("MERGED", -14, -2);
+          ctx.font = "500 10px 'IBM Plex Mono', monospace";
+          ctx.fillStyle = "#6a5a40";
+          const tag =
+            p.label.length > 14 ? p.label.slice(0, 13) + "…" : p.label;
+          ctx.fillText(tag, -14, 12);
+          ctx.restore();
         }
-      }
-      frame();
-      Promise.all(Object.values(sprites).map(whenReady)).then(() => {
-        resize();
-        if (reduced) frame();
-      });
-      const qs = new URLSearchParams(location.search);
-      if (qs.has("reel") || qs.has("readme")) {
-        document.body.classList.add("reel");
-        if (qs.has("readme")) document.body.classList.add("readme");
-        resize();
-        setLevel("full", FILES.guard.why);
+
+        function sprite() {
+          if (man.act === "shoot") return sprites.shoot;
+          return Math.sin(man.phase) > 0 ? sprites.runA : sprites.runB;
+        }
+
+        function drawSoldier() {
+          const img = sprite();
+          if (!img.complete || !img.naturalWidth) {
+            ctx.fillStyle = "rgba(227,168,90,0.22)";
+            ctx.beginPath();
+            ctx.ellipse(w * man.x, h * 0.88, 34, 9, 0, 0, Math.PI * 2);
+            ctx.fill();
+            return;
+          }
+          const shoot = man.act === "shoot";
+          const s = Math.sin(man.phase);
+          const narrow = w < 720;
+          const aspect = img.naturalWidth / img.naturalHeight;
+          const ih = Math.min(
+            h * (narrow ? 0.66 : 0.78),
+            (w * (narrow ? 0.48 : 0.55)) / aspect,
+          );
+          const iw = ih * aspect;
+          const ground = h * (narrow ? 0.9 : 0.78);
+          const bob = shoot
+            ? 6 + man.recoil * 10
+            : Math.abs(s) * (level === "full" ? 16 : 11);
+          const lean = shoot ? -0.03 * man.facing : s * 0.035;
+
+          ctx.fillStyle = "rgba(227,168,90,0.14)";
+          ctx.beginPath();
+          ctx.ellipse(w * man.x, ground + 8, iw * 0.28, 12, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.save();
+          ctx.translate(w * man.x, ground - bob);
+          ctx.scale(man.facing, 1);
+          ctx.rotate(lean);
+          ctx.drawImage(img, -iw * 0.48, -ih, iw, ih);
+          if (man.flash > 0.12) {
+            ctx.globalAlpha = man.flash;
+            ctx.fillStyle = "#fff3c0";
+            ctx.beginPath();
+            ctx.moveTo(iw * 0.36, -ih * 0.58);
+            ctx.lineTo(iw * 0.58, -ih * 0.7);
+            ctx.lineTo(iw * 0.42, -ih * 0.56);
+            ctx.lineTo(iw * 0.58, -ih * 0.42);
+            ctx.closePath();
+            ctx.fill();
+            ctx.globalAlpha = 1;
+          }
+          ctx.restore();
+
+          man.muzzle = {
+            x: w * man.x + man.facing * iw * 0.34,
+            y: ground - bob - ih * 0.56,
+          };
+
+          if (!shoot && !reduced && Math.abs(s) > 0.82) {
+            dust.push({
+              x: w * man.x - man.facing * 18,
+              y: ground + 4,
+              vx: -man.facing * 50,
+              vy: -24,
+              a: 1,
+            });
+          }
+        }
+
+        function step(dt) {
+          const pace = level === "full" ? 2.15 : level === "lite" ? 0.7 : 1.25;
+          const runGap =
+            level === "full" ? 0.55 : level === "lite" ? 1.8 : 1.05;
+          const shootFor = 0.28;
+          man.actT += dt;
+          man.recoil = Math.max(0, man.recoil - dt * 4.2);
+          man.flash = Math.max(0, man.flash - dt * 5.5);
+
+          if (man.act === "run") {
+            man.phase +=
+              dt * (level === "full" ? 14 : level === "lite" ? 6 : 10);
+            man.x += man.facing * 0.09 * pace * dt;
+            if (man.x > 0.58) man.facing = -1;
+            if (man.x < 0.22) man.facing = 1;
+            if (man.actT > runGap) {
+              man.act = "shoot";
+              man.actT = 0;
+              man.recoil = 1;
+              man.flash = 1;
+              prs.push({
+                x: man.muzzle.x,
+                y: man.muzzle.y,
+                vx: (level === "full" ? 520 : 400) * (man.facing || 1),
+                vy: -80 - Math.random() * 70,
+                rot: -0.2,
+                spin: 1,
+                label: "PR #" + (prn += 1),
+                age: 0,
+                land: false,
+              });
+              shipped += 1;
+            }
+          } else if (man.actT > shootFor) {
+            man.act = "run";
+            man.actT = 0;
+          }
+
+          prs.forEach((p) => {
+            if (p.land) return;
+            p.age += dt;
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.vy += 520 * dt;
+            p.rot += p.spin * dt;
+            const pileX = w * 0.78;
+            const pileY = h * 0.7 - Math.min(shipped, 8) * 8;
+            if (p.y > pileY && p.x > w * 0.55) {
+              p.land = true;
+              p.x = pileX + (Math.random() - 0.5) * 36;
+              p.y = pileY;
+              p.rot = (Math.random() - 0.5) * 0.35;
+            }
+            if (p.x > w + 80 || p.y > h + 40) p.land = true;
+          });
+          if (prs.length > 18) prs.splice(0, prs.length - 18);
+
+          dust.forEach((d) => {
+            d.x += d.vx * dt;
+            d.y += d.vy * dt;
+            d.a -= dt * 2.4;
+          });
+          for (let i = dust.length - 1; i >= 0; i -= 1) {
+            if (dust[i].a <= 0) dust.splice(i, 1);
+          }
+        }
+
+        function drawHud() {
+          ctx.fillStyle = "rgba(227,168,90,0.85)";
+          ctx.font = "500 12px 'IBM Plex Mono', monospace";
+          ctx.textAlign = "left";
+          const hudY = w < 720 ? 28 : 64;
+          ctx.fillText(shipped + " shipped", 22, hudY);
+          ctx.fillStyle = "rgba(227,168,90,0.4)";
+          ctx.fillText(MOVE[level], 22, hudY + 18);
+        }
+
+        function frame() {
+          const dt = reduced ? 0 : 0.016;
+          ctx.clearRect(0, 0, w, h);
+          if (!reduced) step(dt);
+          dust.forEach((d) => {
+            ctx.fillStyle = "rgba(227,168,90," + d.a * 0.25 + ")";
+            ctx.beginPath();
+            ctx.arc(d.x, d.y, 7, 0, Math.PI * 2);
+            ctx.fill();
+          });
+          drawSoldier();
+          prs.forEach(drawPr);
+          drawHud();
+          if (!reduced) {
+            t += dt;
+            requestAnimationFrame(frame);
+          }
+        }
+        frame();
+        Promise.all(Object.values(sprites).map(whenReady)).then(() => {
+          resize();
+          if (reduced) frame();
+        });
+        const qs = new URLSearchParams(location.search);
+        if (qs.has("reel") || qs.has("readme")) {
+          document.body.classList.add("reel");
+          if (qs.has("readme")) document.body.classList.add("readme");
+          resize();
+          setLevel("full", FILES.guard.why);
+        }
       }
     </script>
   </body>
