@@ -20,12 +20,12 @@ subtitle rules, and the Path 7 review draft format. Load the path you are in.
 | Link resolves to (examples)                | Stage            | Completion means (summary)                                                                                                           |
 | ------------------------------------------ | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | Issue, no AC / unclear                     | Path 3 → 4       | Grill Ready + unknowns cleared, then build                                                                                           |
-| Issue, AC ready, no PR                     | Path 5 → 5.5 → 6 | Implement → audit Ship → **commit+push+open PR** → prove/smoke → review → merge-when-asked → close                                   |
+| Issue, AC ready, no PR                     | Path 5 → 5.5 → 6 | Implement → intensity-scaled audit → **open PR** → 6a QA → 6b smoke → review → merge-when-asked                                      |
 | Issue with open own PR                     | Follow the PR    | Re-resolve on that PR URL; no duplicate PR                                                                                           |
 | Own draft PR                               | Path 5 / 5.5     | Finish AC → audit → ready for review → Path 6                                                                                        |
-| Own PR, CHANGES_REQUESTED / review comment | Path 5.5 → 6     | Fix P0/P1 → audit ×2 Ship → reply/SHA when asked → re-review → prove → APPROVED                                                      |
+| Own PR, CHANGES_REQUESTED / review comment | Path 5.5 → 6     | Fix P0/P1 → audit Ship → 6a leftover cases → 6b if needed → APPROVED                                                                 |
 | Own PR, checks failing                     | Path 5.5 or 6    | Root-cause code vs infra (route repo `ci-failure-analysis` / `cd-failure-analysis`) → green or evidenced triage → continue ship lane |
-| Own PR, APPROVED + green                   | Path 6           | Smoke if needed; merge **only** when explicitly asked; focus hygiene                                                                 |
+| Own PR, APPROVED + green                   | Path 6           | Intensity-scaled 6a/6b if still owed; merge **only** when explicitly asked                                                           |
 | Teammate PR / comment                      | Path 7           | Chat-only P0/P1 draft; never write their GitHub objects                                                                              |
 
 ### Path 1 — Pick
@@ -243,16 +243,18 @@ Follow-up tickets inherit the 2PRD via separate worktrees (`harness` work log).
 
 Use when a branch is approaching reviewability **and Path 5.5 is green**.
 
-> **Completeness bar (non-skippable — #9272 miss).** Path 6 is **not done**
-> when the PR exists but is dirty, has no smoke player, has prose-only
-> Visual before-after, or the recording lacks on-screen titles/subtitles.
-> Skills already exist (`tv-smoke-test`, `pr-asset-upload`, `tv-fullstack`);
-> SuperDev’s job is to **run them before declaring ship complete**, not
-> stop at “PR opened / audit Ship / status wrap.”
+Classify intensity first (`prove_intensity.py --pretty`). Then **6a live QA**
+(`references/live-qa.md`) then **6b smoke**. Attaching SuperDev runs both —
+do not wait for a QA or fullstack skill tag.
 
-1. Confirm Path 5.5 artifact: local `tv-fullstack` ×2+ Ship (cite verdict).
-   If missing or stale after new commits, re-run Path 5.5 first — do not
-   smoke or push on an unaudited head.
+> **Completeness bar.** Path 6 is **not done** when the PR is dirty, 6a still
+> has unclicked planned cases, or (when smoke is required for this intensity)
+> there is no inline player / titles. SuperDev records 6b; a leftover **Not
+> covered** list is a miss.
+
+1. Confirm Path 5.5 artifact for **this SHA**, scaled by intensity (lite: one
+   pass or skip docs; standard/full: ×2 Ship; full: + stability). Stale after
+   new commits ⇒ re-run 5.5. Do not QA or film on an unaudited head.
 2. Objective gates: lint 0 errors / 0 new warnings, tests, format, schema,
    migrations, no `studio`. Plus the house gates below — rules and citations
    live in `references/review-bar.md` F7/F9, not restated here:
@@ -287,8 +289,13 @@ Use when a branch is approaching reviewability **and Path 5.5 is green**.
    while work remains (smoke, CI, MCP, audit). A comment is only for a
    finished unit — short bullets, never a timeline essay or "still need X"
    (#9373, #9562). Remaining-work status stays in Agent chat.
-5. User-visible smoke (`tv-smoke-test` + `pr-asset-upload`) — **mandatory**
-   unless the PR explicitly documents “N/A — no user-visible UI change”:
+5. **6a live QA** — click the plan (`references/live-qa.md`). Intensity
+   scales both-sides vs one control. Never post **Not covered**. P0/P1 ⇒
+   Path 5, not 6b.
+6. **6b smoke** (`skills.smoke` + upload) when intensity requires it
+   (lite aria/docs: skip; else one clip; full: both sides). Hold the result;
+   login off-camera; replace the old player. Skip only when the PR documents
+   “N/A — no user-visible UI change” **or** intensity says skip:
    - MP4, **before vs after** (real checkout of base/`main` + branch — never
      fake), real product-line usage, slow, synthetic cursor.
    - **Titles + subtitles burned into the video** (not just the PR table):
@@ -312,7 +319,7 @@ Use when a branch is approaching reviewability **and Path 5.5 is green**.
      Browser** (`cursor-ide-browser`) — never Brave / system-browser Keychain
      decrypt. If that MCP is not in the session catalog, stop and ask the operator
      to enable Browser rather than improvising another browser.
-6. **Shepherd** (Brandon/Nick): drive CI + bot comments to green. **Never
+7. **Shepherd** (Brandon/Nick): drive CI + bot comments to green. **Never
    assign/request reviewers** unless the operator names them this turn. Route
    `cd-failure-analysis` / `pr-merge-watcher` — do not improvise
    TurboDispatch. **Merge only when explicitly asked.** Bot triage by
@@ -327,14 +334,13 @@ Use when a branch is approaching reviewability **and Path 5.5 is green**.
    `instance:idle-stop` to keep). If a `/coder-box` was used, teardown the
    box — EC2 leak otherwise.
 
-**Path 6 exit checklist** (all must be true before “done” on a user-visible
-own PR):
+**Path 6 exit checklist** (scaled by `prove_intensity.py`):
 
-- [ ] Path 5.5 Ship on current head
+- [ ] Intensity declared from the diff (not the title)
+- [ ] Path 5.5 Ship on current head (or lite skip said out loud)
 - [ ] `mergeable: MERGEABLE` (conflicts resolved)
-- [ ] Subtitled before/after smoke MP4 recorded
-- [ ] Inline player embedded in PR description
-- [ ] Visual before-after table filled (paired with the player)
+- [ ] 6a: every planned case clicked; no **Not covered**
+- [ ] 6b: smoke + player + Visual table **unless** intensity says skip
 - [ ] Objective gates green
 
 Smoke subtitle script (drive the recording from this — burn titles on screen):

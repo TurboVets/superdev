@@ -34,7 +34,10 @@ workspace:
 # Team skills SuperDev should load. Point these at YOUR repo's skills.
 # Leave a value empty to skip that gate and say so out loud.
 skills:
-  audit: "" # e.g. tv-fullstack — Path 5.5 L1
+  # Empty = use SuperDev's bundled references/fullstack-audit.md and live-qa.md.
+  # Set a name only to also load a team leaf (e.g. tv-fullstack, tv-qa-pr-in-browser).
+  audit: "" # optional team L1 leaf; bundled seam always runs
+  qa: "" # optional team 6a leaf; bundled live-qa always runs
   frontend: "" # e.g. tv-frontend
   backend: "" # e.g. tv-backend
   smoke: "" # e.g. tv-smoke-test

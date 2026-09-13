@@ -24,8 +24,11 @@ Light → obey `boot` / `full_skill`. Heavy → obey `paths_to_run` only.
 - `intention.md` — TAG → STAMP
 - `review-bar.md` / `security-bar.md` on Path 5.5 / 7
 - `ponytail.md` on every Path 5 write (name the rung)
+- `prove_intensity.py --pretty` when a diff exists — declare before L1/QA/smoke
+- `fullstack-audit.md` + `live-qa.md` are integral (team leaves optional)
 
-No push / PR-create until the **L1→L3 ladder** is green.
+No push / PR-create until the **intensity-scaled** L1→L3 ladder is green.
+L3 skips on **lite**. 6a live QA before 6b smoke. Never **Not covered**.
 Never tag/request reviewers unless the operator names them this turn.
 Record loops after each phase so routing learns.
 Warn on HIGH/MEDIUM contradictions before ACT.

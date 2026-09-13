@@ -6,6 +6,7 @@
 | `browser_mcp_preflight.py` | Disk/live Cursor Browser MCP gap check |
 | `local-bot-review.sh` | Local Claude + Codex bot replicas before push |
 | `battle_rhythm.py` | Path 5 gates: kickoff / recon / harness / setup-green / 3-failure / deviate / smoke-script / pattern archive / promote |
+| `prove_intensity.py` | **Decides** lite / standard / full from the diff (never the title). `--pretty` / `--self-check` |
 
 Related: `scripts/rate_skills.py` (promote/tighten/demote) + `references/skill-routing.md`.
 
