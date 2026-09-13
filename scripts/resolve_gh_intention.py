@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Resolve a GitHub PR / issue / comment URL into a SuperDev stage + completion plan.
 
-When the user pastes only a GitHub link (or a link plus SuperDev), SuperDev must
-infer intention from the object itself — not ask "what should I do?"
+SuperDev + a GitHub link is a finish-this-object order: infer the current
+stage and take it to that object's end. Unassigned issues are a ship lane
+(assign + Path 5 → 6). hard_stop is only teammate-owned (someone else
+assigned). Never return "explain fit" for an unassigned or own object.
 
 Usage:
   python3 resolve_gh_intention.py <github-url-or-number>
@@ -134,6 +136,14 @@ def is_mine(author: str | None, assignees: list[str] | None = None) -> bool:
     if assignees and any(a.lower() == OWNER_LOGIN.lower() for a in assignees):
         return True
     return False
+
+
+def teammate_owned(assignees: list[str] | None) -> bool:
+    """Someone else is assigned and we are not. Unassigned is a ship lane."""
+    names = [a.lower() for a in (assignees or []) if a]
+    if not names:
+        return False
+    return OWNER_LOGIN.lower() not in names
 
 
 def checks_summary(repo: str, number: int) -> dict[str, Any]:
@@ -452,7 +462,12 @@ def classify_pr(pr: dict[str, Any], checks: dict[str, Any], focus_comment: dict 
     }
 
 
-def classify_issue(issue: dict[str, Any], focus_comment: dict | None) -> dict[str, Any]:
+def classify_issue(
+    issue: dict[str, Any],
+    focus_comment: dict | None,
+    *,
+    open_prs: list | None = None,
+) -> dict[str, Any]:
     author = (issue.get("author") or {}).get("login")
     assignees = [a.get("login") for a in (issue.get("assignees") or []) if a.get("login")]
     mine = is_mine(author, assignees)
@@ -464,35 +479,39 @@ def classify_issue(issue: dict[str, Any], focus_comment: dict | None) -> dict[st
 
     ac_markers = len(re.findall(r"^\s*[-*]\s*\[[ xX]\]", body, re.M))
     has_ac = ac_markers >= 2 or "acceptance criteria" in body.lower()
-    open_prs = []
-    # linked PRs via timeline is expensive; use search
-    search = gh_json(
-        [
-            "gh",
-            "pr",
-            "list",
-            "--repo",
-            DEFAULT_REPO if "repo" not in (issue or {}) else (issue.get("url") or "").split("github.com/")[-1].split("/issues")[0] or DEFAULT_REPO,
-            "--search",
-            f"{issue.get('number')} in:title,body",
-            "--state",
-            "open",
-            "--json",
-            "number,title,author,url,reviewDecision,isDraft",
-            "--limit",
-            "10",
-        ]
-    )
-    if isinstance(search, list):
-        open_prs = search
+    if open_prs is None:
+        search = gh_json(
+            [
+                "gh",
+                "pr",
+                "list",
+                "--repo",
+                DEFAULT_REPO
+                if "repo" not in (issue or {})
+                else (issue.get("url") or "").split("github.com/")[-1].split("/issues")[0]
+                or DEFAULT_REPO,
+                "--search",
+                f"{issue.get('number')} in:title,body",
+                "--state",
+                "open",
+                "--json",
+                "number,title,author,url,reviewDecision,isDraft",
+                "--limit",
+                "10",
+            ]
+        )
+        open_prs = search if isinstance(search, list) else []
 
     hard_stop = None
-    if not mine and state == "OPEN":
-        hard_stop = f"Issue not assigned to {OWNER_LOGIN or 'github.login'} — chat advice only; no gh write"
-        stage = "Path 3 Grill"
-        goal = "status"
-        completion = ["Explain fit/ownership in chat; do not self-assign unless asked"]
-        next_actions = ["Compare to sprint waterfall + lane; draft recommendation"]
+    if teammate_owned(assignees) and state == "OPEN":
+        hard_stop = "Teammate-owned issue — chat draft only; no gh write"
+        stage = "Path 7 Review"
+        goal = "review_pr"
+        completion = [
+            "Draft P0/P1 / fit in chat only (never write their GitHub objects)",
+            "STAMP session-log",
+        ]
+        next_actions = ["Chat-only; do not assign, comment, or branch"]
     elif state == "CLOSED":
         stage = "Path 1 Pick"
         goal = "status"
@@ -538,8 +557,13 @@ def classify_issue(issue: dict[str, Any], focus_comment: dict | None) -> dict[st
             "After Path 5.5 Ship: open the PR before status-only wrap-up",
         ]
 
-    if focus_comment and not focus_comment.get("missing") and mine:
+    if focus_comment and not focus_comment.get("missing") and (mine or not teammate_owned(assignees)):
         next_actions.insert(0, "Incorporate the linked comment into grill/build plan")
+    if state == "OPEN" and not teammate_owned(assignees) and not mine:
+        next_actions.insert(
+            0,
+            f"Assign to {OWNER_LOGIN} (SuperDev+link authorizes the ship lane)",
+        )
 
     return {
         "object": "issue",
@@ -669,12 +693,57 @@ def resolve(raw: str) -> dict[str, Any]:
     return result
 
 
+def _self_check() -> int:
+    assert teammate_owned([]) is False
+    assert teammate_owned(["ccarsey-tv"]) is True
+    if OWNER_LOGIN:
+        assert teammate_owned([OWNER_LOGIN]) is False
+        assert teammate_owned(["ccarsey-tv", OWNER_LOGIN]) is False
+    unassigned = classify_issue(
+        {
+            "number": 8043,
+            "title": "Buddy Letter",
+            "body": "## Acceptance Criteria\n- Veteran-initiated letter\n- Tracked like requested",
+            "state": "OPEN",
+            "author": {"login": "nchebatTV"},
+            "assignees": [],
+            "labels": [],
+            "url": "https://github.com/TurboVets/platform/issues/8043",
+        },
+        None,
+        open_prs=[],
+    )
+    assert unassigned["hard_stop"] is None
+    assert unassigned["goal"] != "status"
+    assert "Explain fit" not in " ".join(unassigned["completion_means"])
+    theirs = classify_issue(
+        {
+            "number": 1,
+            "title": "theirs",
+            "body": "## Acceptance Criteria\n- a\n- b",
+            "state": "OPEN",
+            "author": {"login": "ccarsey-tv"},
+            "assignees": [{"login": "ccarsey-tv"}],
+            "labels": [],
+            "url": "https://github.com/TurboVets/platform/issues/1",
+        },
+        None,
+        open_prs=[],
+    )
+    assert theirs["hard_stop"]
+    print("self-check ok")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("url", nargs="?", help="GitHub PR/issue/comment URL or number")
     parser.add_argument("--url", dest="url_flag", help="GitHub URL (alternative to positional)")
     parser.add_argument("--pretty", action="store_true", help="Indent JSON")
+    parser.add_argument("--self-check", action="store_true")
     args = parser.parse_args()
+    if args.self_check:
+        return _self_check()
     raw = args.url_flag or args.url
     if not raw:
         parser.error("provide a GitHub URL or number")

@@ -6,6 +6,17 @@ the archaeology second, ≤6 lines. When a lesson hardens, promote it into
 
 Do not import another operator's personal ledger.
 
+### SuperDev + a link ships that object; unassigned is not a hard_stop
+
+Tagging SuperDev with an issue/PR URL means take it from its current stage
+to Path 6. `hard_stop` is only teammate-owned (someone else assigned).
+Unassigned is a ship lane — assign + complete. Never "explain fit."
+
+### Do not wire a 1Password MCP until the token is already in Cursor
+
+BugTrace was evaluated, wired as optional Path 5 K2, then ripped out — vault
+unlock blocked connect. `precedent_lookup` stays the only K2 recon.
+
 ### Chat tags lose to the push
 
 After every push / PR-create, `reconcile_push_intention.py`. If 6a/6b/skill

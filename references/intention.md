@@ -87,9 +87,11 @@ frustrated / meta) is retired. New contract:
             python3 ~/.cursor/skills/superdev/state/scripts/resolve_gh_intention.py \
               --pretty "<url>"
             Adopt stage / goal / completion_means / next_actions / hard_stop
-            as the authoritative intention for this turn. Comment fragments
-            bias the ask (fix/reply/smoke/CI) but completion stays the
-            parent object’s ship/review lifecycle.
+            as the authoritative intention for this turn. SuperDev + link
+            = finish that object from its current stage to its end
+            (unassigned issue = assign + ship). hard_stop is teammate-
+            owned only. Comment fragments bias the ask (fix/reply/smoke/CI)
+            but completion stays the parent object’s ship/review lifecycle.
 2. REPLAY   Read intention-model.md + last 20–50 prompt-history rows
             (`record_intention.py --replay --limit 50`).
 3. MATCH    If the same / near-same ask appears in the last 5–20 prompts:
@@ -101,8 +103,9 @@ frustrated / meta) is retired. New contract:
             Meta-skill asks always adapt; neutral asks still teach
             (anticipation gaps, memory gaps, calibration signals).
 5. DELIVER  Obey the delivery contract from affect + matched standing themes
-            + GH resolver completion_means. Continue stage→completion;
-            do not stop at diagnosis-only unless hard_stop or user pauses.
+            + GH resolver completion_means. Continue stage→completion.
+            Diagnosis-only only on teammate hard_stop or pause words.
+            Never "explain fit" on an unassigned or own object.
 6. STAMP    Append/update prompt-history; re-distill intention-model.md;
             session-log the intention tags + GH stage resolution applied;
             `--update`/`--close` work-history when the unit’s stage/status
@@ -129,8 +132,9 @@ frustrated / meta) is retired. New contract:
 - When meta (“modify SuperDev / memory / skills”) → Path 5 on the skill files
   themselves; prove by replaying the new INTENT step.
 - When a **GitHub link alone** is the prompt → intention is fully determined
-  by `resolve_gh_intention.py`; continue that stage to completion without
-  asking for clarification.
+  by `resolve_gh_intention.py`; take that object from its current stage to
+  its end (Path 6 for own/unassigned; Path 7 chat-draft for teammate-owned)
+  without asking for clarification.
 
 Narrow skip: pure one-shot factual lookup with no preference signal — still
 TAG + append, but skip skill edits.
