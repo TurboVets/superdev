@@ -10,6 +10,9 @@ Issue to ship. Before the PR exists.
 
 </div>
 
+<img width="2020" height="384" alt="image" src="https://github.com/user-attachments/assets/b2068993-5811-4451-a570-6c856a7a02a9" />
+
+
 Open that first. A soldier runs the field and shoots completed PRs. Click a feature on the right and it opens — what you get when you attach one skill. Try intensity (lite / standard / full). Clone from the same page.
 
 This repo is the Cursor Agent skill behind that briefing: an issue-to-ship lifecycle with a local review ladder **before** any PR exists. Per-operator identity lives in `operator.yaml`, not in the skill. The repo is public.
