@@ -11,7 +11,12 @@
       content="Issue to ship. Before the PR exists."
     />
     <meta property="og:type" content="website" />
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <meta
+      property="og:image"
+      content="https://superdev-mocha.vercel.app/plates/soldier-hero.png"
+    />
+    <link rel="icon" href="plates/soldier-mark.png" type="image/png" />
+    <link rel="preload" as="image" href="plates/soldier-hero.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -40,28 +45,16 @@
       }
       body {
         font-family: "Instrument Serif", Georgia, serif;
-        overflow-x: hidden;
       }
       body::before {
         content: "";
         position: fixed;
         inset: 0;
-        z-index: 40;
+        z-index: 30;
         pointer-events: none;
-        opacity: 0.12;
+        opacity: 0.1;
         mix-blend-mode: overlay;
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      }
-      .spot {
-        position: fixed;
-        inset: 0;
-        z-index: 1;
-        pointer-events: none;
-        background: radial-gradient(
-          700px 700px at var(--mx, 60%) var(--my, 30%),
-          rgba(227, 168, 90, 0.12),
-          transparent 55%
-        );
       }
       a {
         color: inherit;
@@ -72,79 +65,123 @@
         top: 0;
         left: 0;
         right: 0;
-        z-index: 20;
+        z-index: 40;
         display: flex;
         justify-content: space-between;
-        padding: 1.15rem 1.4rem;
+        align-items: center;
+        padding: 0.95rem 1.3rem;
         font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 0.74rem;
-        color: var(--paper);
-        text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
+        font-size: 0.8rem;
+        background: linear-gradient(180deg, rgba(5, 4, 3, 0.75), transparent);
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+      }
+      .brand img {
+        width: 22px;
+        height: 22px;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      header a:hover {
+        color: var(--copper);
       }
       .hero {
         min-height: 100svh;
         display: grid;
-        align-content: end;
-        padding: 0 1.4rem 4.5rem;
+        grid-template-columns: minmax(17rem, 0.9fr) 1.2fr;
+        align-items: stretch;
         position: relative;
         z-index: 2;
       }
-      .machine {
-        position: absolute;
-        inset: 0 0 18%;
-        pointer-events: none;
-      }
-      .machine canvas {
-        width: 100%;
-        height: 100%;
-        display: block;
+      .hero-copy {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 6rem 1.3rem 3.2rem;
       }
       h1 {
-        margin: 0 0 0.4rem;
+        margin: 0 0 0.45rem;
         font-weight: 400;
         font-style: italic;
-        font-size: clamp(5.2rem, 16vw, 12rem);
-        line-height: 0.74;
-        letter-spacing: -0.055em;
+        font-size: clamp(4.4rem, 11vw, 8.8rem);
+        line-height: 0.78;
+        letter-spacing: -0.05em;
       }
       .lede {
-        margin: 0 0 1.5rem;
+        margin: 0 0 1.4rem;
         color: var(--mute);
-        font-size: 1.35rem;
+        font-size: 1.3rem;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
       }
       .btn {
         display: inline-flex;
         align-items: center;
-        gap: 0.6rem;
-        padding: 0.82rem 1.15rem;
+        justify-content: center;
+        min-height: 2.6rem;
+        padding: 0 1.05rem;
+        border: 0;
         background: var(--copper);
         color: #1a1208;
         font-family: "IBM Plex Mono", ui-monospace, monospace;
         font-size: 0.82rem;
+        cursor: pointer;
       }
-      .btn svg {
-        width: 18px;
-        height: 10px;
-        transition: transform 0.35s ease;
+      .btn.ghost {
+        background: transparent;
+        color: var(--paper);
+        border: 1px solid rgba(244, 234, 212, 0.22);
       }
-      .btn:hover svg {
-        transform: translateX(5px);
+      .btn:hover {
+        filter: brightness(1.08);
+      }
+      .btn:focus-visible,
+      .level:focus-visible,
+      header a:focus-visible {
+        outline: 2px solid var(--copper);
+        outline-offset: 3px;
+      }
+      .soldier {
+        position: relative;
+        min-height: 100svh;
+      }
+      .soldier img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center bottom;
+        filter: drop-shadow(0 0 40px rgba(227, 168, 90, 0.18));
+      }
+      .soldier canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
       }
       .act {
         position: relative;
         min-height: 92svh;
         display: grid;
         align-content: end;
-        padding: 2rem 1.4rem 3.2rem;
+        padding: 2rem 1.3rem 3rem;
         overflow: hidden;
       }
       .act .bg {
         position: absolute;
-        inset: -4%;
-        background-size: cover;
-        background-position: center;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
         animation: ken 36s ease-in-out infinite alternate;
-        filter: saturate(1.04) contrast(1.06);
       }
       .act::after {
         content: "";
@@ -152,8 +189,8 @@
         inset: 0;
         background: linear-gradient(
           180deg,
-          transparent 35%,
-          rgba(5, 4, 3, 0.82) 88%
+          transparent 40%,
+          rgba(5, 4, 3, 0.88) 90%
         );
         pointer-events: none;
       }
@@ -163,52 +200,32 @@
         margin: 0;
         font-weight: 400;
         font-style: italic;
-        font-size: clamp(3.4rem, 10vw, 7.5rem);
-        line-height: 0.86;
+        font-size: clamp(3.2rem, 9vw, 6.8rem);
+        line-height: 0.88;
         letter-spacing: -0.04em;
         text-shadow: 0 2px 28px rgba(0, 0, 0, 0.72);
       }
       .act p {
         position: relative;
         z-index: 2;
-        margin: 0.55rem 0 0;
-        max-width: 16ch;
+        margin: 0.5rem 0 0;
+        max-width: 18ch;
         font-size: 1.25rem;
         color: #cfc3a8;
         text-shadow: 0 2px 20px rgba(0, 0, 0, 0.7);
       }
-      .orbit {
-        background-image: url("plates/plate-orbit.png");
-      }
-      .ladder {
-        background-image: url("plates/plate-ladder.png");
-        animation-duration: 32s;
-      }
-      .film {
-        background-image: url("plates/plate-film.png");
-        animation-duration: 24s;
-      }
-      .hair {
-        background-image: url("plates/plate-filament.png");
-      }
-      .seal {
-        background-image: url("plates/plate-seal.png");
-        animation-duration: 30s;
-      }
       .dial {
-        position: relative;
-        z-index: 2;
-        min-height: 92svh;
+        width: min(1100px, calc(100% - 2.6rem));
+        margin: 0 auto;
+        min-height: 88svh;
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
         gap: 2rem;
         align-items: center;
-        width: min(1100px, calc(100% - 2.8rem));
-        margin: 0 auto;
         padding: 4rem 0;
       }
       .gauge {
-        width: min(100%, 560px);
+        width: min(100%, 520px);
         justify-self: center;
       }
       .level {
@@ -216,11 +233,17 @@
         grid-template-columns: 2rem 1fr;
         gap: 1rem;
         align-items: baseline;
-        padding: 1.1rem 0;
+        width: 100%;
+        padding: 1.05rem 0;
+        border: 0;
         border-top: 1px solid rgba(244, 234, 212, 0.12);
+        background: none;
+        color: inherit;
+        text-align: left;
         cursor: pointer;
+        font: inherit;
       }
-      .level:last-child {
+      .levels .level:last-child {
         border-bottom: 1px solid rgba(244, 234, 212, 0.12);
       }
       .level i {
@@ -230,11 +253,10 @@
         color: var(--mute);
       }
       .level strong {
-        font-size: clamp(2.2rem, 5vw, 3.6rem);
+        font-size: clamp(2.1rem, 5vw, 3.4rem);
         font-weight: 400;
         font-style: italic;
         color: #3c3830;
-        transition: color 0.4s ease;
       }
       .level.is-on i {
         color: var(--copper);
@@ -243,13 +265,13 @@
         color: var(--paper);
       }
       .cmd {
-        width: min(1100px, calc(100% - 2.8rem));
-        margin: 0 auto 3rem;
+        width: min(1100px, calc(100% - 2.6rem));
+        margin: 0 auto 2.6rem;
         display: flex;
         justify-content: space-between;
         gap: 1rem;
         align-items: center;
-        padding: 1.15rem 1.2rem;
+        padding: 1.05rem 1.15rem;
         border: 1px solid rgba(227, 168, 90, 0.3);
         background: linear-gradient(
           90deg,
@@ -257,26 +279,30 @@
           transparent 55%
         );
         font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: clamp(0.74rem, 1.4vw, 0.88rem);
+        font-size: clamp(0.72rem, 1.4vw, 0.88rem);
         color: #e6d3a8;
+      }
+      .cmd code {
+        white-space: nowrap;
         overflow-x: auto;
       }
       .cmd button {
+        flex: none;
         border: 0;
         background: none;
         color: var(--copper);
         font: inherit;
-        font-size: 0.72rem;
+        font-size: 0.75rem;
         cursor: pointer;
       }
       footer {
-        width: min(1100px, calc(100% - 2.8rem));
+        width: min(1100px, calc(100% - 2.6rem));
         margin: 0 auto;
         display: flex;
         justify-content: space-between;
-        padding: 0 0 2.4rem;
+        padding: 0 0 2.2rem;
         font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 0.72rem;
+        font-size: 0.75rem;
         color: var(--mute);
       }
       #gauge-needle,
@@ -287,75 +313,85 @@
       }
       @keyframes ken {
         to {
-          transform: scale(1.045) translate(-1.2%, -0.8%);
+          transform: scale(1.04);
         }
       }
       @media (max-width: 800px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+        .soldier {
+          min-height: 72svh;
+          order: -1;
+        }
+        .hero-copy {
+          padding: 1.2rem 1.3rem 2.4rem;
+        }
         .dial {
           grid-template-columns: 1fr;
           min-height: auto;
         }
-        .machine {
-          inset: 8% 0 36%;
-        }
       }
       @media (prefers-reduced-motion: reduce) {
-        .act .bg,
-        * {
-          animation: none !important;
+        .act .bg {
+          animation: none;
         }
       }
     </style>
   </head>
   <body>
-    <div class="spot" aria-hidden="true"></div>
     <header>
-      <a href="./">SuperDev</a>
+      <a class="brand" href="./">
+        <img src="plates/soldier-mark.png" alt="" width="22" height="22" />
+        SuperDev
+      </a>
       <a href="https://github.com/TurboVets/superdev">GitHub</a>
     </header>
 
     <section class="hero">
-      <div class="machine" aria-hidden="true">
-        <canvas id="orrery"></canvas>
-      </div>
-      <div>
+      <div class="hero-copy">
         <h1>SuperDev</h1>
-        <p class="lede">Before the PR exists.</p>
-        <a class="btn" href="https://github.com/TurboVets/superdev">
-          Clone
-          <svg viewBox="0 0 18 10" fill="none" aria-hidden="true">
-            <path
-              d="M0 5h16M12 1l5 4-5 4"
-              stroke="currentColor"
-              stroke-width="1.4"
-            />
-          </svg>
-        </a>
+        <p class="lede">Ready. Before the PR exists.</p>
+        <div class="actions">
+          <a class="btn" href="https://github.com/TurboVets/superdev">Clone</a>
+          <button type="button" class="btn ghost" id="copy-hero">
+            Copy install
+          </button>
+        </div>
+      </div>
+      <div class="soldier">
+        <img
+          src="plates/soldier-hero.png"
+          alt="SuperDev as an AI soldier, standing ready."
+          width="1024"
+          height="1365"
+        />
+        <canvas id="hud" aria-hidden="true"></canvas>
       </div>
     </section>
 
     <section class="act">
-      <div class="bg orbit"></div>
+      <img class="bg orbit" src="plates/plate-orbit.png" alt="" />
       <h2>Sticky</h2>
       <p>One attach. The rest of the chat holds.</p>
     </section>
     <section class="act">
-      <div class="bg ladder"></div>
+      <img class="bg ladder" src="plates/plate-ladder.png" alt="" />
       <h2>Ladder</h2>
       <p>L1. L2. L3. Then you push.</p>
     </section>
     <section class="act">
-      <div class="bg film"></div>
+      <img class="bg film" src="plates/plate-film.png" alt="" />
       <h2>Prove</h2>
       <p>Click every case. Film the result.</p>
     </section>
     <section class="act">
-      <div class="bg hair"></div>
+      <img class="bg hair" src="plates/plate-filament.png" alt="" />
       <h2>Ponytail</h2>
       <p>The least code that works.</p>
     </section>
     <section class="act">
-      <div class="bg seal"></div>
+      <img class="bg seal" src="plates/plate-seal.png" alt="" />
       <h2>Own it</h2>
       <p>Your PR. Theirs stays theirs.</p>
     </section>
@@ -400,24 +436,21 @@
         />
         <circle cx="160" cy="160" r="5" fill="#e3a85a" />
       </svg>
-      <div>
-        <div class="level is-on" data-deg="-68" data-arc="150">
+      <div class="levels">
+        <button type="button" class="level is-on" data-deg="-68" data-arc="150">
           <i>01</i><strong>lite</strong>
-        </div>
-        <div class="level" data-deg="4" data-arc="236">
+        </button>
+        <button type="button" class="level" data-deg="4" data-arc="236">
           <i>02</i><strong>standard</strong>
-        </div>
-        <div class="level" data-deg="82" data-arc="330">
+        </button>
+        <button type="button" class="level" data-deg="82" data-arc="330">
           <i>03</i><strong>full</strong>
-        </div>
+        </button>
       </div>
     </section>
 
     <div class="cmd">
-      <code
-        >git clone https://github.com/TurboVets/superdev.git &&
-        ./install.sh</code
-      >
+      <code id="install"></code>
       <button type="button" id="copy">Copy</button>
     </div>
     <footer>
@@ -426,14 +459,49 @@
     </footer>
 
     <script>
+      const INSTALL =
+        "git clone https://github.com/TurboVets/superdev.git && ./install.sh";
+      document.getElementById("install").textContent = INSTALL;
       const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      addEventListener("pointermove", (e) => {
-        document.documentElement.style.setProperty("--mx", e.clientX + "px");
-        document.documentElement.style.setProperty("--my", e.clientY + "px");
+
+      async function copyInstall(btn) {
+        try {
+          await navigator.clipboard.writeText(INSTALL);
+        } catch {
+          const ta = document.createElement("textarea");
+          ta.value = INSTALL;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          ta.remove();
+        }
+        const label = btn.textContent;
+        btn.textContent = "Copied";
+        setTimeout(() => (btn.textContent = label), 1400);
+      }
+      document
+        .getElementById("copy")
+        .addEventListener("click", (e) => copyInstall(e.currentTarget));
+      document
+        .getElementById("copy-hero")
+        .addEventListener("click", (e) => copyInstall(e.currentTarget));
+
+      const needle = document.getElementById("gauge-needle");
+      const arc = document.getElementById("gauge-arc");
+      function setLevel(el) {
+        document
+          .querySelectorAll(".level")
+          .forEach((n) => n.classList.remove("is-on"));
+        el.classList.add("is-on");
+        needle.style.transform = "rotate(" + el.dataset.deg + "deg)";
+        arc.setAttribute("stroke-dasharray", el.dataset.arc + " 767");
+      }
+      document.querySelectorAll(".level").forEach((el) => {
+        el.addEventListener("click", () => setLevel(el));
+        el.addEventListener("pointerenter", () => setLevel(el));
       });
 
-      const nodes = ["0", "1", "2", "3", "4", "5", "5.5", "6a", "6b", "7"];
-      const canvas = document.getElementById("orrery");
+      const canvas = document.getElementById("hud");
       const ctx = canvas.getContext("2d");
       let w = 0,
         h = 0,
@@ -450,100 +518,45 @@
       resize();
       addEventListener("resize", resize);
 
-      function ring(cx, cy, rx, ry, rot, dash, a) {
-        ctx.save();
-        ctx.translate(cx, cy);
-        ctx.rotate(rot);
-        ctx.beginPath();
-        ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(227,168,90,${a})`;
-        ctx.lineWidth = 1.1;
-        ctx.setLineDash(dash);
-        ctx.stroke();
-        ctx.restore();
-      }
-
       function frame() {
         ctx.clearRect(0, 0, w, h);
-        const cx = w * 0.58,
-          cy = h * 0.46;
-        const rx = Math.min(w, h) * 0.4,
-          ry = rx * 0.4;
-        const g = ctx.createRadialGradient(cx, cy, 8, cx, cy, rx * 1.7);
-        g.addColorStop(0, "rgba(227,168,90,0.14)");
-        g.addColorStop(1, "rgba(227,168,90,0)");
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, w, h);
-        ring(cx, cy, rx * 1.22, ry * 1.4, t * 0.07, [1, 12], 0.2);
-        ring(cx, cy, rx, ry, t * 0.11, [22, 16], 0.5);
-        ring(cx, cy, rx * 0.58, ry * 0.68, -t * 0.19, [1, 7], 0.28);
-        ctx.save();
-        ctx.translate(cx, cy);
-        ctx.rotate(t * 0.11);
+        const cx = w * 0.5;
+        const cy = h * 0.42;
+        const rx = Math.min(w, h) * 0.34;
+        const ry = rx * 0.38;
+        ctx.strokeStyle = "rgba(227,168,90,0.28)";
+        ctx.lineWidth = 1;
+        ctx.setLineDash([14, 12]);
         ctx.beginPath();
-        ctx.ellipse(0, 0, rx, ry, 0, t, t + 1.15);
-        ctx.strokeStyle = "#ffd089";
-        ctx.lineWidth = 2.2;
-        ctx.shadowColor = "#e3a85a";
-        ctx.shadowBlur = 22;
+        ctx.ellipse(cx, cy, rx, ry, t * 0.08, 0, Math.PI * 2);
         ctx.stroke();
-        ctx.restore();
-        const hot = Math.floor((t * 1.5) % nodes.length);
+        ctx.setLineDash([]);
+        ctx.strokeStyle = "rgba(255,208,137,0.75)";
+        ctx.shadowColor = "#e3a85a";
+        ctx.shadowBlur = 12;
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, rx, ry, t * 0.08, t, t + 0.7);
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+        const nodes = ["0", "1", "2", "3", "4", "5", "5.5", "6a", "6b", "7"];
         nodes.forEach((label, i) => {
-          const a = (i / nodes.length) * Math.PI * 2 + t * 0.11;
+          const a = (i / nodes.length) * Math.PI * 2 + t * 0.08;
           const x = cx + Math.cos(a) * rx;
           const y = cy + Math.sin(a) * ry;
+          ctx.fillStyle = "#e3a85a";
           ctx.beginPath();
-          ctx.arc(x, y, i === hot ? 4.6 : 2.3, 0, Math.PI * 2);
-          ctx.fillStyle = i === hot ? "#ffd089" : "#e3a85a";
-          ctx.shadowColor = "#e3a85a";
-          ctx.shadowBlur = i === hot ? 16 : 0;
+          ctx.arc(x, y, 2, 0, Math.PI * 2);
           ctx.fill();
-          ctx.shadowBlur = 0;
-          ctx.font = "500 12px 'IBM Plex Mono', monospace";
-          ctx.fillStyle = "rgba(244,234,212,0.7)";
-          ctx.fillText(label, x + 9, y - 8);
+          ctx.font = "500 10px 'IBM Plex Mono', monospace";
+          ctx.fillStyle = "rgba(244,234,212,0.55)";
+          ctx.fillText(label, x + 6, y - 6);
         });
-        for (let i = 0; i < 56; i++) {
-          const a = i * 0.62 + t * 0.35;
-          ctx.fillStyle = "rgba(227,168,90,0.32)";
-          ctx.fillRect(
-            cx + Math.cos(a) * rx * 1.45 * ((i % 8) / 8),
-            cy + Math.sin(a * 1.25) * ry * 2.2 * ((i % 6) / 6),
-            1.3,
-            1.3,
-          );
-        }
         if (!reduced) {
-          t += 0.0075;
+          t += 0.008;
           requestAnimationFrame(frame);
         }
       }
       frame();
-
-      const needle = document.getElementById("gauge-needle");
-      const arc = document.getElementById("gauge-arc");
-      document.querySelectorAll(".level").forEach((el) => {
-        const on = () => {
-          document
-            .querySelectorAll(".level")
-            .forEach((n) => n.classList.remove("is-on"));
-          el.classList.add("is-on");
-          needle.style.transform = `rotate(${el.dataset.deg}deg)`;
-          arc.setAttribute("stroke-dasharray", `${el.dataset.arc} 767`);
-        };
-        el.addEventListener("pointerenter", on);
-        el.tabIndex = 0;
-      });
-
-      const copy = document.getElementById("copy");
-      copy.addEventListener("click", async () => {
-        await navigator.clipboard.writeText(
-          "git clone https://github.com/TurboVets/superdev.git && ./install.sh",
-        );
-        copy.textContent = "Copied";
-        setTimeout(() => (copy.textContent = "Copy"), 1400);
-      });
     </script>
   </body>
 </html>
