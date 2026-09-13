@@ -138,17 +138,24 @@
         align-items: center;
       }
       .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         min-height: 2.4rem;
         padding: 0 0.95rem;
-        border: 0;
+        border: 1px solid transparent;
         background: var(--copper);
         color: #1a1208;
+        line-height: 1;
         cursor: pointer;
+      }
+      a.btn {
+        color: #1a1208;
       }
       .btn.ghost {
         background: transparent;
         color: var(--paper);
-        border: 1px solid var(--line);
+        border-color: var(--line);
       }
       .btn[aria-pressed="true"] {
         border-color: var(--copper);
