@@ -6,7 +6,7 @@ Issue to ship. Before the PR exists.
 
 **Live briefing:** [https://superdev-mocha.vercel.app](https://superdev-mocha.vercel.app)
 
-<img src="docs/soldier.gif" width="100%" alt="SuperDev soldier shooting merged PRs" />
+<img src="docs/soldier.gif?v=2" width="100%" alt="SuperDev soldier shooting merged PRs" />
 
 </div>
 
@@ -21,7 +21,7 @@ Shareable extraction of the SuperDev operator used on TurboVets platform work. I
 | Quality | What it actually does |
 | ------- | --------------------- |
 | **Sticky session** | One `/superdev` binds the rest of the Agent chat until `exit SuperDev`. |
-| **Token-economy boot** | Path 0 emits a small context pack and picks a model tier (T0–T4). It does not re-read the whole skill every turn. |
+| **Token-economy boot** | Path 0 emits a small context pack and picks a model tier (T0–T4). Auto-switch (default on, session-sticky) Task-spawns that slug — it cannot flip the Cursor picker. `auto-switch off` keeps the parent model. |
 | **GitHub link = intention** | A pasted PR/issue/comment URL is enough. SuperDev resolves stage + completion means and continues. |
 | **Never skip / never stop early** | Untestable AC blocks code. A 5.5 audit is not a status report — it continues through prove + PR. |
 | **L1 → L2 → L3 ladder** | Bundled fullstack audit → lenses → local bots. Intensity **lite** skips L3. No push until the scaled ladder is green. |

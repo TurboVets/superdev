@@ -25,11 +25,15 @@ Empty `github.login` ⇒ SuperDev will not touch GitHub objects.
 ## Token economy + model routing (mandatory)
 
 **SuperDev decides** skill surface and model tier — not the user.
+Auto-switch is **on by default** (`operator.yaml` `routing.auto_switch`).
+It is a **Task spawn** on the routed slug. SuperDev cannot flip the Cursor
+model picker. Off = stay on the parent model; still print the recommendation.
 
 ```bash
 S=~/.cursor/skills/superdev
 python3 $S/scripts/emit_context_pack.py --write
 python3 $S/scripts/route_model.py --prompt "<ask>" --path "<stage>" --goal "<goals>" --pretty
+# First SuperDev turn of this chat only: add --fresh-chat
 # T1+: work history + contradictions + resources (warn before ACT)
 python3 $S/scripts/work_history.py --active
 python3 $S/scripts/check_contradictions.py
@@ -38,8 +42,14 @@ python3 $S/scripts/resource_status.py
 python3 $S/scripts/route_model.py --record --model <slug> --phase <N> --loops <n> --outcome ship|retry|fail
 ```
 
-Declare once: `phase` · `skill_surface` · `paths_to_run` · `tier` · `model` ·
-**ponytail: full|lite|ultra**.
+Session switch (sticky until `exit SuperDev` or `--fresh-chat`):
+`auto-switch off` / `keep this model` / `don't switch models` / `/autoswitch off`
+`auto-switch on` / `pick the model` / `/autoswitch on`
+or `route_model.py --auto-switch on|off`. Durable default: `routing.auto_switch`.
+
+`apply: spawn` ⇒ do this turn's work via `Task model=<slug>`. `apply: stay` ⇒ parent.
+Declare once: `phase` · `skill_surface` · `paths_to_run` · **auto-switch: on|off** ·
+`tier` · `model` · **ponytail: full|lite|ultra**.
 
 Never route below T3 on: **3 grill · 5.5 audit · local bots · 7 review** (7 is T4).
 Detail: `references/routing.md`. `--record` is not optional.
@@ -207,6 +217,7 @@ Plus the quick line scan in `references/review-bar.md`.
 ## Hard rules (absolute)
 
 - Sticky: one `/superdev` binds the **entire** Agent conversation until exit words.
+  Auto-switch is session-sticky too. First turn: `--fresh-chat`. Exit: `--auto-switch clear`.
 - Local review ladder is HARD: no push / PR-create until L1–L3 pass on that head.
 - SuperDev owns review depth. Do not ask.
 - Audit/bot forever-loop ban: stop after two consecutive Ship on the same SHA,
@@ -219,7 +230,8 @@ Plus the quick line scan in `references/review-bar.md`.
 
 ## Answer style
 
-Lead with `SuperDev session: active`, then **phase** · **skill_surface** ·
-**paths_to_run** · **tier/model** · **ponytail**. On a write turn, add **rung N**.
+Lead with `SuperDev session: active`, then **auto-switch: on|off** · **phase** ·
+**skill_surface** · **paths_to_run** · **tier/model** · **ponytail**. On a write
+turn, add **rung N**.
 PR in play ⇒ name L1/L2/L3 + `prove_intensity` + `review_depth` before GitHub writes. Path 7 drafts:
 no process theater — P0/P1 + `file:line` only.

@@ -368,6 +368,11 @@
         position: relative;
         height: 100svh;
       }
+      /* GitHub README dark (#0d1117) so the GIF does not sit in a black slab. */
+      body.readme,
+      body.readme .field {
+        background: #0d1117;
+      }
     </style>
   </head>
   <body data-level="standard">
@@ -1040,8 +1045,10 @@
         }
       }
       frame();
-      if (new URLSearchParams(location.search).has("reel")) {
+      const qs = new URLSearchParams(location.search);
+      if (qs.has("reel") || qs.has("readme")) {
         document.body.classList.add("reel");
+        if (qs.has("readme")) document.body.classList.add("readme");
         resize();
         setLevel("full", FILES.guard.why);
       }

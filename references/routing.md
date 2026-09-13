@@ -68,6 +68,21 @@ Weight → model, borrowed from `turbo-eyes`: run the high-stakes questions
 checks on the cheapest. If a check's findings consistently underperform, bump its
 weight one tier and let the model follow.
 
+## Auto-switch (session sticky)
+
+Default **on** (`operator.yaml` `routing.auto_switch: true`). SuperDev **cannot**
+flip the Cursor model dropdown. On means: when `apply: spawn`, do the work via
+`Task model=<slug>`. Off means: stay on the parent model; still print T0–T4.
+
+Precedence: chat words / `--auto-switch on|off` → `state/session.json` (24h TTL)
+→ `operator.yaml` → on. First SuperDev turn of a chat passes `--fresh-chat` so a
+leftover file does not leak. `exit SuperDev` runs `--auto-switch clear`.
+
+| Words (sticky for this chat)                                                      | Effect                      |
+| --------------------------------------------------------------------------------- | --------------------------- |
+| `auto-switch off` / `keep this model` / `don't switch models` / `/autoswitch off` | `apply: stay`               |
+| `auto-switch on` / `pick the model` / `/autoswitch on`                            | spawn when slug ≠ `inherit` |
+
 ## Learning rule
 
 After each phase, `route_model.py --record --model <slug> --phase <N> --loops <n>

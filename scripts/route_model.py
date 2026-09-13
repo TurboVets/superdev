@@ -16,6 +16,10 @@ Usage:
 
   # Show learned rankings
   python3 route_model.py --leaderboard
+
+  # Session-sticky auto-switch (Task spawn). Cannot flip the Cursor picker.
+  python3 route_model.py --auto-switch on|off|status|clear
+  python3 route_model.py --fresh-chat --prompt "..."   # first SuperDev turn
 """
 
 from __future__ import annotations
@@ -28,7 +32,13 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-from lib_paths import INTENT, ensure_state
+from lib_paths import (
+    INTENT,
+    auto_switch,
+    clear_session,
+    ensure_state,
+    set_auto_switch,
+)
 
 ensure_state()
 OUTCOMES = INTENT / "model-outcomes.jsonl"
@@ -84,6 +94,18 @@ EASY_KEYWORDS = [
     r"\b(typo|rename|lint|format|status|remind|what is|where is)\b",
     r"\b(check again|re-?check|summarize|list|mcp|browser)\b",
 ]
+
+SWITCH_OFF = (
+    r"\bauto-?switch\s+off\b",
+    r"\bkeep this model\b",
+    r"\bdon'?t switch models\b",
+    r"/autoswitch\s+off",
+)
+SWITCH_ON = (
+    r"\bauto-?switch\s+on\b",
+    r"\bpick the model\b",
+    r"/autoswitch\s+on",
+)
 
 
 def _normalize_phase(path: str) -> str:
@@ -319,7 +341,9 @@ def score(
         ],
         "reasons": reasons,
         "decision_contract": (
-            "SuperDev decides skill_surface + paths_to_run + model. "
+            "SuperDev decides skill_surface + paths_to_run + recommended model. "
+            "auto_switch on → Task-spawn on that slug (cannot flip the Cursor picker). "
+            "auto_switch off → stay on the parent model; still print the recommendation. "
             "Light → boot vs full_skill only. "
             "Heavy → listed paths only (skip the rest). "
             "Record --loops after each phase so routing learns."
@@ -331,6 +355,64 @@ def score(
             "After phase: route_model.py --record --loops N --outcome ship|retry|fail",
         ],
     }
+
+
+def detect_switch_words(prompt: str) -> str | None:
+    text = prompt or ""
+    if any(re.search(p, text, re.I) for p in SWITCH_OFF):
+        return "off"
+    if any(re.search(p, text, re.I) for p in SWITCH_ON):
+        return "on"
+    return None
+
+
+def apply_auto_switch(rec: dict, on: bool, source: str) -> dict:
+    recommended = rec.get("recommended_model") or rec["model"]
+    rec["recommended_model"] = recommended
+    rec["auto_switch"] = "on" if on else "off"
+    rec["auto_switch_source"] = source
+    if not on:
+        rec["model"] = "inherit"
+        rec["model_meta"] = MODELS["inherit"]
+        rec["apply"] = "stay"
+        rec["spawn_model"] = "inherit"
+        rec["model_action"] = (
+            "auto-switch off — stay on the parent Cursor model. "
+            f"Recommended: {recommended} (T{rec['tier']}). "
+            "SuperDev cannot flip the picker."
+        )
+        return rec
+    if recommended == "inherit":
+        rec["apply"] = "stay"
+        rec["spawn_model"] = "inherit"
+        rec["model_action"] = "T0 — stay on parent; no Task spawn."
+        return rec
+    rec["model"] = recommended
+    rec["model_meta"] = MODELS[recommended]
+    rec["apply"] = "spawn"
+    rec["spawn_model"] = recommended
+    rec["model_action"] = (
+        f"auto-switch on — do this turn's work via Task model={recommended}. "
+        "Parent chat stays on the picker model. SuperDev cannot flip the Cursor dropdown."
+    )
+    return rec
+
+
+def _self_check() -> int:
+    rec = score("fix the graphql resolver", "5", "implement")
+    on = apply_auto_switch(dict(rec), True, "default")
+    assert on["apply"] == "spawn", on
+    assert on["spawn_model"] != "inherit", on
+    off = apply_auto_switch(dict(rec), False, "session")
+    assert off["apply"] == "stay" and off["model"] == "inherit", off
+    assert off["recommended_model"] == rec["model"], off
+    t0 = apply_auto_switch(score("what is the status"), True, "default")
+    assert t0["apply"] == "stay" and t0["spawn_model"] == "inherit", t0
+    assert detect_switch_words("auto-switch off please") == "off"
+    assert detect_switch_words("keep this model") == "off"
+    assert detect_switch_words("/autoswitch on") == "on"
+    print("self-check ok")
+    return 0
 
 
 def record_outcome(
@@ -416,7 +498,22 @@ def main() -> int:
     ap.add_argument("--outcome", default="ship", help="ship|ok|approve|retry|fail")
     ap.add_argument("--note", default="")
     ap.add_argument("--leaderboard", action="store_true")
+    ap.add_argument(
+        "--auto-switch",
+        dest="auto_switch_cmd",
+        choices=("on", "off", "status", "clear"),
+        help="Session-sticky switch. on|off writes state/session.json.",
+    )
+    ap.add_argument(
+        "--fresh-chat",
+        action="store_true",
+        help="First SuperDev turn of a chat — drop leftover session.json.",
+    )
+    ap.add_argument("--self-check", action="store_true")
     args = ap.parse_args()
+
+    if args.self_check:
+        return _self_check()
 
     if args.leaderboard:
         print(leaderboard_text())
@@ -433,7 +530,35 @@ def main() -> int:
         print(json.dumps(row, indent=2))
         return 0
 
-    rec = score(args.prompt, args.path, args.goal, args.affect)
+    if args.fresh_chat:
+        clear_session()
+
+    words = detect_switch_words(args.prompt)
+    cmd = args.auto_switch_cmd
+    if cmd in {"on", "off"} or words in {"on", "off"}:
+        on_val = (cmd or words) == "on"
+        set_auto_switch(on_val, source="chat")
+        cli = "on" if on_val else "off"
+    elif cmd == "clear":
+        clear_session()
+        cli = None
+    else:
+        cli = None
+
+    on, source = auto_switch(cli)
+
+    if cmd == "status" and not args.prompt and not args.path and not args.goal:
+        print(f"auto_switch: {'on' if on else 'off'} ({source})")
+        return 0
+    if cmd == "clear" and not args.prompt and not args.path and not args.goal:
+        print("auto_switch: cleared session — next score uses operator.yaml / default")
+        return 0
+
+    rec = apply_auto_switch(
+        score(args.prompt, args.path, args.goal, args.affect),
+        on,
+        source,
+    )
     if args.json:
         json.dump(rec, sys.stdout, indent=2)
         print()
@@ -443,10 +568,15 @@ def main() -> int:
     print(f"skill_surface: {rec['skill_surface']}  → {rec['attach']}")
     print(f"paths_to_run: {', '.join(rec['paths_to_run']) or '(none)'}")
     print(f"tier: {rec['tier_name']} (T{rec['tier']})")
+    print(f"auto_switch: {rec['auto_switch']} ({rec['auto_switch_source']})")
+    print(f"apply: {rec['apply']}  spawn={rec['spawn_model']}")
     print(
         f"model: {rec['model']}  [{rec['model_meta']['cost']}] — "
         f"{rec['model_meta']['label']} ({rec['model_why']})"
     )
+    if rec["apply"] == "stay" and rec["recommended_model"] != rec["model"]:
+        print(f"recommended: {rec['recommended_model']}")
+    print(f"action: {rec['model_action']}")
     if rec["alternates"]:
         print(f"alternates: {', '.join(rec['alternates'])}")
     if rec["learned_best_for_phase"]:

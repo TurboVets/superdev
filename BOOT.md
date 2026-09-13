@@ -10,6 +10,8 @@ SuperDev on every turn — do not wait for re-tag. Reply with
 S=~/.cursor/skills/superdev
 python3 $S/scripts/emit_context_pack.py --write
 python3 $S/scripts/route_model.py --prompt "<ask>" --path "<stage>" --goal "<goals>" --pretty
+# First SuperDev turn of this chat only: add --fresh-chat
+# Chat words `auto-switch off|on` write session.json and stick. Exit: --auto-switch clear.
 python3 $S/scripts/work_history.py --active
 python3 $S/scripts/check_contradictions.py
 python3 $S/scripts/resource_status.py

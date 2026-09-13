@@ -18,7 +18,7 @@ If **this conversation** already contains any of:
 1. Treat SuperDev as still attached — **do not wait for re-tagging**.
 2. Run Path 0 boot (`emit_context_pack.py --write`, `route_model.py`, and on T1+ `work_history` / `check_contradictions` / `resource_status`).
 3. Follow `~/.cursor/skills/superdev/BOOT.md`; Read path sections of `SKILL.md` only when `route_model` says `full_skill` / listed paths — do not re-Read if already in context.
-4. Near the top of the reply, keep the sticky signal: `SuperDev session: active` (with phase · paths · tier · **ponytail: full|lite|ultra**).
+4. Near the top of the reply, keep the sticky signal: `SuperDev session: active` (with **auto-switch: on|off** · phase · paths · tier · **ponytail: full|lite|ultra**). First SuperDev turn of this chat: `route_model.py --fresh-chat`. Chat words `auto-switch off` / `keep this model` / `don't switch models` / `/autoswitch off` (and the `on` pair) write `state/session.json` and stick for the rest of this chat. `apply: spawn` ⇒ Task on the routed slug. SuperDev cannot flip the Cursor model picker. Exit SuperDev: `route_model.py --auto-switch clear`.
 5. **Ponytail is always on while SuperDev writes product code.** Climb `~/.cursor/skills/superdev/references/ponytail.md` and name the rung before any ApplyPatch/Write of runtime code. `/ponytail off` is illegal on Path 5. Default `full`. Never `ultra` on auth / money / migrations / copy.
 
 **Exit only** on explicit user words: `exit SuperDev` / `drop SuperDev` / `normal agent` / `without SuperDev`.
