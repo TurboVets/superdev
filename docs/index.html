@@ -10,13 +10,10 @@
       property="og:description"
       content="Issue to ship. Before the PR exists."
     />
-    <meta property="og:type" content="website" />
-    <meta
-      property="og:image"
-      content="https://superdev-mocha.vercel.app/plates/soldier-hero.png"
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23050403'/%3E%3Cpath d='M8 20c0-6 3-10 8-10s8 4 8 10v2H8z' fill='none' stroke='%23e3a85a'/%3E%3Crect x='11' y='16' width='10' height='2' fill='%23ffd089'/%3E%3C/svg%3E"
     />
-    <link rel="icon" href="plates/soldier-mark.png" type="image/png" />
-    <link rel="preload" as="image" href="plates/soldier-hero.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -45,16 +42,6 @@
         font-family: "IBM Plex Mono", ui-monospace, monospace;
         font-size: 0.86rem;
       }
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        z-index: 30;
-        pointer-events: none;
-        opacity: 0.1;
-        mix-blend-mode: overlay;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      }
       a {
         color: inherit;
         text-decoration: none;
@@ -75,17 +62,6 @@
         padding: 0.95rem 1.3rem;
         background: linear-gradient(180deg, rgba(5, 4, 3, 0.8), transparent);
       }
-      .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.55rem;
-      }
-      .brand img {
-        width: 22px;
-        height: 22px;
-        object-fit: cover;
-        border-radius: 50%;
-      }
       header a:hover {
         color: var(--copper);
       }
@@ -93,43 +69,41 @@
         min-height: 100svh;
         display: grid;
         grid-template-columns: 1.05fr 0.95fr;
-        align-items: stretch;
       }
-      .soldier {
+      .field {
         position: relative;
         min-height: 100svh;
+        background:
+          radial-gradient(
+            ellipse at 50% 72%,
+            rgba(227, 168, 90, 0.08),
+            transparent 52%
+          ),
+          var(--ink);
       }
-      .soldier img {
+      .field canvas {
         position: absolute;
         inset: 0;
         width: 100%;
         height: 100%;
-        object-fit: contain;
-        object-position: center bottom;
-        transition: filter 0.5s ease;
       }
-      body[data-level="lite"] .soldier img {
-        filter: grayscale(0.35) brightness(0.86);
-      }
-      body[data-level="standard"] .soldier img {
-        filter: saturate(1.05);
-      }
-      body[data-level="full"] .soldier img {
-        filter: saturate(1.2) drop-shadow(0 0 28px rgba(227, 168, 90, 0.35));
-      }
-      .soldier canvas {
+      .status {
         position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
+        left: 1.3rem;
+        bottom: 1.3rem;
+        z-index: 2;
+        margin: 0;
+        color: var(--copper);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-size: 0.68rem;
       }
       .console {
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
         padding: 5.5rem 1.4rem 2.2rem;
-        gap: 1.4rem;
+        gap: 1.3rem;
       }
       h1 {
         margin: 0;
@@ -162,9 +136,6 @@
       .levels {
         display: grid;
         gap: 0.4rem;
-      }
-      .picks {
-        grid-template-columns: 1fr;
       }
       .pick,
       .level {
@@ -214,7 +185,6 @@
         font-family: "Instrument Serif", Georgia, serif;
         font-style: italic;
         font-size: 1.35rem;
-        text-transform: lowercase;
       }
       .orders {
         list-style: none;
@@ -227,7 +197,6 @@
         gap: 0.7rem;
         padding: 0.55rem 0;
         border-top: 1px solid var(--line);
-        align-items: baseline;
       }
       .orders li:first-child {
         border-top: 0;
@@ -265,9 +234,6 @@
         color: var(--paper);
         border: 1px solid var(--line);
       }
-      .btn:hover {
-        filter: brightness(1.08);
-      }
       .cmd {
         display: flex;
         justify-content: space-between;
@@ -290,14 +256,13 @@
         display: flex;
         justify-content: space-between;
         color: var(--mute);
-        padding-bottom: 0.2rem;
       }
       @media (max-width: 860px) {
         .stage {
           grid-template-columns: 1fr;
         }
-        .soldier {
-          min-height: 58svh;
+        .field {
+          min-height: 56svh;
         }
         .console {
           padding: 1rem 1.2rem 1.6rem;
@@ -306,32 +271,33 @@
           grid-template-columns: 1fr;
         }
       }
+      @media (prefers-reduced-motion: reduce) {
+        .status {
+          letter-spacing: 0.08em;
+        }
+      }
     </style>
   </head>
   <body data-level="standard">
     <header>
-      <a class="brand" href="./">
-        <img src="plates/soldier-mark.png" alt="" width="22" height="22" />
-        SuperDev
-      </a>
+      <a href="./">SuperDev</a>
       <a href="https://github.com/TurboVets/superdev">GitHub</a>
     </header>
 
     <main class="stage">
-      <div class="soldier">
-        <img
-          src="plates/soldier-hero.png"
-          alt="SuperDev as an AI soldier, standing ready."
-          width="1024"
-          height="1365"
-        />
-        <canvas id="hud" aria-hidden="true"></canvas>
+      <div class="field">
+        <canvas
+          id="field"
+          role="img"
+          aria-label="SuperDev soldier. Animation matches the selected intensity."
+        ></canvas>
+        <p class="status" id="status" aria-live="polite">Advance</p>
       </div>
 
       <div class="console">
         <div>
           <h1>SuperDev</h1>
-          <p class="lede">Reads the diff. Issues orders. Then ships.</p>
+          <p class="lede">Reads the diff. Issues orders. Then moves.</p>
         </div>
 
         <section class="panel">
@@ -377,7 +343,7 @@
               aria-pressed="false"
             >
               <b>lite</b>
-              <span>one control</span>
+              <span>patrol</span>
             </button>
             <button
               type="button"
@@ -386,7 +352,7 @@
               aria-pressed="true"
             >
               <b>standard</b>
-              <span>claimed surfaces</span>
+              <span>advance</span>
             </button>
             <button
               type="button"
@@ -395,7 +361,7 @@
               aria-pressed="false"
             >
               <b>full</b>
-              <span>both sides</span>
+              <span>engage</span>
             </button>
           </div>
           <p class="why" id="why" aria-live="polite"></p>
@@ -412,7 +378,6 @@
             Copy install
           </button>
         </div>
-
         <div class="cmd">
           <code id="install"></code>
           <button type="button" id="copy">Copy</button>
@@ -443,7 +408,6 @@
           why: "session.guard.ts + CanActivate. One file can still be full.",
         },
       };
-
       const ORDERS = {
         lite: [
           ["L1", "One pass. Docs may skip.", "go"],
@@ -464,9 +428,11 @@
           ["6b", "Both sides. Hold both.", "go"],
         ],
       };
+      const MOVE = { lite: "Patrol", standard: "Advance", full: "Engage" };
 
       const whyEl = document.getElementById("why");
       const ordersEl = document.getElementById("orders");
+      const statusEl = document.getElementById("status");
       let level = "standard";
       let file = "logic";
 
@@ -490,6 +456,7 @@
       function setLevel(next, reason) {
         level = next;
         document.body.dataset.level = next;
+        statusEl.textContent = MOVE[next];
         document.querySelectorAll(".level").forEach((el) => {
           el.setAttribute("aria-pressed", String(el.dataset.level === next));
         });
@@ -511,10 +478,9 @@
       document.querySelectorAll(".level").forEach((el) => {
         el.addEventListener("click", () => {
           const next = el.dataset.level;
-          const forced = FILES[file].level !== next;
           setLevel(
             next,
-            forced
+            FILES[file].level !== next
               ? "Override. The diff wanted " + FILES[file].level + "."
               : FILES[file].why,
           );
@@ -534,9 +500,7 @@
         }
         const label = btn.textContent;
         btn.textContent = "Copied";
-        setTimeout(() => {
-          btn.textContent = label;
-        }, 1400);
+        setTimeout(() => (btn.textContent = label), 1400);
       }
       document
         .getElementById("copy")
@@ -544,16 +508,20 @@
       document
         .getElementById("copy-hero")
         .addEventListener("click", (e) => copyInstall(e.currentTarget));
-
       setFile("logic");
 
       const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const canvas = document.getElementById("hud");
+      const canvas = document.getElementById("field");
       const ctx = canvas.getContext("2d");
       const NODES = ["0", "1", "2", "3", "4", "5", "5.5", "6a", "6b", "7"];
+      const dust = Array.from({ length: 18 }, (_, i) => ({
+        a: i * 0.7,
+        r: 0.2 + (i % 5) * 0.12,
+      }));
       let w = 0,
         h = 0,
         t = 0;
+
       function resize() {
         const r = canvas.parentElement.getBoundingClientRect();
         const dpr = Math.min(devicePixelRatio || 1, 2);
@@ -566,52 +534,199 @@
       resize();
       addEventListener("resize", resize);
 
-      function frame() {
-        ctx.clearRect(0, 0, w, h);
-        const cx = w * 0.5;
-        const cy = h * 0.42;
-        const rx = Math.min(w, h) * 0.34;
-        const ry = rx * 0.38;
-        const hot = level === "full" ? 1 : level === "standard" ? 0.55 : 0.28;
-        const shown =
-          level === "lite" ? NODES.filter((_, i) => i % 3 === 0) : NODES;
-        ctx.strokeStyle = "rgba(227,168,90," + (0.18 + hot * 0.2) + ")";
-        ctx.lineWidth = level === "full" ? 1.6 : 1;
-        ctx.setLineDash(level === "lite" ? [2, 16] : [14, 12]);
+      function bone(ax, ay, bx, by, thick) {
         ctx.beginPath();
-        ctx.ellipse(cx, cy, rx, ry, t * (0.04 + hot * 0.08), 0, Math.PI * 2);
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(bx, by);
+        ctx.lineWidth = thick;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.stroke();
+      }
+
+      function down(from, angle, len) {
+        return {
+          x: from.x + Math.sin(angle) * len,
+          y: from.y - Math.cos(angle) * len,
+        };
+      }
+
+      function drawSoldier(mode, time) {
+        const speed = mode === "full" ? 9 : mode === "standard" ? 5.2 : 2.1;
+        const swing = mode === "full" ? 0.7 : mode === "standard" ? 0.42 : 0.18;
+        const lean = mode === "full" ? 0.16 : mode === "standard" ? 0.07 : 0.02;
+        const phase = reduced ? 0.35 : time * speed;
+        const fire = !reduced && mode === "full" && Math.sin(time * 14) > 0.5;
+        const bob = reduced ? 0 : Math.abs(Math.sin(phase)) * (mode === "lite" ? 4 : 9);
+        const unit = Math.min(w, h) * 0.00155;
+        const ground = h * 0.8;
+        const cx = w * 0.52;
+
+        ctx.save();
+        ctx.translate(cx, ground - bob);
+        ctx.scale(unit, -unit);
+
+        ctx.fillStyle = "rgba(227,168,90,0.1)";
+        ctx.beginPath();
+        ctx.ellipse(0, 4, 90, 12, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = "#e3a85a";
+        ctx.fillStyle = "#100c08";
+        ctx.shadowColor = "#e3a85a";
+        ctx.shadowBlur = mode === "full" ? 16 : 7;
+
+        const hip = { x: lean * 30, y: 108 };
+        const neck = { x: hip.x + lean * 40, y: 188 };
+        const shL = { x: neck.x - 28, y: 176 };
+        const shR = { x: neck.x + 26, y: 174 };
+        const lThigh = Math.sin(phase) * swing;
+        const rThigh = Math.sin(phase + Math.PI) * swing;
+        const lKneeA = 0.35 + Math.max(0, -Math.cos(phase)) * 0.55;
+        const rKneeA = 0.35 + Math.max(0, -Math.cos(phase + Math.PI)) * 0.55;
+        const lHip = { x: hip.x - 12, y: hip.y };
+        const rHip = { x: hip.x + 12, y: hip.y };
+        const lKnee = down(lHip, lThigh, 52);
+        const rKnee = down(rHip, rThigh, 52);
+        const lFoot = down(lKnee, lThigh + lKneeA, 50);
+        const rFoot = down(rKnee, rThigh + rKneeA, 50);
+        const lArm = Math.sin(phase + Math.PI) * swing * 0.65;
+        const lElb = down(shL, 0.85 + lArm, 40);
+        const lHand = down(lElb, 1.15 + lArm * 0.4, 36);
+        const aim = mode === "full" ? 1.45 : mode === "standard" ? 1.2 : 0.85;
+        const rElb = down(shR, aim, 38);
+        const rHand = down(rElb, aim + 0.15, 34);
+
+        bone(lHip.x, lHip.y, lKnee.x, lKnee.y, 14);
+        bone(lKnee.x, lKnee.y, lFoot.x, lFoot.y, 12);
+        bone(shL.x, shL.y, lElb.x, lElb.y, 11);
+        bone(lElb.x, lElb.y, lHand.x, lHand.y, 9);
+
+        ctx.beginPath();
+        ctx.moveTo(hip.x - 22, hip.y);
+        ctx.lineTo(neck.x - 24, neck.y - 8);
+        ctx.lineTo(neck.x + 24, neck.y - 8);
+        ctx.lineTo(hip.x + 22, hip.y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(shL.x, shL.y, 13, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(shR.x, shR.y, 13, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(neck.x + 4, 214, 22, 24, lean, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = mode === "full" ? "#ffd089" : "#e3a85a";
+        ctx.globalAlpha = 0.7 + Math.sin(time * 5) * 0.2;
+        ctx.fillRect(neck.x - 10, 208, 24, 6);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = "#100c08";
+
+        bone(rHip.x, rHip.y, rKnee.x, rKnee.y, 14);
+        bone(rKnee.x, rKnee.y, rFoot.x, rFoot.y, 12);
+        bone(shR.x, shR.y, rElb.x, rElb.y, 11);
+        bone(rElb.x, rElb.y, rHand.x, rHand.y, 9);
+
+        ctx.save();
+        ctx.translate(rHand.x - (fire ? 8 : 0), rHand.y);
+        ctx.rotate(mode === "full" ? 0.05 : -0.15);
+        ctx.beginPath();
+        ctx.rect(-6, -7, 108, 12);
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.rect(22, 5, 12, 16);
+        ctx.fill();
+        ctx.stroke();
+        if (fire) {
+          ctx.shadowBlur = 28;
+          ctx.fillStyle = "#ffd089";
+          ctx.beginPath();
+          ctx.moveTo(108, 0);
+          ctx.lineTo(148, -14);
+          ctx.lineTo(132, 0);
+          ctx.lineTo(148, 14);
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.restore();
+
+        ctx.beginPath();
+        ctx.ellipse(lFoot.x + 10, lFoot.y - 2, 18, 6, 0.15, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(rFoot.x + 10, rFoot.y - 2, 18, 6, 0.15, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        if (mode === "full" && !reduced) {
+          dust.forEach((d) => {
+            const x = cx - 30 - ((time * 90 + d.a * 50) % 180);
+            ctx.fillStyle = "rgba(227,168,90,0.25)";
+            ctx.fillRect(x, ground + Math.sin(time * 9 + d.a) * 3, 3, 1.4);
+          });
+        }
+      }
+
+      function drawHud(mode, time) {
+        const cx = w * 0.5;
+        const cy = h * 0.38;
+        const rx = Math.min(w, h) * 0.38;
+        const ry = rx * 0.36;
+        const hot = mode === "full" ? 1 : mode === "standard" ? 0.55 : 0.28;
+        const shown =
+          mode === "lite" ? NODES.filter((_, i) => i % 3 === 0) : NODES;
+        ctx.strokeStyle = "rgba(227,168,90," + (0.16 + hot * 0.18) + ")";
+        ctx.lineWidth = 1;
+        ctx.setLineDash(mode === "lite" ? [2, 16] : [16, 12]);
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, rx, ry, time * 0.05, 0, Math.PI * 2);
         ctx.stroke();
         ctx.setLineDash([]);
-        ctx.strokeStyle = "rgba(255,208,137," + (0.4 + hot * 0.5) + ")";
-        ctx.shadowColor = "#e3a85a";
-        ctx.shadowBlur = level === "full" ? 18 : 8;
+        ctx.strokeStyle = "rgba(255,208,137," + (0.35 + hot * 0.45) + ")";
         ctx.beginPath();
-        ctx.ellipse(
-          cx,
-          cy,
-          rx,
-          ry,
-          t * 0.08,
-          t,
-          t + (level === "lite" ? 0.35 : 0.8),
-        );
+        ctx.ellipse(cx, cy, rx, ry, time * 0.05, time, time + 0.7);
         ctx.stroke();
-        ctx.shadowBlur = 0;
         shown.forEach((label, i) => {
-          const a = (i / shown.length) * Math.PI * 2 + t * 0.08;
-          const x = cx + Math.cos(a) * rx;
-          const y = cy + Math.sin(a) * ry;
+          const a = (i / shown.length) * Math.PI * 2 + time * 0.05;
           ctx.fillStyle = "#e3a85a";
           ctx.beginPath();
-          ctx.arc(x, y, level === "full" ? 2.6 : 2, 0, Math.PI * 2);
+          ctx.arc(
+            cx + Math.cos(a) * rx,
+            cy + Math.sin(a) * ry,
+            2,
+            0,
+            Math.PI * 2,
+          );
           ctx.fill();
           ctx.font = "500 10px 'IBM Plex Mono', monospace";
-          ctx.fillStyle = "rgba(244,234,212,0.55)";
-          ctx.fillText(label, x + 6, y - 6);
+          ctx.fillStyle = "rgba(244,234,212,0.45)";
+          ctx.fillText(
+            label,
+            cx + Math.cos(a) * rx + 6,
+            cy + Math.sin(a) * ry - 6,
+          );
         });
+      }
+
+      function frame() {
+        ctx.clearRect(0, 0, w, h);
+        drawHud(level, t);
+        drawSoldier(level, t);
         if (!reduced) {
-          t += 0.008;
+          t += 0.016;
           requestAnimationFrame(frame);
+        } else {
+          drawSoldier(level, 0.4);
         }
       }
       frame();
