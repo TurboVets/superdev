@@ -20,6 +20,7 @@ subtitle rules, and the Path 7 review draft format. Load the path you are in.
 | Link resolves to (examples)                | Stage            | Completion means (summary)                                                                                                           |
 | ------------------------------------------ | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | Unassigned issue (nobody assigned)         | Ship lane        | Assign to `$github.login`, then the issue row below. SuperDev+link authorizes this. Not a `hard_stop`.                               |
+| **N issue/PR URLs in one prompt**          | N ship lanes     | N worktrees in parallel. One ticket per tree. Do not serialize "smallest first."                                                     |
 | Issue, no AC / unclear                     | Path 3 → 4       | Grill Ready + unknowns cleared, then build through Path 6                                                                            |
 | Issue, AC ready, no PR                     | Path 5 → 5.5 → 6 | Implement → L1 fullstack ×2 → L3 Codex+Claude → **open PR** → 6a browser QA → **green** 6b smoke → merge-when-asked                  |
 | Issue with open own PR                     | Follow the PR    | Re-resolve on that PR URL; no duplicate PR                                                                                           |

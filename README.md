@@ -27,11 +27,12 @@ Shareable extraction of the SuperDev operator used on TurboVets platform work. I
 | **Sticky session** | One `/superdev` binds the rest of the Agent chat until `exit SuperDev`. |
 | **Token-economy boot** | Path 0 emits a small context pack and a T0–T4 model. Auto-switch Task-spawns the cheapest capable slug: Composer (simple Qs), Grok (build), GPT (audit), Claude Opus/Fable (review). Cheap-down even when the picker is Grok High Fast. Same-as-parent stays. The Cursor picker never moves — [Cursor Router](https://cursor.com/docs/cursor-router) (Auto) is the picker-side equivalent. Say `auto-switch off` to keep the parent. |
 | **GitHub link = finish it** | A pasted PR/issue/comment URL is a take-to-the-end order. SuperDev resolves the current stage and ships that object (unassigned issue = assign + ship). `hard_stop` is only teammate-owned. |
+| **N links = N lanes** | Two or more issue/PR URLs in one prompt open that many worktrees and run in parallel. One ticket per worktree. Do not serialize "smallest first." |
 | **This repo → main** | SuperDev skill changes land on `main` (`git push origin main`). No PR unless asked. |
-| **One issue → ready for human review** | SuperDev's job is one GitHub issue, start to `done: true`. L1 + L3 Codex **and** Claude + 6a + green 6b + E2E on this HEAD. "L1 spawned" is not ready. |
+| **One issue → ready for human review** | SuperDev's job is one GitHub issue, start to `done: true`. L1 + L3 Codex **and** Cursor Claude + 6a + green 6b + E2E on this HEAD. "L1 spawned" is not ready. |
 | **Parent owns the finish** | A subagent that stops, 401s, or hallucinates a gate is a blocked step. The parent diagnoses and continues. Do not ask. |
-| **Never skip / never stop mid-lane** | Untestable AC blocks code. Path 5 code or a 5.5 report is not the end — continue L1 fullstack ×2, L3 Codex **and** Claude, 6a in-browser QA, **green** 6b smoke. Never "say the word." |
-| **L1 → L2 → L3 ladder** | Bundled fullstack audit → lenses → local bots. Intensity **lite** skips L3. No push until the scaled ladder is green. |
+| **Never skip / never stop mid-lane** | Untestable AC blocks code. Path 5 code or a 5.5 report is not the end — continue L1 fullstack ×2, L3 Codex **and** Cursor Claude, 6a in-browser QA, **green** 6b smoke. Never "say the word." |
+| **L1 → L2 → L3 ladder** | Bundled fullstack audit → lenses → Codex CLI + Cursor Claude Task. Intensity **lite** skips L3. No push until the scaled ladder is green. |
 | **Prove intensity** | `prove_intensity.py` reads the diff (not the title): lite / standard / full. Aria-label ≠ two-party disconnect. |
 | **6a live QA + 6b smoke** | Integral. SuperDev clicks every planned case (never **Not covered**), then films. Attaching SuperDev is enough. |
 | **Ponytail (least code)** | Name the ladder rung before the first product-code write. `/ponytail off` is illegal on Path 5. |
@@ -119,12 +120,14 @@ personal. Empty state is correct on first run.
 ### Optional CLIs (L3 local bots)
 
 `scripts/local-bot-review.sh` replicates in-repo `@codex` / `@claude` review
-workflows against `base...HEAD`. Needs:
+workflows against `base...HEAD`.
 
-- `npx @openai/codex login`
-- `claude` → `/login`
-- The **target repo** to have the same auto-review prompt stack (or L3 is a skip
-  you say out loud)
+- **Codex:** `npx @openai/codex login`, then the script runs `codex exec`
+- **Claude:** Cursor Task `claude-opus-5-thinking-high` (default). Same CI
+  prompt; billed through Cursor. No `claude` CLI `/login`. `--claude-engine cli`
+  is leftover.
+- The **target repo** must have the same auto-review prompt stack (or L3 is a
+  skip you say out loud)
 
 ### Ponytail
 

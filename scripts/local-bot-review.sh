@@ -15,7 +15,12 @@
 #
 # Usage (run from the repo root of the branch under review):
 #   local-bot-review.sh [--base origin/main] [--title "PR title"] \
-#       [--body-file /tmp/pr-body.md] [--only codex|claude] [--out-dir /tmp]
+#       [--body-file /tmp/pr-body.md] [--only codex|claude] [--out-dir /tmp] \
+#       [--claude-engine cursor|cli]
+#
+# Claude default is Cursor Task (claude-opus-5-thinking-high) — same prompt
+# stack as @claude-tv, billed through Cursor. `--claude-engine cli` is the
+# leftover `claude -p` path and needs a terminal Claude Code login.
 set -euo pipefail
 
 BASE="origin/main"
@@ -23,6 +28,7 @@ TITLE="(local pre-PR review)"
 BODY_FILE=""
 ONLY=""
 OUT_DIR="/tmp"
+CLAUDE_ENGINE="cursor"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -31,12 +37,18 @@ while [[ $# -gt 0 ]]; do
     --body-file) BODY_FILE="$2"; shift 2 ;;
     --only) ONLY="$2"; shift 2 ;;
     --out-dir) OUT_DIR="$2"; shift 2 ;;
+    --claude-engine) CLAUDE_ENGINE="$2"; shift 2 ;;
     *) echo "unknown arg: $1" >&2; exit 2 ;;
   esac
 done
+if [[ "$CLAUDE_ENGINE" != "cursor" && "$CLAUDE_ENGINE" != "cli" ]]; then
+  echo "--claude-engine must be cursor or cli" >&2
+  exit 2
+fi
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
 cd "$REPO_ROOT"
+mkdir -p "$OUT_DIR"
 
 # Bots review the committed base...HEAD diff only. Uncommitted WIP makes a local
 # APPROVE lie about what GitHub Codex will see (and what CI will check out).
@@ -91,7 +103,7 @@ EOF
 codex_prompt() {
   local out="$1"
   {
-    printf 'You are reviewing a local pre-PR branch in ${SUPERDEV_DEFAULT_REPO:-this-repo}.\n\n'
+    printf 'You are reviewing a local pre-PR branch in TurboVets/platform.\n\n'
     local_adapter
     printf '\nThe following instructions are inlined from project files.\n'
     printf 'Originals are also available in the repo for additional context.\n\n'
@@ -117,7 +129,7 @@ codex_prompt() {
 claude_prompt() {
   local out="$1"
   {
-    printf 'You are reviewing a local pre-PR branch in ${SUPERDEV_DEFAULT_REPO:-this-repo} (head %s).\n\n' "$HEAD_SHA"
+    printf 'You are reviewing a local pre-PR branch in TurboVets/platform (head %s).\n\n' "$HEAD_SHA"
     local_adapter
     printf '\nRead and follow ALL instructions in .github/prompts/claude-review-shared.md\n'
     printf '(apply the LOCAL PRE-PR MODE deltas above where it references gh/GitHub).\n'
@@ -144,7 +156,16 @@ run_codex() {
         --output-last-message "$outfile" - < "$prompt"
     }
   echo ">>> codex review saved: $outfile"
-  rg -n '^VERDICT:' "$outfile" || echo "codex: no VERDICT line found — inspect $outfile"
+  require_verdict codex "$outfile"
+}
+
+require_verdict() {
+  local who="$1" file="$2"
+  if ! rg -q '^VERDICT:' "$file" 2>/dev/null; then
+    echo "HALT: ${who}_abrupt — no VERDICT in $file. Resume this bot. Do not inform-and-stop." >&2
+    exit 1
+  fi
+  rg -n '^VERDICT:' "$file"
 }
 
 run_claude() {
@@ -152,11 +173,23 @@ run_claude() {
   local outfile="$OUT_DIR/local-review-claude.md"
   claude_prompt "$prompt"
   echo ">>> claude (opus — parity with claude-auto-review.yml) prompt: $(wc -c < "$prompt") bytes"
-  claude -p --model opus \
+  if [[ "$CLAUDE_ENGINE" == "cursor" ]]; then
+    rm -f "$outfile"
+    printf 'PENDING cursor Task model=claude-opus-5-thinking-high\n' > "${outfile}.pending"
+    echo ">>> claude engine=cursor — prompt written: $prompt"
+    echo ">>> parent: Task model=claude-opus-5-thinking-high (read-only review;"
+    echo "    worktree $REPO_ROOT). Write the full review to $outfile."
+    echo ">>> L3 Claude is not green until that file has a VERDICT line."
+    return 0
+  fi
+  if ! claude -p --model opus \
     --allowedTools "Read,Glob,Grep,Bash(git log:*),Bash(git diff:*),Bash(git show:*),Bash(git status:*)" \
-    < "$prompt" > "$outfile"
+    < "$prompt" > "$outfile"; then
+    echo "HALT: claude_abrupt — claude -p failed (oauth/auth/crash). Default engine is Cursor Task; do not ask for /login. Do not treat L3 as reported." >&2
+    exit 1
+  fi
   echo ">>> claude review saved: $outfile"
-  rg -n '^VERDICT:' "$outfile" || echo "claude: no VERDICT line found — inspect $outfile"
+  require_verdict claude "$outfile"
 }
 
 case "$ONLY" in

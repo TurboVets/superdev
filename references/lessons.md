@@ -6,6 +6,18 @@ the archaeology second, ≤6 lines. When a lesson hardens, promote it into
 
 Do not import another operator's personal ledger.
 
+### L3 Claude is Cursor Task, not `claude -p` (2026-09-14)
+
+`local-bot-review.sh` writes the in-repo Claude prompt. The parent runs
+`Task model=claude-opus-5-thinking-high` and requires `VERDICT:` in the
+outfile. Cursor browser login is not a gate. Do not ask for terminal
+`claude` → `/login`. `--claude-engine cli` is leftover.
+
+### N pasted issue links run in parallel (2026-09-14)
+
+Two or more issue/PR URLs + SuperDev is that many worktrees at once, not
+"smallest first, queue the rest." One ticket per worktree still holds.
+
 ### Auto-switch never flipped the picker and never spawned
 
 `auto-switch: on` was printed every turn while the parent kept doing the work.

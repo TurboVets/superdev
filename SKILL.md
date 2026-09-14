@@ -1,20 +1,16 @@
 ---
 name: superdev
 description: >-
-  Issue-to-ship operator for Cursor Agent. Token-economy boot (emit_context_pack
-  + route_model T0–T4). Auto-switch Task-spawns the cheapest capable model:
-  Composer for simple Qs, Grok for build/smoke, GPT for audit/bots, Claude
-  (Opus 5 / Fable 5) for review. Cheap-down even when the picker is Grok High
-  Fast. Cannot flip the Cursor picker — Cursor Router (Auto) is the picker-side
-  equivalent. Say auto-switch off to keep the parent. GitHub URL alone continues
-  to completion — one issue, start → ready for human review. Parent owns
-  mid-lane stops and false gates. Local review ladder (audit ×2 Ship →
-  human lenses → local bots) before any PR-create or push. Least-code
-  (ponytail) on every write. Sticky until exit SuperDev. Invoke for
-  pick / build / review / reply / ship. Requires
-  operator.yaml (github.login, default_repo) and gh CLI; Cursor Browser MCP for
-  Path 6a + 6b. Prove intensity from the diff, never the title. Never writes
-  teammate PRs. Configure via operator.example.yaml.
+  Issue-to-ship operator for Cursor Agent. One GitHub issue → ready for
+  human review before any PR (L1 audit ×2, L3 Codex + Cursor Claude, live
+  QA, green smoke, E2E). N pasted issue/PR URLs = N parallel lanes (one
+  worktree each). Parent finishes mid-lane stops (lane_truth / claim_lint
+  / halt_lint). Token-economy boot T0–T4: Composer / Grok / GPT / Claude.
+  Auto-switch Task-spawns — cannot flip the picker. L3 Claude is Cursor
+  Task claude-opus-5-thinking-high (no claude CLI login). Sticky until
+  exit SuperDev. Invoke for pick / build / review / reply / ship. Requires
+  operator.yaml and gh CLI; Cursor Browser MCP for Path 6. Never writes
+  teammate PRs.
 disable-model-invocation: true
 ---
 
@@ -93,14 +89,14 @@ done — it is not a substitute for finishing.
 
 **Ready for human review** (`lane_truth.py` `done: true`) binds **this HEAD**:
 
-| Gate       | Green means                                                                  |
-| ---------- | ---------------------------------------------------------------------------- |
-| **L1**     | bundled fullstack audit ×2, real gates, `VERDICT: SHIP`                      |
-| **L3**     | Codex **and** Claude `VERDICT: APPROVE` (a 401 or skipped bot is unfinished) |
-| **6a**     | live in-browser QA — every planned case clicked                              |
-| **6b**     | smoke green + player in the PR body                                          |
-| **E2E**    | e2e check `success` on this SHA                                              |
-| **Checks** | CI on this SHA is green or evidenced infra                                   |
+| Gate       | Green means                                                               |
+| ---------- | ------------------------------------------------------------------------- |
+| **L1**     | bundled fullstack audit ×2, real gates, `VERDICT: SHIP`                   |
+| **L3**     | Codex **and** Cursor Claude `VERDICT: APPROVE` (no VERDICT is unfinished) |
+| **6a**     | live in-browser QA — every planned case clicked                           |
+| **6b**     | smoke green + player in the PR body                                       |
+| **E2E**    | e2e check `success` on this SHA                                           |
+| **Checks** | CI on this SHA is green or evidenced infra                                |
 
 "L1 spawned", "Codex CR, fixer running", or a subagent saying Ship is **not** ready.
 
@@ -125,8 +121,10 @@ Path 7 is chat-draft only for teammates.
 ## Stage detection
 
 Pick the earliest unfinished path. SuperDev + a GitHub link is a **finish this
-object** order — from its current stage to its **end**. The end is **ready
-for human review**: L1, L3 Codex **and** Claude, 6a, green 6b, E2E, and
+object** order — from its current stage to its **end**. **N links in one
+prompt = N parallel lanes** — one worktree per object, at the same time.
+Do not pick the first and queue the rest. The end is **ready for human
+review**: L1, L3 Codex **and** Cursor Claude, 6a, green 6b, E2E, and
 checks on **this HEAD** in `lane_truth.py`. Not "code exists", "PR opened",
 "L1 spawned", or a subagent saying done. Every open own PR is in that tab.
 Leftover `next` is the job. If a run dies mid-lane, the parent unsticks it.
@@ -182,7 +180,13 @@ GitHub bots **confirm** after local audit is green; they are not the discovery l
 | ------ | --------------------------------------------------------------- | ------------------------ |
 | **L1** | audit ×2+ Ship (lite: one pass / skip docs)                     | bundled + `skills.audit` |
 | **L2** | review lenses for every lane the diff touches + coverage assert | `references/coverage.md` |
-| **L3** | local bots APPROVE (lite: **skip**)                             | scripts                  |
+| **L3** | Codex CLI + Cursor Claude Task both `APPROVE` (lite: **skip**)  | scripts                  |
+
+**L3 Claude is Cursor Task `claude-opus-5-thinking-high`.** `local-bot-review.sh`
+writes the same CI prompt; the parent spawns that Task and requires a
+`VERDICT:` line. This chat acting as Claude is not L3. `--claude-engine cli`
+(`claude -p`) is leftover — do not ask for terminal `/login`. Codex still
+needs `npx @openai/codex login` if that CLI is logged out.
 
 **Review depth** comes from `prove_intensity.py`. Never D1 on a **full** trigger
 (auth, money, migrations, two-party, shared lib). Aria-only copy may be D1.

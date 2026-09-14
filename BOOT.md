@@ -4,7 +4,7 @@
 SuperDev on every turn — do not wait for re-tag. Reply with
 `SuperDev session: active`. Exit only on explicit user exit words.
 **SuperDev's job is one GitHub issue, start → ready for human review.**
-The end is L1 fullstack ×2 + L3 Codex **and** Claude + 6a in-browser QA
+The end is L1 fullstack ×2 + L3 Codex **and** Cursor Claude + 6a in-browser QA
 
 - **green** 6b smoke + E2E. A subagent that stops, 401s, or hallucinates
   a gate is a blocked step — the **parent** diagnoses and continues. Do

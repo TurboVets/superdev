@@ -79,7 +79,7 @@ heavy / multi-writer PRs.
    after CONFLICT, product-line copy in shared libs. This is the pass
    that catches what Codex round N+1 would find.
 3. Audit₃ (clean head) must also be **Ship with zero new P0/P1**.
-4. Then `local-bot-review.sh` (real Codex xhigh + Claude opus replicas).
+4. Then `local-bot-review.sh` (Codex xhigh CLI + Cursor Claude opus Task).
 5. Only then push / re-request GitHub bots.
 
 **Stop condition:** two consecutive Ship verdicts on the **same SHA**

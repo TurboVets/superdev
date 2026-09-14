@@ -4,11 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SuperDev</title>
-    <meta name="description" content="Issue to ship. Before the PR exists." />
+    <meta
+      name="description"
+      content="Issue to ready-for-human-review. Before the PR. N links, N lanes. L3 Claude via Cursor."
+    />
     <meta property="og:title" content="SuperDev" />
     <meta
       property="og:description"
-      content="Issue to ship. Before the PR exists."
+      content="Issue to ready-for-human-review. Before the PR. N links, N lanes. L3 Claude via Cursor."
     />
     <link
       rel="icon"
@@ -436,14 +439,15 @@
         <div>
           <h1>SuperDev</h1>
           <p class="lede">
-            One skill. He stays on the chat, reads the diff, and tells you what
-            you are about to get. Click a feature. He opens it and ships a PR.
+            One GitHub issue to ready-for-human-review before the PR exists. N
+            pasted links run as N lanes. L3 Claude is Cursor's Claude. Click a
+            feature.
           </p>
         </div>
 
         <div class="tour">
           <button type="button" class="btn live" id="brief">Brief me</button>
-          <span class="prog" id="prog">0 / 8</span>
+          <span class="prog" id="prog">0 / 10</span>
         </div>
 
         <div id="features"></div>
@@ -552,8 +556,22 @@
           id: "link",
           title: "GitHub link is intention",
           tag: "paste and go",
-          get: "Paste a PR, issue, or comment URL. That is the job. SuperDev reads the stage and the remaining completion list, then continues.",
+          get: "Paste a PR, issue, or comment URL. That is the job. SuperDev reads the stage and the remaining completion list, then continues to ready-for-human-review.",
           also: "Merge still needs an explicit ask. A link is enough to start. It is not enough to ship to main.",
+        },
+        {
+          id: "lanes",
+          title: "N links, N lanes",
+          tag: "in parallel",
+          get: "Two or more issue or PR URLs in one prompt open that many worktrees and run at the same time. One ticket per tree.",
+          also: "Serializing smallest-first after someone pasted three links is a miss. Do not fold B into A's worktree.",
+        },
+        {
+          id: "ready",
+          title: "Ready for human review",
+          tag: "the only done",
+          get: "Done means L1 audit twice, L3 Codex and Cursor Claude both APPROVE, live QA clicked, green smoke, and E2E on this HEAD. L1 spawned is not ready.",
+          also: "The parent owns mid-lane stops. A subagent that 401s or claims a greener gate is a blocked step. Do not ask to continue.",
         },
         {
           id: "never",
@@ -566,8 +584,8 @@
           id: "ladder",
           title: "L1 to L3",
           tag: "before the PR",
-          get: "Before anyone else sees the branch: L1 bundled fullstack audit, L2 lenses, L3 local bots. Lite skips L3. Intensity comes from the diff, never the title.",
-          also: "Nothing pushes until that scaled ladder is green. You get the review work on your machine, not as a surprise in CI.",
+          get: "Before anyone else sees the branch: L1 bundled fullstack audit, L2 lenses, L3 Codex CLI plus Cursor Claude Task. Lite skips L3. Intensity comes from the diff, never the title.",
+          also: "Claude L3 uses Cursor's Claude. No terminal claude login. Nothing pushes until that scaled ladder is green.",
         },
         {
           id: "prove",
