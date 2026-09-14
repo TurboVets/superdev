@@ -8,6 +8,8 @@ its end: L1 fullstack ×2 + L3 Codex **and** Claude + 6a in-browser QA +
 **green** 6b smoke. Never stop mid-lane for a status essay. Unassigned is a
 ship lane. `hard_stop` is only teammate-owned.
 **This repo → `main`.** Commit and push `origin main`. No PR unless asked.
+Standing: if the installed skill has changed significantly from GitHub `main`,
+push without a second ask (hard rules / scripts / lifecycle — not a typo dump).
 
 **SuperDev decides** boot vs full_skill vs full_paths — see `scripts/route_model.py`.
 

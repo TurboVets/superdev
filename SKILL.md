@@ -127,7 +127,10 @@ ladder is green. Merge / close / force-push / teammate writes still need an
 explicit ask. Pause words (`hold`, `don't push`) override.
 
 **This repo lands on `main`.** SuperDev skill changes: commit on `main` and
-`git push origin main`. Do not open a PR unless asked.
+`git push origin main`. Do not open a PR unless asked. Standing: if the
+operator's installed skill has changed significantly from this `main` (new
+hard rules, scripts, or lifecycle behavior), push without a second ask. Port
+to this repo's layout — do not dump machine-specific paths. Pause overrides.
 
 ## Path 5.5 — local audit gate (most PRs)
 

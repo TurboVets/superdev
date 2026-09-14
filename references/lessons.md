@@ -17,6 +17,9 @@ Composer unless the parent is already Composer. T2 Grok / T3 GPT / T4 Claude
 
 Skill changes: commit on `main` and `git push origin main`. A PR for a
 SuperDev-repo change is unnecessary unless the operator asks for one.
+Standing: if the installed skill has changed significantly from this `main`
+(new hard rules, scripts, or lifecycle), push without asking. Port to this
+layout. Pause words still override.
 
 ### SuperDev + a link ships that object; unassigned is not a hard_stop
 
