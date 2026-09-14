@@ -8,6 +8,7 @@ is still open.
   halt_lint.py --ticket 8510 --text-file /tmp/reply.md
   halt_lint.py --bot-log /tmp/local-review-claude.md
   halt_lint.py --self-check
+  halt_lint.py --strict-advance
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from claim_lint import live_row  # noqa: E402
+from advance_lane import scan  # noqa: E402
 
 # Status-essay closers. A match without a resume verb is a halt.
 HALT = re.compile(
@@ -46,6 +48,14 @@ def lint_reply(text: str, done: bool) -> list[str]:
     if RESUME.search(text):
         return []
     return ["HALT status-essay · FACT next still open — resume, do not inform-and-stop"]
+
+
+def lint_unread() -> list[str]:
+    unread = [r for r in scan() if r["action"].startswith("ingest")]
+    if not unread:
+        return []
+    tickets = ", ".join(str(r["ticket"]) for r in unread)
+    return [f"HALT unread artifacts on {tickets} — open + --ingest this turn"]
 
 
 def lint_bot_log(text: str) -> list[str]:
@@ -89,10 +99,13 @@ def main() -> int:
     ap.add_argument("--text-file")
     ap.add_argument("--bot-log")
     ap.add_argument("--self-check", action="store_true")
+    ap.add_argument("--strict-advance", action="store_true")
     args = ap.parse_args()
     if args.self_check:
         return self_check()
     misses: list[str] = []
+    if args.strict_advance or args.ticket:
+        misses.extend(lint_unread())
     if args.bot_log:
         misses.extend(lint_bot_log(Path(args.bot_log).read_text(errors="replace")))
     text = args.text or ""

@@ -388,7 +388,7 @@ def score(
         "token_rules": [
             "emit_context_pack.py before session-log / full focus",
             "Do not re-Read SKILL.md if already attached",
-            "Spawn ≤1 Task unless parallel explore is a clear win",
+            "Spawn every next gate that unread artifacts require; ≤1 only for a fresh explore",
             "After phase: route_model.py --record --loops N --outcome ship|retry|fail",
         ],
     }

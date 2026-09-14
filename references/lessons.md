@@ -46,13 +46,14 @@ Tagging SuperDev with an issue/PR URL means take it from its current stage
 to Path 6. `hard_stop` is only teammate-owned (someone else assigned).
 Unassigned is a ship lane — assign + complete. Never "explain fit."
 
-### Parent finishes the issue — mid-lane stop is unfinished
+### The scheduler was the Cursor notice — that is the stop
 
-SuperDev's job is **one GitHub issue → ready for human review** (L1 +
-L3 Codex **and** Claude + 6a + green 6b + E2E on HEAD). A subagent that
-stops, 401s, or claims a greener gate is a blocked step. The parent
-runs `lane_truth` + `claim_lint` / `halt_lint`, opens the artifact, and
-resumes. "L1 spawned" is not ready. Do not ask to continue.
+Prose already said don't stop. The harness still ended after one
+spawn-and-brief: job-finished → "inform the user", `lane_truth --pretty`
+rewrote `truth.json` and raced away recorded SHAs, and `halt_lint` only
+sniffed chat adjectives. Fix: `advance_lane.py --strict` on unread
+`/tmp` reports (10-char SHA dirs); reads never write truth; `--record`
+locks. One ticket Path 0→6; leftovers ingest-only.
 
 ### Never stop mid-lane — four artifacts or it is not finished
 

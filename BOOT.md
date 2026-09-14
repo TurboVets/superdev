@@ -30,9 +30,10 @@ python3 $S/scripts/check_contradictions.py
 python3 $S/scripts/resource_status.py
 # Lane in play: facts over agent prose (T1+)
 python3 $S/scripts/lane_truth.py --pretty
+python3 $S/scripts/advance_lane.py --strict
 python3 $S/scripts/unstick_subagents.py --pretty
 # After a subagent return: claim_lint.py --ticket N --text-file <summary>
-# Before ending a turn that got a job-finished notice: halt_lint.py
+# Unread / HALT ⇒ ingest or spawn. --pretty does not write truth.json.
 ```
 
 Light → obey `boot` / `full_skill`. Heavy → obey `paths_to_run` only.

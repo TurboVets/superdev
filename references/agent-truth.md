@@ -46,8 +46,9 @@ python3 $S/scripts/claim_lint.py --ticket <N> --text-file <summary>
 ```
 
 `claim_lint` exit 1 ⇒ do not `--record`, do not tell the operator the gate
-is green. Open the artifact yourself (audit md, bot verdict file, `gh`
-check-run).
+is green. `advance_lane.py --strict` exit 1 ⇒ unread L1/L3 files; open,
+`--ingest`, then record or fix. Open the artifact yourself (audit md,
+bot verdict file, `gh` check-run). Reads of `lane_truth.py` do not write.
 
 The tab is **every open own PR** (`github.login` on `default_repo`), plus
 lane issues with no PR. `done: true` means ready for human review

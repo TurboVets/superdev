@@ -115,7 +115,12 @@ When that happens the parent:
 5. Never paste agent A's story into agent B
 
 `unstick_subagents.py` + `halt_lint.py` detect quiet / boot-stuck /
-"brief the user" mid-lane. A Cursor job-finished notice is **resume**.
+"brief the user" mid-lane. A Cursor job-finished notice is **not** the
+scheduler — `advance_lane.py --strict` is. Unread `/tmp/l1-*` / `/tmp/l3-*`
+reports ⇒ open, `--ingest`, record or fix, spawn the next gate in the
+same turn. `lane_truth.py --pretty` is read-only; only `--record` writes
+`truth.json`. One sticky ticket runs Path 0→6; leftovers get
+ingest/unstick only until `done: true`. N pasted links are still N lanes.
 Path 7 is chat-draft only for teammates.
 
 ## Stage detection

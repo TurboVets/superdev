@@ -6,12 +6,13 @@
   python3 lane_truth.py --record --ticket 12039 --l1 <sha>
 
 Ready for human review only when L1, L3, 6a, 6b, and E2E bind THIS HEAD.
-Agent prose is not state. Writes <lane.dir>/truth.json.
+Agent prose is not state. Reads do not write. Only `--record` writes <lane.dir>/truth.json.
 """
 
 from __future__ import annotations
 
 import argparse
+import fcntl
 import json
 import re
 import subprocess
@@ -191,6 +192,19 @@ def persist_live(stored: dict, rows: list) -> dict:
     return out
 
 
+def _lock_truth(path: Path):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fh = open(path.with_suffix(path.suffix + ".lock"), "a+")
+    fcntl.flock(fh.fileno(), fcntl.LOCK_EX)
+    return fh
+
+
+def write_truth(path: Path, stored: dict) -> None:
+    tmp = path.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(stored, indent=2) + "\n")
+    tmp.replace(path)
+
+
 def collect_rows(agents: dict, stored: dict, pulls: list) -> list:
     seen: set[str] = set()
     rows: list[dict] = []
@@ -228,22 +242,28 @@ def main() -> int:
     agents = load_json(lane / "agents.json", {})
     stored = load_json(truth, {})
     if args.record and args.ticket:
-        rec = stored.get(args.ticket) or {}
-        for key, val in (
-            ("l1_sha", args.l1),
-            ("l3_sha", args.l3),
-            ("qa_sha", args.qa),
-            ("smoke_sha", args.smoke),
-            ("e2e_sha", args.e2e),
-        ):
-            if val:
-                rec[key] = val
-        stored[args.ticket] = rec
-
-    pulls = prs_by_author()
-    rows = collect_rows(agents, stored, pulls)
-    stored = persist_live(stored, rows)
-    truth.write_text(json.dumps(stored, indent=2) + "\n")
+        lock = _lock_truth(truth)
+        try:
+            stored = load_json(truth, {})
+            rec = stored.get(args.ticket) or {}
+            for key, val in (
+                ("l1_sha", args.l1),
+                ("l3_sha", args.l3),
+                ("qa_sha", args.qa),
+                ("smoke_sha", args.smoke),
+                ("e2e_sha", args.e2e),
+            ):
+                if val:
+                    rec[key] = val
+            stored[args.ticket] = rec
+            pulls = prs_by_author()
+            rows = collect_rows(agents, stored, pulls)
+            write_truth(truth, persist_live(stored, rows))
+        finally:
+            lock.close()
+    else:
+        pulls = prs_by_author()
+        rows = collect_rows(agents, stored, pulls)
 
     if args.facts_block:
         if not rows:
