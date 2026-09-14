@@ -284,7 +284,8 @@ do not wait for a QA or fullstack skill tag.
    smoke and before calling Path 6 done. Rebase (or merge) onto the current
    stack parent; `gh pr view --json mergeable,mergeStateStatus` must show
    `MERGEABLE` / not `DIRTY`/`CONFLICTING`. Updating a rebased own branch
-   with `--force-with-lease` is authorized when the user asked for conflict
+   with `--force-with-lease` is standing Path 0 work (`conflict_sweep.py --apply`).
+   Authorized when the user asked for conflict
    resolution or PR completeness on that owned PR — still never force-push
    `main`/`master`.
 4. **Commit → push → open PR** on the owned ship lane when no open PR exists

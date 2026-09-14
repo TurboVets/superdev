@@ -6,6 +6,12 @@ the archaeology second, ≤6 lines. When a lesson hardens, promote it into
 
 Do not import another operator's personal ledger.
 
+### Own CONFLICTING PRs are Path 0, not a warning (2026-09-14)
+
+List is not the job. `conflict_sweep.py --apply` the same turn. Lock
+(`index.lock`) is a retry, not a conflict. Real file conflicts get
+resolved in this turn, then `--force-with-lease` on the feature branch.
+
 ### L3 Claude is Cursor Task, not `claude -p` (2026-09-14)
 
 `local-bot-review.sh` writes the in-repo Claude prompt. The parent runs

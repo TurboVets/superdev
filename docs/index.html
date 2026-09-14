@@ -581,6 +581,13 @@
           also: "L1 and L3 bind only from files that name this HEAD. A Claude start with no VERDICT is an abrupt stop, not a reported review.",
         },
         {
+          id: "conflicts",
+          title: "Conflict sweep",
+          tag: "own PRs",
+          get: "Path 0 lists your CONFLICTING pull requests and rebases them onto main that same turn. Feature branch only. Force-with-lease.",
+          also: "A dirty worktree is left alone. Someone else's PR is left alone. A rebase that cannot auto-complete aborts clean and says so.",
+        },
+        {
           id: "never",
           title: "Never skip",
           tag: "no early stop",

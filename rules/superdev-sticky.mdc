@@ -25,6 +25,7 @@ If **this conversation** already contains any of:
 8. **One current player.** A re-record replaces the old URL in the PR body and deletes the own comments that advertised the superseded clip. Never leave two competing video sections.
 9. **Agent claims are not facts.** After every subagent return, `lane_truth.py`. Resume with FACTS + NEXT. Quiet or boot-stuck → `unstick_subagents.py`. Never invoke bug-net / autopilot.
 10. **Turn gate (fail closed).** Before the user-facing reply on an owned ticket, write the draft to a file and run `python3 ~/.cursor/skills/superdev/scripts/turn_gate.py --ticket N --text-file <draft>`. No `TURN_GATE: PASS` in this turn's tool output ⇒ do not send the reply. Cursor `stop` / `subagentStop` hooks resume if focus is open and the receipt is stale. `exit SuperDev` clears focus.
+11. **Own CONFLICTING PRs are Path 0.** `conflict_sweep.py --apply` the same turn. Feature branch only. `--force-with-lease`. Dirty trees and teammate PRs stay.
 
 **Exit only** on explicit user words: `exit SuperDev` / `drop SuperDev` / `normal agent` / `without SuperDev`.
 

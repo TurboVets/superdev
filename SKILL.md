@@ -205,10 +205,13 @@ needs `npx @openai/codex login` if that CLI is logged out.
 ## Path 0 boot
 
 Always: `emit_context_pack.py --write` + `route_model.py`. T1+: work history,
-contradictions, resources, `lane_truth.py`, `unstick_subagents.py` — **warn**
-on HIGH/MEDIUM before acting. Intention loop: TAG → REPLAY → MATCH → ADAPT
-→ DELIVER → STAMP → **RECONCILE**. ADAPT is unconditional. After a push,
-chat tags lose to the commit + files + PR body; gaps are a `miss`.
+contradictions, resources, `lane_truth.py`, `unstick_subagents.py`,
+`conflict_sweep.py --pretty` — **warn** on HIGH/MEDIUM before acting. Own
+`CONFLICTING` PRs ⇒ `--apply` the same turn (rebase onto `origin/main`,
+`--force-with-lease`, feature branch only). Dirty trees and teammate PRs
+stay. Intention loop: TAG → REPLAY → MATCH → ADAPT → DELIVER → STAMP →
+**RECONCILE**. ADAPT is unconditional. After a push, chat tags lose to the
+commit + files + PR body; gaps are a `miss`.
 
 ## Lifecycle paths
 
