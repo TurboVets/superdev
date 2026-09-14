@@ -79,24 +79,29 @@ Detail: `references/routing.md`. `--record` is not optional.
 | L2 coverage              | `references/coverage.md` + `review_coverage.py`                |
 | Which leaf skill         | `references/skill-routing.md`                                  |
 | Intention loop           | `references/intention.md`                                      |
+| Agent / subagent state   | `references/agent-truth.md` + `scripts/lane_truth.py`          |
 
 If this SKILL is already attached, **do not Read it again**.
 
 ## Three jobs
 
-1. Run the whole **issue-to-ship** lifecycle.
-2. Author PRs that would pass the house: decomposed, locally audited, acceptance
-   in-PR, subtitled smoke when user-visible, house PR body.
-3. Review important PRs the human way — P0/P1 only, evidence-backed,
-   **chat-draft only** for teammates.
+1. Stop agents from hallucinating state. Subagent summaries are **claims**.
+   Facts are `lane_truth.py` over **all** open own PRs: HEAD, mergeable,
+   SHA-bound L1/L3/6a/6b/E2E. Ready means those five bind **this HEAD**.
+   Leftover `next` is work. After every subagent return, run `lane_truth.py`.
+   Resume with FACTS + NEXT. Quiet or boot-stuck → `unstick_subagents.py`.
+2. Run the whole **issue-to-ship** lifecycle.
+3. Author PRs that would pass the house, and Path 7 **chat-draft only** for
+   teammates.
 
 ## Stage detection
 
 Pick the earliest unfinished path. SuperDev + a GitHub link is a **finish this
-object** order — from its current stage to its **end**. The end is all four
-green on this HEAD: L1 `/tv-fullstack` ×2, L3 local Codex **and** Claude,
-6a in-browser QA, **green** 6b smoke. Do not ask "what should I do?" Do not
-stop at a status essay, "explain fit," or "say the word to continue."
+object** order — from its current stage to its **end**. The end is **ready
+for human review**: L1, L3, 6a, 6b, and E2E green on **this HEAD** in
+`lane_truth.py`. Not "code exists", "PR opened", or a subagent saying done.
+Every open own PR is in that tab. Leftover `next` is the job. Do not ask
+"what should I do?" Do not stop at a status essay.
 
 ```bash
 python3 ~/.cursor/skills/superdev/scripts/resolve_gh_intention.py --pretty "<url-or-number>"
@@ -159,11 +164,10 @@ GitHub bots **confirm** after local audit is green; they are not the discovery l
 ## Path 0 boot
 
 Always: `emit_context_pack.py --write` + `route_model.py`. T1+: work history,
-contradictions, resources — **warn** on HIGH/MEDIUM before acting. Intention
-loop: TAG → REPLAY → MATCH → ADAPT → DELIVER → STAMP → **RECONCILE**
-(`record_intention.py` + `reconcile_push_intention.py`). ADAPT is
-unconditional. After a push, chat tags lose to the commit + files + PR body;
-gaps are a `miss` and Path 6 is not done.
+contradictions, resources, `lane_truth.py`, `unstick_subagents.py` — **warn**
+on HIGH/MEDIUM before acting. Intention loop: TAG → REPLAY → MATCH → ADAPT
+→ DELIVER → STAMP → **RECONCILE**. ADAPT is unconditional. After a push,
+chat tags lose to the commit + files + PR body; gaps are a `miss`.
 
 ## Lifecycle paths
 
@@ -207,6 +211,12 @@ while work remains. Teammate objects chat-draft only.
   argument server-side (F10).
 - **Never tag reviewers** unless the operator names them this turn.
 - **Merge / close** still need an explicit ask.
+- **Never invoke bug-net / autopilot / unattended Coder workers.** Do not
+  route, resume, or steal from them.
+- **Agent claims are not facts.** After every subagent return, `lane_truth.py`
+  over all open own PRs. Resume with the FACTS block — never the agent's
+  story (`references/agent-truth.md`). `--record` is parent-only, after the
+  parent saw the artifact on this HEAD.
 
 ## Pre-push scans (every diff)
 

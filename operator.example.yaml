@@ -28,8 +28,16 @@ github:
 workspace:
   # Absolute path to the repo you usually work in. Used by resource_status.
   path: ""
+  # Optional: parent dir that holds per-ticket worktrees (`{prefix}{ticket}`).
+  worktree_parent: ""
+  # Optional: prefix for those dirs, e.g. platform-
+  worktree_prefix: ""
   # Optional: your team's multi-instance / worktree runbook.
   worktree_docs: ""
+
+# SHA-bound L1/L3/6a/6b/E2E facts. Default is state/lane (gitignored).
+lane:
+  dir: ""
 
 # Team skills SuperDev should load. Point these at YOUR repo's skills.
 # Leave a value empty to skip that gate and say so out loud.

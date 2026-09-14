@@ -76,6 +76,32 @@ def default_repo() -> str:
     return str(operator().get("github", {}).get("default_repo") or os.environ.get("SUPERDEV_DEFAULT_REPO") or "")
 
 
+def lane_dir() -> Path:
+    """SHA-bound lane facts. Default: state/lane. Override with lane.dir or SUPERDEV_LANE."""
+    raw = operator().get("lane") or {}
+    path = ""
+    if isinstance(raw, dict):
+        path = str(raw.get("dir") or "")
+    path = path or os.environ.get("SUPERDEV_LANE") or ""
+    target = Path(path).expanduser() if path else STATE / "lane"
+    target.mkdir(parents=True, exist_ok=True)
+    return target
+
+
+def worktree_parent() -> Path:
+    raw = operator().get("workspace") or {}
+    if isinstance(raw, dict) and raw.get("worktree_parent"):
+        return Path(str(raw["worktree_parent"])).expanduser()
+    return workspace().parent
+
+
+def worktree_prefix() -> str:
+    raw = operator().get("workspace") or {}
+    if isinstance(raw, dict) and raw.get("worktree_prefix"):
+        return str(raw["worktree_prefix"])
+    return os.environ.get("SUPERDEV_WORKTREE_PREFIX") or ""
+
+
 def workspace() -> Path:
     raw = operator().get("workspace", {})
     path = ""

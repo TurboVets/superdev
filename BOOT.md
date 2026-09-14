@@ -23,6 +23,9 @@ python3 $S/scripts/route_model.py --prompt "<ask>" --path "<stage>" --goal "<goa
 python3 $S/scripts/work_history.py --active
 python3 $S/scripts/check_contradictions.py
 python3 $S/scripts/resource_status.py
+# Lane in play: facts over agent prose (T1+)
+python3 $S/scripts/lane_truth.py --pretty
+python3 $S/scripts/unstick_subagents.py --pretty
 ```
 
 Light → obey `boot` / `full_skill`. Heavy → obey `paths_to_run` only.
@@ -32,6 +35,7 @@ Light → obey `boot` / `full_skill`. Heavy → obey `paths_to_run` only.
 - `routing.md` — tier tables
 - `skill-routing.md` — which leaf skill to load (`operator.yaml` `skills.*`)
 - `intention.md` — TAG → STAMP
+- `agent-truth.md` — facts over subagent prose; leftover `next` is work
 - `review-bar.md` / `security-bar.md` on Path 5.5 / 7
 - `ponytail.md` on every Path 5 write (name the rung)
 - `prove_intensity.py --pretty` when a diff exists — declare before L1/QA/smoke

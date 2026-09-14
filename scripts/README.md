@@ -8,6 +8,10 @@
 | `battle_rhythm.py` | Path 5 gates: kickoff / recon / harness / setup-green / 3-failure / deviate / smoke-script / pattern archive / promote |
 | `prove_intensity.py` | **Decides** lite / standard / full from the diff (never the title). `--pretty` / `--self-check` |
 | `reconcile_push_intention.py` | After push: asked vs commit/files/PR body. Exit 1 gaps ⇒ Path 6 not done. `--write-learn` |
+| `lane_truth.py` | SHA-bound L1/L3/6a/6b/E2E for every open own PR. `--facts-block` / `--record` (parent only) |
+| `unstick_subagents.py` | Quiet / boot-stuck / claimed-done while `next` exists → resume prompt with FACTS |
+| `gh_comment_lint.py` | ≤1200 chars / ≤10 lines before any GitHub comment. `--exempt evidence\|question` |
+| `cleanup_smoke_repos.py` | Dry-run / `--apply` delete of stale `tv-smoke-*` staging repos |
 
 Related: `scripts/rate_skills.py` (promote/tighten/demote) + `references/skill-routing.md`.
 

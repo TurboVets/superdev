@@ -86,8 +86,9 @@ routes them. Do not stack sibling review / audit / memory skills.
 
 ## Do not invoke from Cursor SuperDev
 
-`bug-net` / `autopilot` / `discover` / `fix` / `ship` (unattended Coder),
-`turbo-eyes:pr-review` on teammate PRs, `merge-pr` without "merge it",
+**Never invoke** `bug-net` / `autopilot` / `discover` / `fix` / `ship`
+(unattended Coder) — do not route, resume, or steal from their workers.
+Also skip `turbo-eyes:pr-review` on teammate PRs, `merge-pr` without "merge it",
 `vets-staging-deploy` unless asked, Cursor marketplace fluff
 (`frontend-design`, `skill-creator`, …). Ponytail is not a Cursor plugin —
 do not marketplace-install it; SuperDev already owns the adapter.
