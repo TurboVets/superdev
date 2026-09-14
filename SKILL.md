@@ -134,6 +134,9 @@ checks on **this HEAD** in `lane_truth.py`. Not "code exists", "PR opened",
 "L1 spawned", or a subagent saying done. Every open own PR is in that tab.
 Leftover `next` is the job. If a run dies mid-lane, the parent unsticks it.
 Do not ask "what should I do?" Do not stop at a status essay.
+An opened PR with `next=6a` is unfinished. A busy instance is not a
+stop — move it (`instance:release` → `instance:init <id>`) and start 6a
+this turn. "When instance N is free" is a halt.
 
 ```bash
 python3 ~/.cursor/skills/superdev/scripts/resolve_gh_intention.py --pretty "<url-or-number>"

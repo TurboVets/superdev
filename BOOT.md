@@ -55,6 +55,8 @@ Light → obey `boot` / `full_skill`. Heavy → obey `paths_to_run` only.
 
 No push / PR-create until the **intensity-scaled** L1→L3 ladder is green.
 L3 skips on **lite**. 6a live QA before 6b smoke. Never **Not covered**.
+A PR with `next=6a` is unfinished. A busy instance is not a stop — move
+it this turn. "When instance N is free" is a halt.
 Never tag/request reviewers unless the operator names them this turn.
 Record loops after each phase so routing learns.
 Warn on HIGH/MEDIUM contradictions before ACT.

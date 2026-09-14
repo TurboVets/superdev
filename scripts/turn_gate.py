@@ -24,7 +24,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from claim_lint import lint as claim_lint  # noqa: E402
-from halt_lint import lint_bot_log, lint_reply  # noqa: E402
+from halt_lint import lint_bot_log, lint_leftover_prove, lint_reply  # noqa: E402
 from lib_paths import SESSION, WORK_HISTORY, lane_dir, worktree_parent  # noqa: E402
 
 STALE_S = 20 * 60
@@ -180,6 +180,9 @@ def gate(ticket: str, text: str, bot_log: str = "") -> list[str]:
     row = row_from_store(ticket, wt)
     misses = claim_lint(text, row)
     misses.extend(lint_reply(text, bool(row.get("done"))))
+    misses.extend(
+        lint_leftover_prove(text, str(row.get("next") or ""), bool(row.get("done")))
+    )
     if bot_log:
         misses.extend(lint_bot_log(bot_log))
     return misses

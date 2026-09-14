@@ -6,6 +6,14 @@ the archaeology second, ≤6 lines. When a lesson hardens, promote it into
 
 Do not import another operator's personal ledger.
 
+### A busy instance is not a stop after the PR opens (2026-09-14)
+
+#11836 / #10156 / #10159 opened PRs then sat on "6a when instance 2
+can move." `halt_lint` only matched `waiting on instance`; `--strict`
+ignored leftover `next=6a`. An opened PR with L1+L3 and no 6a is
+unfinished. Move the instance this turn. "When instance N is free" is
+a halt.
+
 ### Own CONFLICTING PRs are Path 0, not a warning (2026-09-14)
 
 List is not the job. `conflict_sweep.py --apply` the same turn. Lock

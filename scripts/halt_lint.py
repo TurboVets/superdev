@@ -30,6 +30,11 @@ HALT = re.compile(
     r"not this head.{0,80}(after|once|when)|"
     r"claude never (produced|ran|started)|"
     r"l1 spawned|fixer running|waiting on instance|"
+    r"when instance.{0,40}(free|can move)|"
+    r"instance \d+ (is free|can move|is busy)|"
+    r"6a when|"
+    r"waiting (for|on) (the )?(instance|stack|lock)|"
+    r"no (new work|further action|follow-up)|"
     r"codex cr\b|claude 401|cloud (claude )?(401|skip)",
     re.I | re.S,
 )
@@ -37,7 +42,17 @@ RESUME = re.compile(
     r"\b(re-?run (tv-fullstack|local-bot-review)|"
     r"resum(e|ing) .{0,60}([0-9a-f]{8}-[0-9a-f-]+|L1|L3|6a|6b)|"
     r"keep(ing)? (going|working) .{0,20}(L1|L3|6a|6b|tv-fullstack)|"
-    r"spawn(ing)? .{0,40}(Task|L1|L3|finish))\b",
+    r"spawn(ing)? .{0,40}(Task|L1|L3|finish)|"
+    r"instance:release|instance:init|moving (the )?instance|"
+    r"starting 6a|tv-qa-pr-in-browser|tv-smoke-test)\b",
+    re.I,
+)
+# A leftover next=6a/6b reply must start that gate. "when the instance
+# is free" is the #11836 miss — PR open is not a stop.
+PROVE_START = re.compile(
+    r"instance:release|instance:init|moving (the )?instance|"
+    r"starting 6a|tv-qa-pr-in-browser|tv-smoke-test|"
+    r"6a in (flight|progress)|opening the (hub|app)|browser QA",
     re.I,
 )
 CLAUDE_START = re.compile(r"^>>> claude\b", re.M)
@@ -50,6 +65,17 @@ def lint_reply(text: str, done: bool) -> list[str]:
     if RESUME.search(text):
         return []
     return ["HALT status-essay · FACT next still open — resume, do not inform-and-stop"]
+
+
+def lint_leftover_prove(text: str, next_gate: str, done: bool) -> list[str]:
+    if done or next_gate not in {"6a", "6b"}:
+        return []
+    if PROVE_START.search(text):
+        return []
+    return [
+        f"HALT leftover next={next_gate} — start that gate this turn "
+        "(move the instance; do not wait until it is free)"
+    ]
 
 
 def lint_unread() -> list[str]:
@@ -86,6 +112,16 @@ def self_check() -> int:
     assert lint_reply("L1 spawned. Codex CR, fixer running.", False)
     assert not lint_reply(
         "L1 spawned. Re-run tv-fullstack on this HEAD.", False
+    )
+    assert lint_reply("Next is 6a when instance 2 can move.", False)
+    assert lint_reply("NEXT 6a when instance 2 is free.", False)
+    assert not lint_reply(
+        "Next is 6a. Moving instance 2 via instance:release then instance:init.",
+        False,
+    )
+    assert lint_leftover_prove("PR open. Next is 6a.", "6a", False)
+    assert not lint_leftover_prove(
+        "Starting 6a. Moving the instance via instance:init 2.", "6a", False
     )
     log = ">>> claude (opus) prompt: 12 bytes\n\nexit_code: 1\n"
     assert lint_bot_log(log)

@@ -257,9 +257,10 @@ do not wait for a QA or fullstack skill tag.
 > unfinished, 6a still has unclicked planned cases, smoke is **red**, or
 > (when smoke is required) there is no inline player / titles. SuperDev
 > records 6b; a leftover **Not covered** list, "L1 spawned", or "say the
-> word" stop is a miss. A mid-lane stop or hallucinated gate is the
-> **parent's** to unstick. The artifacts (L1, L3 Codex **and** Claude,
-> 6a, green 6b, E2E) are one unit.
+> word" stop is a miss. "When instance N is free" is the same miss —
+> move the instance and start 6a this turn. A mid-lane stop or
+> hallucinated gate is the **parent's** to unstick. The artifacts (L1,
+> L3 Codex **and** Claude, 6a, green 6b, E2E) are one unit.
 
 1. Confirm Path 5.5 artifact for **this SHA**, scaled by intensity (lite: one
    pass or skip docs; standard/full: ×2 Ship; full: + stability). Stale after

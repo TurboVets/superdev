@@ -8,7 +8,8 @@ The Cursor "brief the user" notice is not a scheduler. This script is.
   python3 advance_lane.py --ingest --ticket 8043 --kind l1 --sha 6c89e0be46ae
 
 Exit 1 on --strict when any owned ticket has L1/L3 reports on disk
-that the parent has not ingested. That is the mid-lane stop.
+that the parent has not ingested, or when L1+L3 are bound and 6a/6b
+is still unset. That is the mid-lane stop. A PR without 6a is unfinished.
 """
 
 from __future__ import annotations
@@ -143,6 +144,20 @@ def scan() -> list[dict]:
     return rows
 
 
+def leftover_prove() -> list[str]:
+    """L1+L3 recorded and qa unset ⇒ 6a is the job. Waiting is illegal."""
+    stored = load_json(LANE / "truth.json", {})
+    stuck: list[str] = []
+    if not isinstance(stored, dict):
+        return stuck
+    for ticket, rec in stored.items():
+        if not isinstance(rec, dict):
+            continue
+        if rec.get("l1_sha") and rec.get("l3_sha") and not rec.get("qa_sha"):
+            stuck.append(str(ticket))
+    return stuck
+
+
 def ingest(ticket: str, kind: str, sha: str) -> Path:
     d = artifact_dir(kind, ticket, sha)
     d.mkdir(parents=True, exist_ok=True)
@@ -180,10 +195,19 @@ def main() -> int:
         return 0
     rows = scan()
     unread = [r for r in rows if r["action"].startswith("ingest")]
-    payload = {"tickets": rows, "unread": unread}
+    prove = leftover_prove()
+    payload = {"tickets": rows, "unread": unread, "leftover_prove": prove}
     print(json.dumps(payload, indent=2 if args.pretty else None))
     if args.strict and unread:
         print("HALT unread artifacts — open them this turn, then --ingest. Do not brief-and-stop.", file=sys.stderr)
+        return 1
+    if args.strict and prove:
+        print(
+            "HALT leftover 6a on "
+            + ", ".join(prove)
+            + " — move the instance and start 6a this turn. A busy instance is not a stop.",
+            file=sys.stderr,
+        )
         return 1
     return 0
 
