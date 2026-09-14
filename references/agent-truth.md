@@ -1,9 +1,16 @@
 # Agent truth — facts over prose
 
-**Primary SuperDev job:** stop hallucinated state. A fluent summary is the
-failure mode, not the deliverable. Zero hallucination is a _system_
-property (HALO 2026; Anthropic: ground truth from the environment at each
-step). The model will invent. The harness must refuse.
+**SuperDev's job:** one GitHub issue, start → ready for human review
+(`done: true` = L1 + L3 Codex **and** Claude + 6a + green 6b + E2E on
+**this HEAD**). A fluent summary is not that. Zero hallucination is a
+_system_ property (HALO 2026; Anthropic: ground truth from the
+environment at each step). The model will invent. The harness must refuse.
+
+**Parent owns the finish.** A subagent that stops, 401s, boot-loops, or
+claims a greener gate is unfinished work. The parent runs
+`lane_truth.py` + `claim_lint.py`, opens the artifact on this HEAD (or
+treats the gate as unset), diagnoses the blocker, and resumes or spawns.
+Do not ask the operator. Do not paste agent A's story into agent B.
 
 ## Layers (what the world does → what we run)
 
@@ -44,12 +51,14 @@ check-run).
 
 The tab is **every open own PR** (`github.login` on `default_repo`), plus
 lane issues with no PR. `done: true` means ready for human review
-(L1+L3+6a+6b+E2E on HEAD). Do not merge unless asked. Leftover `next` is
-work — finish it.
+(L1+L3 Codex **and** Claude+6a+green 6b+E2E on HEAD). "L1 spawned" /
+"fixer running" is not that. Do not merge unless asked. Leftover `next`
+is work — the parent finishes it.
 
 1. If `done: true` — that PR is ready. Leave it.
 2. If `next` is set — resume/spawn with the FACTS block. Never paste the
-   agent's story back in.
+   agent's story back in. A quiet or halted agent is a parent unstick,
+   not a status essay.
 3. `--record` only after the parent saw the artifact on **this HEAD**.
    An agent saying "L1 Ship" is not a record.
 

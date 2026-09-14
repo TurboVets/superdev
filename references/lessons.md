@@ -34,12 +34,20 @@ Tagging SuperDev with an issue/PR URL means take it from its current stage
 to Path 6. `hard_stop` is only teammate-owned (someone else assigned).
 Unassigned is a ship lane — assign + complete. Never "explain fit."
 
+### Parent finishes the issue — mid-lane stop is unfinished
+
+SuperDev's job is **one GitHub issue → ready for human review** (L1 +
+L3 Codex **and** Claude + 6a + green 6b + E2E on HEAD). A subagent that
+stops, 401s, or claims a greener gate is a blocked step. The parent
+runs `lane_truth` + `claim_lint` / `halt_lint`, opens the artifact, and
+resumes. "L1 spawned" is not ready. Do not ask to continue.
+
 ### Never stop mid-lane — four artifacts or it is not finished
 
-Owned ship end is **all four green**: L1 `/tv-fullstack` ×2, L3 local
-Codex **and** Claude APPROVE, 6a in-browser QA, **green** 6b smoke +
-player. Stopping after Path 5 ("ladder owed — say the word") is a miss.
-Resume the earliest unfinished artifact. Merge still needs an ask.
+Owned ship end is **all four green**: L1 fullstack ×2, L3 local Codex
+**and** Claude APPROVE, 6a in-browser QA, **green** 6b smoke + player.
+Stopping after Path 5 ("ladder owed — say the word") is a miss. The
+parent resumes the earliest unfinished artifact. Merge still needs an ask.
 
 ### Do not wire a 1Password MCP until the token is already in Cursor
 

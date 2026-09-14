@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Detect ship subagents that went quiet before Path 6 completion.
 
+The parent owns the finish. A quiet, boot-stuck, 401'd, or
+claimed-done agent is unfinished work — resume or spawn. Never treat
+`wait` plus a status essay as ready for human review.
+
 Reads <lane.dir>/agents.json + worktrees + Cursor transcripts.
 Prints JSON actions: wait | resume | spawn | done.
 

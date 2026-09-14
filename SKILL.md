@@ -7,9 +7,11 @@ description: >-
   (Opus 5 / Fable 5) for review. Cheap-down even when the picker is Grok High
   Fast. Cannot flip the Cursor picker — Cursor Router (Auto) is the picker-side
   equivalent. Say auto-switch off to keep the parent. GitHub URL alone continues
-  to completion. Local review ladder (audit ×2 Ship → human lenses → local bots)
-  before any PR-create or push. Least-code (ponytail) on every write. Sticky
-  until exit SuperDev. Invoke for pick / build / review / reply / ship. Requires
+  to completion — one issue, start → ready for human review. Parent owns
+  mid-lane stops and false gates. Local review ladder (audit ×2 Ship →
+  human lenses → local bots) before any PR-create or push. Least-code
+  (ponytail) on every write. Sticky until exit SuperDev. Invoke for
+  pick / build / review / reply / ship. Requires
   operator.yaml (github.login, default_repo) and gh CLI; Cursor Browser MCP for
   Path 6a + 6b. Prove intensity from the diff, never the title. Never writes
   teammate PRs. Configure via operator.example.yaml.
@@ -83,27 +85,52 @@ Detail: `references/routing.md`. `--record` is not optional.
 
 If this SKILL is already attached, **do not Read it again**.
 
-## Three jobs
+## The job
 
-1. Stop agents from hallucinating state. Subagent summaries are **claims**.
-   Facts are `lane_truth.py` over **all** open own PRs: HEAD, mergeable,
-   SHA-bound L1/L3/6a/6b/E2E. Ready means those five bind **this HEAD**.
-   Leftover `next` is work. After every return: `lane_truth.py` then
-   `claim_lint.py --ticket N --text-file <summary>` (exit 1 ⇒ do not
-   record). Resume with FACTS + the spawn contract in
-   `references/agent-truth.md`. Quiet or boot-stuck → `unstick_subagents.py`.
-2. Run the whole **issue-to-ship** lifecycle.
-3. Author PRs that would pass the house, and Path 7 **chat-draft only** for
-   teammates.
+SuperDev's job is **one GitHub issue, start → ready for human review**.
+That is the only `done`. Hallucination control is how we refuse a fake
+done — it is not a substitute for finishing.
+
+**Ready for human review** (`lane_truth.py` `done: true`) binds **this HEAD**:
+
+| Gate       | Green means                                                                  |
+| ---------- | ---------------------------------------------------------------------------- |
+| **L1**     | bundled fullstack audit ×2, real gates, `VERDICT: SHIP`                      |
+| **L3**     | Codex **and** Claude `VERDICT: APPROVE` (a 401 or skipped bot is unfinished) |
+| **6a**     | live in-browser QA — every planned case clicked                              |
+| **6b**     | smoke green + player in the PR body                                          |
+| **E2E**    | e2e check `success` on this SHA                                              |
+| **Checks** | CI on this SHA is green or evidenced infra                                   |
+
+"L1 spawned", "Codex CR, fixer running", or a subagent saying Ship is **not** ready.
+
+### Parent owns the finish
+
+The parent chat owns the issue until `done: true`. A subagent that
+stops, 401s, boot-loops, or hallucinates a greener gate is a **blocked
+step**, not a stop for the operator.
+
+When that happens the parent:
+
+1. `lane_truth.py` + `claim_lint.py` (exit 1 ⇒ discard the claim)
+2. Open the artifact on **this HEAD** or treat the gate as unset
+3. Diagnose the actual blocker
+4. Resume or spawn the next concrete step — do not ask "should I continue?"
+5. Never paste agent A's story into agent B
+
+`unstick_subagents.py` + `halt_lint.py` detect quiet / boot-stuck /
+"brief the user" mid-lane. A Cursor job-finished notice is **resume**.
+Path 7 is chat-draft only for teammates.
 
 ## Stage detection
 
 Pick the earliest unfinished path. SuperDev + a GitHub link is a **finish this
 object** order — from its current stage to its **end**. The end is **ready
-for human review**: L1, L3, 6a, 6b, and E2E green on **this HEAD** in
-`lane_truth.py`. Not "code exists", "PR opened", or a subagent saying done.
-Every open own PR is in that tab. Leftover `next` is the job. Do not ask
-"what should I do?" Do not stop at a status essay.
+for human review**: L1, L3 Codex **and** Claude, 6a, green 6b, E2E, and
+checks on **this HEAD** in `lane_truth.py`. Not "code exists", "PR opened",
+"L1 spawned", or a subagent saying done. Every open own PR is in that tab.
+Leftover `next` is the job. If a run dies mid-lane, the parent unsticks it.
+Do not ask "what should I do?" Do not stop at a status essay.
 
 ```bash
 python3 ~/.cursor/skills/superdev/scripts/resolve_gh_intention.py --pretty "<url-or-number>"

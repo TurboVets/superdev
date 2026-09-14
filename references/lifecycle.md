@@ -251,11 +251,14 @@ Classify intensity first (`prove_intensity.py --pretty`). Then **6a live QA**
 (`references/live-qa.md`) then **6b smoke**. Attaching SuperDev runs both —
 do not wait for a QA or fullstack skill tag.
 
-> **Completeness bar.** Path 6 is **not done** when the PR is dirty, L1/L3
+> **Completeness bar.** SuperDev's job is **one GitHub issue → ready for
+> human review.** Path 6 is **not done** when the PR is dirty, L1/L3
 > unfinished, 6a still has unclicked planned cases, smoke is **red**, or
 > (when smoke is required) there is no inline player / titles. SuperDev
-> records 6b; a leftover **Not covered** list or "say the word" stop is a
-> miss. The four artifacts (L1, L3 Codex+Claude, 6a, green 6b) are one unit.
+> records 6b; a leftover **Not covered** list, "L1 spawned", or "say the
+> word" stop is a miss. A mid-lane stop or hallucinated gate is the
+> **parent's** to unstick. The artifacts (L1, L3 Codex **and** Claude,
+> 6a, green 6b, E2E) are one unit.
 
 1. Confirm Path 5.5 artifact for **this SHA**, scaled by intensity (lite: one
    pass or skip docs; standard/full: ×2 Ship; full: + stability). Stale after

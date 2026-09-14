@@ -105,9 +105,11 @@ frustrated / meta) is retired. New contract:
 5. DELIVER  Obey the delivery contract from affect + matched standing themes
             + GH resolver completion_means. Continue stage→completion
             without a mid-lane ask: L1 fullstack + L3 Codex/Claude + 6a
-            browser QA + green 6b smoke. Diagnosis-only only on teammate
-            hard_stop or pause words. Never "explain fit" / "say the word
-            to continue the ladder" on an unassigned or own object.
+            browser QA + green 6b smoke. A stopped or hallucinating
+            subagent is the parent's to unstick. Diagnosis-only only on
+            teammate hard_stop or pause words. Never "explain fit" /
+            "say the word to continue the ladder" on an unassigned or
+            own object.
 6. STAMP    Append/update prompt-history; re-distill intention-model.md;
             session-log the intention tags + GH stage resolution applied;
             `--update`/`--close` work-history when the unit’s stage/status
