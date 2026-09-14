@@ -14,14 +14,14 @@ Do not ask the operator. Do not paste agent A's story into agent B.
 
 ## Layers (what the world does → what we run)
 
-| Layer                     | Borrowed from                | SuperDev                                                                          |
-| ------------------------- | ---------------------------- | --------------------------------------------------------------------------------- |
-| 1. Retrieve before speak  | RAG / cite-or-drop           | `git` / `gh` / `lane_truth.py` before any HEAD / L1 / L3 / 6a / 6b / e2e sentence |
-| 2. Constrained state      | OpenAI RunState              | FACTS block is the only legal state string. Agents do not own `truth.json`        |
-| 3. Deterministic verifier | HALO layer 3 (non-LLM check) | `claim_lint.py` on every subagent return. LLM-as-judge is not enough              |
-| 4. Evidence tracing       | cite-or-drop / SourceCheckup | A verdict names a file path + SHA. A topical cite is not support                  |
-| 5. Abstain                | faithfulness judges          | No tool output ⇒ write `UNVERIFIED`, never a SHA or "Ship"                        |
-| 6. Inter-agent isolation  | multi-agent failure surveys  | Never paste agent A's story into agent B. FACTS only                              |
+| Layer                     | Borrowed from                | SuperDev                                                                                                                                           |
+| ------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. Retrieve before speak  | RAG / cite-or-drop           | `git` / `gh` / `lane_truth.py` before any HEAD / L1 / L3 / 6a / 6b / e2e sentence                                                                  |
+| 2. Constrained state      | OpenAI RunState              | FACTS block is the only legal state string. Agents do not own `truth.json`                                                                         |
+| 3. Deterministic verifier | HALO layer 3 (non-LLM check) | `turn_gate.py` (claim_lint + halt_lint + receipt). Cursor `stop` / `subagentStop` hooks resume if the receipt is stale. LLM-as-judge is not enough |
+| 4. Evidence tracing       | cite-or-drop / SourceCheckup | A verdict names a file path + SHA. A topical cite is not support                                                                                   |
+| 5. Abstain                | faithfulness judges          | No tool output ⇒ write `UNVERIFIED`, never a SHA or "Ship"                                                                                         |
+| 6. Inter-agent isolation  | multi-agent failure surveys  | Never paste agent A's story into agent B. FACTS only                                                                                               |
 
 ## Sources (only these)
 
@@ -42,13 +42,15 @@ story is a **claim**. If CLAIM ≠ FACT, the claim is discarded.
 S=~/.cursor/skills/superdev
 python3 $S/scripts/lane_truth.py --pretty
 python3 $S/scripts/lane_truth.py --facts-block --ticket <N>
-python3 $S/scripts/claim_lint.py --ticket <N> --text-file <summary>
+python3 $S/scripts/advance_lane.py --strict
+python3 $S/scripts/turn_gate.py --ticket <N> --text-file <draft>
 ```
 
-`claim_lint` exit 1 ⇒ do not `--record`, do not tell the operator the gate
-is green. `advance_lane.py --strict` exit 1 ⇒ unread L1/L3 files; open,
-`--ingest`, then record or fix. Open the artifact yourself (audit md,
-bot verdict file, `gh` check-run). Reads of `lane_truth.py` do not write.
+`turn_gate` exit 1 ⇒ do not send the reply, do not `--record`. Cursor stop
+hooks auto-submit a resume if the receipt is missing or stale.
+`advance_lane.py --strict` exit 1 ⇒ unread L1/L3 files; open, `--ingest`,
+then record. A `>>> claude` line with no `VERDICT:` is an abrupt stop.
+Reads of `lane_truth.py` do not write. Only `--record` / `--ingest --apply`.
 
 The tab is **every open own PR** (`github.login` on `default_repo`), plus
 lane issues with no PR. `done: true` means ready for human review

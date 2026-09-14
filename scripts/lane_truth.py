@@ -20,6 +20,7 @@ import time
 from pathlib import Path
 
 from lib_paths import (
+    WORK_HISTORY,
     default_repo,
     github_login,
     lane_dir,
@@ -205,6 +206,79 @@ def write_truth(path: Path, stored: dict) -> None:
     tmp.replace(path)
 
 
+def work_history_tickets() -> dict[str, str]:
+    """Active/blocked issue units so a no-PR ship is still on the tab."""
+    latest: dict[str, dict] = {}
+    units = WORK_HISTORY / "units.jsonl"
+    if not units.exists():
+        return {}
+    for line in units.read_text().splitlines():
+        if not line.strip():
+            continue
+        try:
+            ev = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        uid = ev.get("unit_id")
+        if uid:
+            latest[uid] = ev
+    out: dict[str, str] = {}
+    parent = worktree_parent()
+    for ev in latest.values():
+        if ev.get("status") not in {"active", "blocked", "idle"}:
+            continue
+        issue = ev.get("issue")
+        if not issue:
+            continue
+        wt = ev.get("worktree") or ""
+        if wt and not Path(wt).is_absolute():
+            guess = parent / Path(wt).name
+            wt = str(guess) if guess.is_dir() else wt
+        if wt and not Path(wt).is_dir():
+            wt = ""
+        out[str(issue)] = wt
+    return out
+
+
+def propose_ingest(ticket: str, head: str) -> list[tuple[str, str, str]]:
+    """Bind L1/L3 only when a file names this HEAD and the gate phrase."""
+    if not head:
+        return []
+    h = short(head).lower()
+    found: list[tuple[str, str, str]] = []
+    l1_paths = list(Path("/tmp").glob("tv-fullstack*.md"))
+    art = lane_dir() / "artifacts"
+    if art.is_dir():
+        l1_paths.extend(art.glob(f"*{ticket}*"))
+    for path in l1_paths:
+        try:
+            text = path.read_text(errors="replace")
+        except OSError:
+            continue
+        if h not in text.lower():
+            continue
+        if len(re.findall(r"\bShip\b", text)) >= 2:
+            found.append(("l1", head, str(path)))
+            break
+    reviews = []
+    for name in ("codex", "claude"):
+        path = Path(f"/tmp/local-review-{name}.md")
+        if not path.exists():
+            continue
+        try:
+            text = path.read_text(errors="replace")
+        except OSError:
+            continue
+        if not re.search(r"^VERDICT:\s*APPROVE\b", text, re.M):
+            continue
+        if h not in text.lower():
+            continue
+        reviews.append(name)
+    if {"codex", "claude"} <= set(reviews):
+        found.append(("l3", head, "both /tmp/local-review-*.md APPROVE + HEAD"))
+    return found
+
+
 def collect_rows(agents: dict, stored: dict, pulls: list) -> list:
     seen: set[str] = set()
     rows: list[dict] = []
@@ -221,6 +295,11 @@ def collect_rows(agents: dict, stored: dict, pulls: list) -> list:
         rows.append(
             live_row(ticket, stored, None, meta.get("worktree") or worktree_for(ticket, agents))
         )
+    for ticket, wt in work_history_tickets().items():
+        if ticket in seen:
+            continue
+        seen.add(ticket)
+        rows.append(live_row(ticket, stored, None, wt or worktree_for(ticket, agents)))
     return rows
 
 
@@ -235,6 +314,8 @@ def main() -> int:
     ap.add_argument("--qa")
     ap.add_argument("--smoke")
     ap.add_argument("--e2e")
+    ap.add_argument("--ingest", action="store_true")
+    ap.add_argument("--apply", action="store_true")
     args = ap.parse_args()
 
     lane = lane_dir()
@@ -275,6 +356,24 @@ def main() -> int:
         return 0
 
     leftover = [r for r in rows if not r["done"]]
+    if args.ingest and args.ticket:
+        row = next((r for r in rows if str(r["ticket"]) == str(args.ticket)), None)
+        if not row:
+            raise SystemExit(f"ticket {args.ticket} not in lane_truth")
+        proposals = propose_ingest(str(args.ticket), row["head"])
+        if args.apply and proposals:
+            lock = _lock_truth(truth)
+            try:
+                stored = load_json(truth, {})
+                rec = stored.get(str(args.ticket)) or {}
+                for art, sha, _why in proposals:
+                    rec[f"{art}_sha"] = sha
+                stored[str(args.ticket)] = rec
+                write_truth(truth, persist_live(stored, rows))
+            finally:
+                lock.close()
+        print(json.dumps([{"artifact": a, "sha": short(s), "why": w} for a, s, w in proposals]))
+        return 0
     print(
         json.dumps(
             {"tickets": rows, "open": leftover, "ready": [r for r in rows if r["done"]]},

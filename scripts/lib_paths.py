@@ -170,6 +170,7 @@ def set_auto_switch(on: bool, source: str = "chat") -> dict[str, Any]:
 
 
 def clear_session() -> bool:
+    (lane_dir() / "focus.json").unlink(missing_ok=True)
     if SESSION.exists():
         SESSION.unlink()
         return True

@@ -6,12 +6,12 @@
     <title>SuperDev</title>
     <meta
       name="description"
-      content="Issue to ready-for-human-review. Before the PR. N links, N lanes. L3 Claude via Cursor."
+      content="Issue to ready-for-human-review. Before the PR. Fail-closed turn gate. N links, N lanes."
     />
     <meta property="og:title" content="SuperDev" />
     <meta
       property="og:description"
-      content="Issue to ready-for-human-review. Before the PR. N links, N lanes. L3 Claude via Cursor."
+      content="Issue to ready-for-human-review. Before the PR. Fail-closed turn gate. N links, N lanes."
     />
     <link
       rel="icon"
@@ -572,6 +572,13 @@
           tag: "the only done",
           get: "Done means L1 audit twice, L3 Codex and Cursor Claude both APPROVE, live QA clicked, green smoke, and E2E on this HEAD. L1 spawned is not ready.",
           also: "The parent owns mid-lane stops. A subagent that 401s or claims a greener gate is a blocked step. Do not ask to continue.",
+        },
+        {
+          id: "truth",
+          title: "Turn gate",
+          tag: "fail closed",
+          get: "A fluent summary is not state. turn_gate.py must PASS before the reply. Cursor stop hooks resume if that receipt is stale. claim_lint refuses a greener gate than the facts.",
+          also: "L1 and L3 bind only from files that name this HEAD. A Claude start with no VERDICT is an abrupt stop, not a reported review.",
         },
         {
           id: "never",

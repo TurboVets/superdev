@@ -129,16 +129,28 @@ def diagnose(ticket: str, meta: dict, quiet_s: float, truth: dict) -> dict:
             "all four green",
         )
     )
+    halted = any(
+        w in step.lower()
+        for w in (
+            "briefly inform",
+            "l3 did not clear",
+            "oauth expired",
+            "ask rishi",
+            "claude never",
+        )
+    )
     skipping = truth.get("next") == "L1" and "l3" in step.lower()
     if truth.get("done"):
         status, action, reason = "done", "none", "lane_truth done on HEAD"
-    elif (claimed_done or skipping) and not truth.get("done"):
+    elif (claimed_done or skipping or halted) and not truth.get("done"):
         status, action, reason = (
             "stuck",
             "resume" if newest_id else "spawn",
             (
                 "skipping to L3; lane_truth next L1"
                 if skipping
+                else f"halted mid-lane; lane_truth next {truth.get('next') or 'L1'}"
+                if halted
                 else f"claimed done; lane_truth next {truth.get('next') or 'L1'}"
             ),
         )
@@ -154,6 +166,32 @@ def diagnose(ticket: str, meta: dict, quiet_s: float, truth: dict) -> dict:
         )
     else:
         status, action, reason = "running", "wait", f"active {int(age)}s ago"
+    lane = lane_dir()
+    try:
+        focus = json.loads((lane / "focus.json").read_text())
+    except (OSError, json.JSONDecodeError):
+        focus = {}
+    try:
+        receipt = json.loads((lane / "turn-gate.json").read_text())
+    except (OSError, json.JSONDecodeError):
+        receipt = {}
+    rec_ok = bool(receipt.get("ok") and str(receipt.get("ticket")) == str(ticket))
+    rec_ts = receipt.get("ts") or ""
+    rec_age = 10**9
+    if rec_ts:
+        try:
+            rec_age = time.time() - time.mktime(
+                time.strptime(rec_ts[:19], "%Y-%m-%dT%H:%M:%S")
+            )
+        except ValueError:
+            rec_age = 10**9
+    if (
+        str(ticket) == str(focus.get("ticket") or "")
+        and not truth.get("done")
+        and not newest_id
+        and (not rec_ok or rec_age > 20 * 60)
+    ):
+        status, action, reason = "stuck", "spawn", "parent skipped turn_gate"
     return {
         "ticket": int(ticket) if str(ticket).isdigit() else ticket,
         "status": status,
@@ -188,9 +226,18 @@ def main() -> int:
         }
     except json.JSONDecodeError:
         truth_rows = {}
+    tickets = dict(agents.get("tickets") or {})
+    for row in truth_rows.values():
+        t = str(row.get("ticket") or "")
+        if not t or t in tickets or row.get("done"):
+            continue
+        wt = row.get("worktree") or ""
+        if not wt:
+            continue
+        tickets[t] = {"worktree": wt, "agents": []}
     rows = [
         diagnose(t, meta, args.quiet_min * 60, truth_rows.get(t) or {})
-        for t, meta in (agents.get("tickets") or {}).items()
+        for t, meta in tickets.items()
     ]
     out = {
         "updatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),

@@ -25,6 +25,16 @@ if [[ ! -f "${DEST}/operator.yaml" ]]; then
 fi
 
 cp "${ROOT}/rules/superdev-sticky.mdc" "${RULES}/superdev-sticky.mdc"
+HOOKS="${HOME}/.cursor/hooks"
+mkdir -p "${HOOKS}"
+cp "${ROOT}/hooks/superdev-stop.py" "${HOOKS}/superdev-stop.py"
+cp "${ROOT}/hooks/superdev-subagent-stop.py" "${HOOKS}/superdev-subagent-stop.py"
+chmod +x "${HOOKS}/superdev-stop.py" "${HOOKS}/superdev-subagent-stop.py"
+if [[ ! -f "${HOOKS}/../hooks.json" ]]; then
+  cp "${ROOT}/hooks/hooks.json" "${HOME}/.cursor/hooks.json"
+else
+  echo "Kept existing ~/.cursor/hooks.json — merge stop / subagentStop from hooks/hooks.json if missing"
+fi
 chmod +x "${DEST}/install.sh" "${DEST}/scripts/"*.py "${DEST}/scripts/"*.sh 2>/dev/null || true
 
 # Best-effort: prefill github.login from gh.
@@ -53,4 +63,5 @@ echo "  3. In a new Agent chat, attach the superdev skill or type /superdev"
 echo "  4. Do NOT copy someone else's state/ directory — intentions are personal"
 echo
 echo "Sticky rule installed: ${RULES}/superdev-sticky.mdc"
+echo "Cursor stop hooks installed: ${HOOKS}/superdev-stop.py"
 echo "Done."

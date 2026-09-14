@@ -10,8 +10,9 @@
 | `reconcile_push_intention.py` | After push: asked vs commit/files/PR body. Exit 1 gaps ⇒ Path 6 not done. `--write-learn` |
 | `lane_truth.py` | SHA-bound L1/L3/6a/6b/E2E. Reads do not write. `--record` locks |
 | `advance_lane.py` | Unread L1/L3 `/tmp` artifacts. `--strict` exit 1. `--ingest` after parent opens |
-| `claim_lint.py` | Fail if prose claims a greener L1/L3/6a/6b/done than `lane_truth`. Run on every subagent return |
-| `unstick_subagents.py` | Parent-owned finish: quiet / boot-stuck / claimed-done while `next` exists → resume or spawn |
+| `claim_lint.py` | Fail if prose claims a greener L1/L3/6a/6b/done than `lane_truth` |
+| `turn_gate.py` | Fail-closed end of turn. claim_lint + halt_lint + receipt. Cursor stop hooks read it |
+| `unstick_subagents.py` | Parent-owned finish: quiet / boot-stuck / claimed-done / skipped turn_gate → resume or spawn |
 | `halt_lint.py` | Fail if a reply or bot log is a mid-lane halt. `--strict-advance` = unread reports |
 | `gh_comment_lint.py` | ≤1200 chars / ≤10 lines before any GitHub comment. `--exempt evidence\|question` |
 | `cleanup_smoke_repos.py` | Dry-run / `--apply` delete of stale `tv-smoke-*` staging repos |

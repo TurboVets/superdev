@@ -32,7 +32,9 @@ python3 $S/scripts/resource_status.py
 python3 $S/scripts/lane_truth.py --pretty
 python3 $S/scripts/advance_lane.py --strict
 python3 $S/scripts/unstick_subagents.py --pretty
-# After a subagent return: claim_lint.py --ticket N --text-file <summary>
+# After a subagent return / before the user-facing reply:
+# turn_gate.py --ticket N --text-file <draft> [--bot-log <job log>]
+# No TURN_GATE: PASS ⇒ do not send the reply.
 # Unread / HALT ⇒ ingest or spawn. --pretty does not write truth.json.
 ```
 

@@ -22,11 +22,17 @@ HERE = Path(__file__).resolve().parent
 
 GREENER = (
     (re.compile(r"ready for human review|path 6 complete|all (four|five) green|\bdone:\s*true", re.I), "done"),
-    (re.compile(r"\bL1\b.{0,40}\b(ship|recorded|stamped|green)\b|\brecorded L1\b", re.I), "l1"),
-    (re.compile(r"\bL3\b.{0,40}\b(approve|recorded|stamped|green)\b|\brecorded L3\b", re.I), "l3"),
-    (re.compile(r"\b6a\b.{0,40}\b(done|recorded|clicked|green)\b|\brecorded 6a\b", re.I), "qa"),
-    (re.compile(r"\b6b\b.{0,40}\b(done|recorded|green|player)\b|\bsmoke (done|recorded|green)\b", re.I), "smoke"),
+    (re.compile(r"\bL1\b.{0,80}\b(ship(?:ped)?(?!\s+agent)|recorded|stamped|green)\b|\bL1\b.{0,40}\b(×2|x2)\b.{0,24}\bship(?!\s+agent)|\brecorded L1\b", re.I), "l1"),
+    (re.compile(r"\bL3\b.{0,80}\b(approve|approved|recorded|stamped|green)\b|\brecorded L3\b|both.{0,24}approv", re.I), "l3"),
+    (re.compile(r"\b6a\b.{0,50}\b(done|recorded|clicked|green|every (planned )?case)\b|\brecorded 6a\b|\bi clicked\b", re.I), "qa"),
+    (re.compile(r"\b6b\b.{0,50}\b(done|recorded|green|player)\b|\bsmoke (done|recorded|green)\b|player.{0,40}(pr body|user-attachments)", re.I), "smoke"),
 )
+GATE_SHA = re.compile(
+    r"\b(L1|L3|6a|6b|e2e)\b(?:\s+(?:on|at|@|sha))?\s*[`'\"]?([0-9a-f]{7,40})",
+    re.I,
+)
+GATE_KEY = {"l1": "l1", "l3": "l3", "6a": "qa", "6b": "smoke", "e2e": "e2e"}
+NEG = re.compile(r"\b(unset|next|owed|pending|missing|not (on|recorded))\b", re.I)
 
 
 def short(sha: str) -> str:
@@ -62,6 +68,17 @@ def lint(text: str, row: dict) -> list[str]:
     for m in re.finditer(r"\bHEAD\b\s*[`'\"]?([0-9a-f]{7,40})", text, re.I):
         if head and short(m.group(1)) != head:
             misses.append(f"CLAIM HEAD {m.group(1)} · FACT {head}")
+    for m in GATE_SHA.finditer(text):
+        window = text[max(0, m.start() - 16) : m.end() + 24]
+        if NEG.search(window):
+            continue
+        key = GATE_KEY[m.group(1).lower()]
+        sha = short(m.group(2))
+        bound_sha = short(row.get(f"{key}_sha") or "")
+        if head and sha != head and sha != bound_sha:
+            misses.append(f"CLAIM {key} {sha} · FACT head={head} {key}={bound_sha or 'unset'}")
+        elif head and sha != head and bound(row, key):
+            misses.append(f"CLAIM {key} on stale {sha} · FACT head={head}")
     return misses
 
 
@@ -84,6 +101,8 @@ def self_check() -> int:
     assert lint("L1 recorded", fresh) == []
     assert lint("L1 Ship on HEAD bbbbbbbbbbbb", stale)
     assert lint("HEAD aaaaaaaaaaaa111111111111", stale) == []
+    assert lint("both bots APPROVE", stale)
+    assert lint("player in the PR body", stale)
     print("self-check ok")
     return 0
 

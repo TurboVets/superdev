@@ -34,8 +34,10 @@ HALT = re.compile(
     re.I | re.S,
 )
 RESUME = re.compile(
-    r"\b(re-?run|resum|continu|spawn(?!ed)|local-bot-review|tv-fullstack|"
-    r"keep(ing)? (going|working))\b",
+    r"\b(re-?run (tv-fullstack|local-bot-review)|"
+    r"resum(e|ing) .{0,60}([0-9a-f]{8}-[0-9a-f-]+|L1|L3|6a|6b)|"
+    r"keep(ing)? (going|working) .{0,20}(L1|L3|6a|6b|tv-fullstack)|"
+    r"spawn(ing)? .{0,40}(Task|L1|L3|finish))\b",
     re.I,
 )
 CLAUDE_START = re.compile(r"^>>> claude\b", re.M)
@@ -79,6 +81,7 @@ def self_check() -> int:
     assert not lint_reply(
         "L3 did not clear. Re-run local-bot-review after login.", False
     )
+    assert lint_reply("L3 did not clear. Re-run later.", False)
     assert lint_reply("all four green", True) == []
     assert lint_reply("L1 spawned. Codex CR, fixer running.", False)
     assert not lint_reply(
@@ -116,8 +119,8 @@ def main() -> int:
         misses.extend(lint_reply(text, bool(row.get("done"))))
     elif text.strip() and not args.ticket:
         misses.extend(lint_reply(text, False))
-    if not (args.bot_log or text.strip()):
-        raise SystemExit("pass --text, --text-file, or --bot-log")
+    if not (args.bot_log or text.strip() or args.strict_advance):
+        raise SystemExit("pass --text, --text-file, --bot-log, or --strict-advance")
     if misses:
         print("HALT")
         for miss in misses:

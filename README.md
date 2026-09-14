@@ -31,6 +31,7 @@ Shareable extraction of the SuperDev operator used on TurboVets platform work. I
 | **This repo → main** | SuperDev skill changes land on `main` (`git push origin main`). No PR unless asked. |
 | **One issue → ready for human review** | SuperDev's job is one GitHub issue, start to `done: true`. L1 + L3 Codex **and** Cursor Claude + 6a + green 6b + E2E on this HEAD. "L1 spawned" is not ready. |
 | **Parent owns the finish** | A subagent that stops, 401s, or hallucinates a gate is a blocked step. The parent diagnoses and continues. Do not ask. |
+| **Turn gate (fail closed)** | `turn_gate.py` must PASS before the reply. Cursor `stop` / `subagentStop` hooks resume if the receipt is stale. L1/L3 bind only from files that name this HEAD. |
 | **Never skip / never stop mid-lane** | Untestable AC blocks code. Path 5 code or a 5.5 report is not the end — continue L1 fullstack ×2, L3 Codex **and** Cursor Claude, 6a in-browser QA, **green** 6b smoke. Never "say the word." |
 | **L1 → L2 → L3 ladder** | Bundled fullstack audit → lenses → Codex CLI + Cursor Claude Task. Intensity **lite** skips L3. No push until the scaled ladder is green. |
 | **Prove intensity** | `prove_intensity.py` reads the diff (not the title): lite / standard / full. Aria-label ≠ two-party disconnect. |

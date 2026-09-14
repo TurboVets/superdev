@@ -255,10 +255,10 @@ while work remains. Teammate objects chat-draft only.
 - **Never invoke bug-net / autopilot / unattended Coder workers.** Do not
   route, resume, or steal from them.
 - **Agent claims are not facts.** After every subagent return, `lane_truth.py`
-  then `claim_lint.py --ticket N --text-file <summary>`. Exit 1 ⇒ do not
-  `--record`. Resume with FACTS + the spawn contract — never the agent's
-  story (`references/agent-truth.md`). `--record` is parent-only, after the
-  parent saw the artifact on this HEAD.
+  then `turn_gate.py --ticket N --text-file <draft>`. Exit 1 ⇒ do not send
+  the reply, do not `--record`. Resume with FACTS + the spawn contract —
+  never the agent's story (`references/agent-truth.md`). `--record` is
+  parent-only, after the parent saw the artifact on this HEAD.
 
 ## Pre-push scans (every diff)
 
