@@ -59,7 +59,7 @@ def lint(text: str, row: dict) -> list[str]:
             nxt = row.get("next") or "unset"
             misses.append(f"CLAIM {key} green · FACT next={nxt} head={short(row.get('head') or '')}")
     head = short(row.get("head") or "")
-    for m in re.finditer(r"\bHEAD\b.{0,20}([0-9a-f]{7,40})", text, re.I):
+    for m in re.finditer(r"\bHEAD\b\s*[`'\"]?([0-9a-f]{7,40})", text, re.I):
         if head and short(m.group(1)) != head:
             misses.append(f"CLAIM HEAD {m.group(1)} · FACT {head}")
     return misses
@@ -83,6 +83,7 @@ def self_check() -> int:
     fresh = {**stale, "l1_sha": "aaaaaaaaaaaa", "next": "L3"}
     assert lint("L1 recorded", fresh) == []
     assert lint("L1 Ship on HEAD bbbbbbbbbbbb", stale)
+    assert lint("HEAD aaaaaaaaaaaa111111111111", stale) == []
     print("self-check ok")
     return 0
 
