@@ -1,6 +1,20 @@
 # Agent truth — facts over prose
 
-SuperDev owns completion. Subagents execute a `NEXT`. They do not declare done.
+**Primary SuperDev job:** stop hallucinated state. A fluent summary is the
+failure mode, not the deliverable. Zero hallucination is a _system_
+property (HALO 2026; Anthropic: ground truth from the environment at each
+step). The model will invent. The harness must refuse.
+
+## Layers (what the world does → what we run)
+
+| Layer                     | Borrowed from                | SuperDev                                                                          |
+| ------------------------- | ---------------------------- | --------------------------------------------------------------------------------- |
+| 1. Retrieve before speak  | RAG / cite-or-drop           | `git` / `gh` / `lane_truth.py` before any HEAD / L1 / L3 / 6a / 6b / e2e sentence |
+| 2. Constrained state      | OpenAI RunState              | FACTS block is the only legal state string. Agents do not own `truth.json`        |
+| 3. Deterministic verifier | HALO layer 3 (non-LLM check) | `claim_lint.py` on every subagent return. LLM-as-judge is not enough              |
+| 4. Evidence tracing       | cite-or-drop / SourceCheckup | A verdict names a file path + SHA. A topical cite is not support                  |
+| 5. Abstain                | faithfulness judges          | No tool output ⇒ write `UNVERIFIED`, never a SHA or "Ship"                        |
+| 6. Inter-agent isolation  | multi-agent failure surveys  | Never paste agent A's story into agent B. FACTS only                              |
 
 ## Sources (only these)
 
@@ -21,7 +35,12 @@ story is a **claim**. If CLAIM ≠ FACT, the claim is discarded.
 S=~/.cursor/skills/superdev
 python3 $S/scripts/lane_truth.py --pretty
 python3 $S/scripts/lane_truth.py --facts-block --ticket <N>
+python3 $S/scripts/claim_lint.py --ticket <N> --text-file <summary>
 ```
+
+`claim_lint` exit 1 ⇒ do not `--record`, do not tell the operator the gate
+is green. Open the artifact yourself (audit md, bot verdict file, `gh`
+check-run).
 
 The tab is **every open own PR** (`github.login` on `default_repo`), plus
 lane issues with no PR. `done: true` means ready for human review
@@ -31,14 +50,20 @@ work — finish it.
 1. If `done: true` — that PR is ready. Leave it.
 2. If `next` is set — resume/spawn with the FACTS block. Never paste the
    agent's story back in.
-3. `--record` only after the parent saw the artifact on **this HEAD**
-   (audit files, both L3 verdicts, 6a cases clicked, player URL in the PR).
+3. `--record` only after the parent saw the artifact on **this HEAD**.
    An agent saying "L1 Ship" is not a record.
 
-## Prompt contract
+## Spawn contract (paste at the top of every Task prompt)
 
-Every resume/spawn starts with FACTS + NEXT. If the agent contradicts FACTS,
-interrupt and send FACTS again.
+```
+FACTS (from lane_truth.py --facts-block) bind this ticket. Do not contradict them.
+You may not state HEAD, L1, L3, 6a, 6b, e2e, mergeable, or done unless you just
+ran git/gh/lane_truth and quote that output. No tool output ⇒ UNVERIFIED.
+You may not run lane_truth.py --record. You may not cite a verdict file you
+did not open. Do not invent a SHA or a tool result. Do not claim a greener
+next than FACTS. If you did not click it, it is not 6a. If the player URL is
+not in the PR body on this HEAD, 6b is unset.
+```
 
-Quiet >5 min or stuck on SuperDev boot → `unstick_subagents.py` (it refuses
+Quiet >5 min or stuck on SuperDev boot → `unstick_subagents.py` (refuses
 `done` unless `lane_truth` binds all five to HEAD).

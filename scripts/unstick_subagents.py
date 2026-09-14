@@ -74,6 +74,10 @@ def pr_for(ticket: str) -> str:
 def continue_prompt(ticket: str, wt: str, reason: str, facts: str) -> str:
     return (
         f"{facts}\n"
+        "You may not state HEAD, L1, L3, 6a, 6b, e2e, mergeable, or done unless "
+        "you just ran git/gh/lane_truth and quote that output. No tool output ⇒ "
+        "UNVERIFIED. You may not run lane_truth.py --record. Do not invent a SHA "
+        "or a tool result.\n"
         f"Unstick #{ticket}. {reason} Continue in {wt}. "
         "Do not boot SuperDev. Do not merge. Do not claim a gate green "
         "unless lane_truth.py binds it to THIS HEAD."

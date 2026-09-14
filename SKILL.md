@@ -65,21 +65,21 @@ Detail: `references/routing.md`. `--record` is not optional.
 
 ### Context upgrade (only if paths_to_run needs it)
 
-| Need                     | Load                                                           |
-| ------------------------ | -------------------------------------------------------------- |
-| Exact path steps         | `references/lifecycle.md` (the path you are in)                |
-| Path 3 grill             | `operator.yaml` `skills.grill_scales` if set                   |
-| Product law              | `operator.yaml` `skills.product_law` if set                    |
-| Path 5.5                 | `references/fullstack-audit.md` (+ team `skills.audit` if set) |
-| Path 6 prove intensity   | `scripts/prove_intensity.py` + `references/prove-intensity.md` |
-| Path 6a live QA          | `references/live-qa.md` (+ team `skills.qa` if set)            |
-| Path 5 least-code        | `references/ponytail.md`                                       |
-| Path 5.5 / 7             | `references/review-bar.md` (F1–F11)                            |
-| Auth/URL/upload/HTML/PII | `references/security-bar.md`                                   |
-| L2 coverage              | `references/coverage.md` + `review_coverage.py`                |
-| Which leaf skill         | `references/skill-routing.md`                                  |
-| Intention loop           | `references/intention.md`                                      |
-| Agent / subagent state   | `references/agent-truth.md` + `scripts/lane_truth.py`          |
+| Need                     | Load                                                            |
+| ------------------------ | --------------------------------------------------------------- |
+| Exact path steps         | `references/lifecycle.md` (the path you are in)                 |
+| Path 3 grill             | `operator.yaml` `skills.grill_scales` if set                    |
+| Product law              | `operator.yaml` `skills.product_law` if set                     |
+| Path 5.5                 | `references/fullstack-audit.md` (+ team `skills.audit` if set)  |
+| Path 6 prove intensity   | `scripts/prove_intensity.py` + `references/prove-intensity.md`  |
+| Path 6a live QA          | `references/live-qa.md` (+ team `skills.qa` if set)             |
+| Path 5 least-code        | `references/ponytail.md`                                        |
+| Path 5.5 / 7             | `references/review-bar.md` (F1–F11)                             |
+| Auth/URL/upload/HTML/PII | `references/security-bar.md`                                    |
+| L2 coverage              | `references/coverage.md` + `review_coverage.py`                 |
+| Which leaf skill         | `references/skill-routing.md`                                   |
+| Intention loop           | `references/intention.md`                                       |
+| Agent / subagent state   | `references/agent-truth.md` + `lane_truth.py` + `claim_lint.py` |
 
 If this SKILL is already attached, **do not Read it again**.
 
@@ -88,8 +88,10 @@ If this SKILL is already attached, **do not Read it again**.
 1. Stop agents from hallucinating state. Subagent summaries are **claims**.
    Facts are `lane_truth.py` over **all** open own PRs: HEAD, mergeable,
    SHA-bound L1/L3/6a/6b/E2E. Ready means those five bind **this HEAD**.
-   Leftover `next` is work. After every subagent return, run `lane_truth.py`.
-   Resume with FACTS + NEXT. Quiet or boot-stuck → `unstick_subagents.py`.
+   Leftover `next` is work. After every return: `lane_truth.py` then
+   `claim_lint.py --ticket N --text-file <summary>` (exit 1 ⇒ do not
+   record). Resume with FACTS + the spawn contract in
+   `references/agent-truth.md`. Quiet or boot-stuck → `unstick_subagents.py`.
 2. Run the whole **issue-to-ship** lifecycle.
 3. Author PRs that would pass the house, and Path 7 **chat-draft only** for
    teammates.
@@ -217,7 +219,8 @@ while work remains. Teammate objects chat-draft only.
 - **Never invoke bug-net / autopilot / unattended Coder workers.** Do not
   route, resume, or steal from them.
 - **Agent claims are not facts.** After every subagent return, `lane_truth.py`
-  over all open own PRs. Resume with the FACTS block — never the agent's
+  then `claim_lint.py --ticket N --text-file <summary>`. Exit 1 ⇒ do not
+  `--record`. Resume with FACTS + the spawn contract — never the agent's
   story (`references/agent-truth.md`). `--record` is parent-only, after the
   parent saw the artifact on this HEAD.
 

@@ -13,6 +13,13 @@ T0 was `inherit`, so simple Qs stayed on Grok High Fast. T0/T1 now spawn
 Composer unless the parent is already Composer. T2 Grok / T3 GPT / T4 Claude
 (Fable + Opus). Banner shows `apply` + `did`. `--parent-model` on every boot.
 
+### Agent prose is not lane state — claim_lint after every return
+
+A subagent saying "L1 Ship" is a claim. `lane_truth.py` owns SHA-bound
+state. After every return, `claim_lint.py --ticket N --text-file <summary>`.
+Exit 1 ⇒ do not `--record`. Every Task prompt starts with the spawn
+contract in `agent-truth.md`. No tool output ⇒ `UNVERIFIED`.
+
 ### This repo lands on main — no PR unless asked
 
 Skill changes: commit on `main` and `git push origin main`. A PR for a
