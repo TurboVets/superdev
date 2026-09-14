@@ -10,7 +10,8 @@ Issue to ship. Before the PR exists.
 
 </div>
 
-<img width="2020" height="384" alt="image" src="https://github.com/user-attachments/assets/b2068993-5811-4451-a570-6c856a7a02a9" />
+<img width="1860" height="338" alt="image" src="https://github.com/user-attachments/assets/49e48f23-9d61-4425-9295-8addaa85f77e" />
+
 
 
 Open that first. A soldier runs the field and shoots completed PRs. Click a feature on the right and it opens — what you get when you attach one skill. Try intensity (lite / standard / full). Clone from the same page.
